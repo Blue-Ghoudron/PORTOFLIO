@@ -114,7 +114,12 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .room-head h2 { grid-area: title; margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: var(--h2); line-height: .9; }
 .room-head .qrtag { grid-area: qr; align-self: start; }
 .room-head p { grid-area: text; margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
-.hang { margin-top: clamp(32px, 4.4vw, 60px); display: grid; gap: clamp(20px, 3vw, 44px); align-items: end; }
+/* each pair shares two rows (photo, label) so both photos end on one line and both labels start on one line,
+   whatever each label holds (an act name adds a line) */
+.hang { margin-top: clamp(32px, 4.4vw, 60px); display: grid; column-gap: clamp(20px, 3vw, 44px); row-gap: 0; grid-template-rows: auto auto; }
+.hang .work { grid-row: span 2; display: grid; grid-template-rows: subgrid; row-gap: 0; }
+.hang .work > .shot { align-self: end; }
+.hang .work > .label { align-self: start; }
 .hang.lp { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); }
 .hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); }
 .hang.pp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -160,7 +165,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .name { font-size: clamp(64px, 17.6vw, 244px); }
   .lead { margin: 18px 9% 0 7%; }
   .lead .tag { left: -4px; }
-    .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); }
+  .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); row-gap: clamp(20px, 3vw, 44px); }
+  .hang .work { display: block; grid-row: auto; }
   .hang .work.port { width: min(100%, 420px); }
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot { grid-template-columns: minmax(0, 1fr); }
