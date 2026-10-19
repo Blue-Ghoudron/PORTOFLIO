@@ -55,7 +55,6 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .name { grid-area: name; position: relative; margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase;
   font-size: clamp(64px, min(13.5cqi, 22svh), 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
 .name .sub { display: block; margin-top: .14em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .16em; line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; white-space: normal; }
-.spark { position: absolute; z-index: 4; width: clamp(40px, 5.2vw, 72px); left: -.07em; top: -.12em; color: var(--ink); filter: drop-shadow(0 0 6px var(--ink)); }
 .lead { grid-area: photo; position: relative; z-index: 51; margin: 0; align-self: start; }
 .lead .panel { position: absolute; inset: 4% -7% 10% 9%; border: 2px solid var(--blue); transform: skew(-8deg); z-index: -1; overflow: hidden; }
 .lead .panel svg { width: 100%; height: 100%; display: block; transform: skew(8deg) scale(1.15); }
@@ -127,6 +126,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .outro .globe svg { width: clamp(90px, 10vw, 140px); height: auto; color: var(--blue); }
 .foot { margin-top: clamp(28px, 4vw, 48px); border-top: 1.5px solid var(--ink); padding-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: end; }
 .brand { width: 150px; height: auto; display: block; }
+.top .mark { display: inline-flex; align-items: center; gap: 14px; }
+.brand-sm { width: 76px; height: auto; display: block; }
 .legal { color: var(--ink-dim); line-height: 1.7; text-transform: none; letter-spacing: .04em; }
 .legal b { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; }
 
@@ -135,6 +136,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .viewer[hidden] { display: none; }
 .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; color: var(--ink-dim); }
+#vcap { text-transform: none; letter-spacing: .06em; }
 .bar .ctrls { display: flex; gap: 8px; }
 .bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
 .bar button:hover { border-color: var(--blue); }
@@ -157,7 +159,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 <main class="wrap">
   <div class="top micro">
-    <span><b>L'Boulevard</b> — 2025-2026</span>
+    <span class="mark"><svg class="brand-sm" viewBox="-100 -42 200 84" role="img" aria-label="Skimart"><use href="#skimart-mark"/></svg><span><b>L'Boulevard</b> — 2025-2026</span></span>
     <nav class="handles" aria-label="Tagged on Instagram">
       <a href="https://www.instagram.com/sepultura/" target="_blank" rel="noopener">@sepultura</a>
       <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">@lboulevard_festival</a>
@@ -165,7 +167,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </div>
 
   <section class="hero" id="entrance" aria-label="Entrance">
-    <h1 class="name glow-soft"><svg class="spark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" aria-hidden="true"> <g> <g> <path fill="currentColor" d="M1537.392578,1019.335327c-405.244873,91.770508-459.000244,129.096558-530.298523,432.192871 c-71.298279-303.096313-148.613953-359.698364-530.297974-432.192871 c421.555908-81.556396,458.999695-129.096619,530.297974-432.19281 C1078.392334,890.238708,1094.088013,937.778931,1537.392578,1019.335327z"/> <path fill="currentColor" d="M1006.195923,1182.795044c-44.137512-74.020264-101.509705-123.851685-182.475037-161.79187 c84.381104-36.495972,139.539856-82.67395,180.766479-151.261475c39.828308,70.762512,94.956604,117.932373,186.427551,155.431885 C1106.096924,1063.064087,1049.22998,1110.378784,1006.195923,1182.795044z"/> </g> <g> <path fill="currentColor" d="M776.807434,1247.263672c-7.352844-3.741577-14.71405-7.544556-22.080933-11.420654 c-363.781555-191.388306-591.379456-474.488098-508.337067-632.330811 c83.035797-157.830505,445.259674-130.621429,809.040771,60.766907c7.366821,3.875183,14.671387,7.788269,21.918701,11.728149 c-356.247742-180.994751-705.614258-203.991638-786.97052-49.35144 C209.015518,781.305908,425.858856,1056.196411,776.807434,1247.263672z"/> <path fill="currentColor" d="M1223.192627,752.736938c7.351807,3.740662,14.714478,7.54364,22.081421,11.419739 c363.781006,191.388306,591.378906,474.489075,508.336548,632.331238 c-83.0354,157.830078-445.260132,130.62146-809.041687-60.766846c-7.365967-3.875122-14.670471-7.788696-21.918335-11.728638 c356.24823,180.994751,705.615295,203.991699,786.971985,49.352417 C1790.984985,1218.694824,1574.142578,943.804199,1223.192627,752.736938z"/> </g> <g> <path fill="currentColor" d="M1223.192627,1247.263672c7.352783-3.741577,14.714478-7.544556,22.081421-11.420654 c363.781006-191.388306,591.378906-474.488098,508.336548-632.330811 c-83.0354-157.830505-445.259277-130.621429-809.040771,60.766907c-7.366882,3.875183-14.671387,7.788269-21.918274,11.728149 c356.247253-180.994751,705.614319-203.991638,786.971008-49.35144 C1790.984985,781.305908,1574.141602,1056.196411,1223.192627,1247.263672z"/> <path fill="currentColor" d="M776.807434,752.736938c-7.351868,3.740662-14.71405,7.54364-22.080933,11.419739 c-363.781555,191.388306-591.379456,474.489075-508.337067,632.331238 c83.035797,157.830078,445.26059,130.62146,809.041748-60.766846c7.365845-3.875122,14.67041-7.788696,21.918213-11.728638 c-356.24823,180.994751-705.614746,203.991699-786.971008,49.352417 C209.015518,1218.694824,425.857941,943.804199,776.807434,752.736938z"/> </g> </g> </svg>Connection<span class="sub">The stage and audience</span></h1>
+    <h1 class="name glow-soft">Connection<span class="sub">The stage and audience</span></h1>
 
     <figure class="lead">
       <div class="panel" aria-hidden="true"><svg data-warpgrid data-cols="9" data-rows="12" data-amp="26" data-seed="11"></svg></div>
@@ -262,12 +264,12 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </div>
 
   <footer class="foot">
-    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart">
+    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart"><g id="skimart-mark">
       <g fill="none" stroke="#eeffe5" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
       <line x1="-88" x2="88" y1="-24" y2="-24" stroke-width="1"/><line x1="-88" x2="88" y1="24" y2="24" stroke-width="1"/></g>
       <rect x="-78" y="-14" width="156" height="28" fill="#251726"/>
       <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="#eeffe5" letter-spacing="1">SKIMART</text>
-    </svg>
+    </g></svg>
     <div class="legal micro">
       <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
       © 2025–2026 Skimart™. All rights reserved.<br>
