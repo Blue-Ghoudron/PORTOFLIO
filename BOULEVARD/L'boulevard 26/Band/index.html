@@ -80,6 +80,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
 .shot img { display: block; width: 100%; height: auto; max-width: 100%; transition: filter .25s; }
 .shot:hover img { filter: contrast(1.06) brightness(1.04); }
+/* small zoom on hover; the whole print grows (mat included), so nothing gets cropped */
+@media (hover: hover) { .shot { transition: transform .25s ease-out; } .shot:hover { transform: scale(1.025); } }
 .handles a:focus-visible, .plan a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 /* selection corners, like a game's upgrade card: they snap in on hover and keyboard focus */
 .shot:focus-visible { outline: none; }
@@ -150,7 +152,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .shot img, .shot::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .shot, .shot img, .shot::after { transition: none; } .shot:hover { transform: none; } }
 </style>
 
 <main class="wrap">
