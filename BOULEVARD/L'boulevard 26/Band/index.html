@@ -26,11 +26,16 @@
 }
 * { box-sizing: border-box; }
 ::selection { background: var(--blue); color: var(--ink); }
-body { position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
 body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
   background: url("assets/grain.jpg") 0 0 / 512px 512px repeat; }
-.wrap { max-width: 1680px; margin: 0 auto; padding-block: 14px 40px;
-  padding-left: max(16px, 5vw, env(safe-area-inset-left, 0px)); padding-right: max(16px, 5vw, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 2048px; margin: 0 auto; overflow-x: clip; padding-block: 14px 40px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+/* side margins: 16 phone, 24 tablet, 32 laptop, then 48 growing to 128 on large screens */
+:root { --gutter: 16px; }
+@media (min-width: 480px) { :root { --gutter: 24px; } }
+@media (min-width: 768px) { :root { --gutter: 32px; } }
+@media (min-width: 1441px) { :root { --gutter: clamp(48px, calc(48px + (100vw - 1440px) * .2), 128px); } }
 .micro { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .glow { text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent), 0 0 18px color-mix(in srgb, currentColor 35%, transparent); }
 .glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
