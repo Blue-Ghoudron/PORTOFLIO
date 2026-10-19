@@ -27,6 +27,9 @@
   --z: 1; --svh: calc(1svh / var(--z));
 }
 @media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
+/* small mono labels: 11px nominal; under the page scale they grow back so they read at ~10.5px on screen */
+:root { --small: calc(11px / var(--z) * .95); }
+@media (max-width: 1439px) { :root { --small: 11px; } }
 * { box-sizing: border-box; }
 ::selection { background: var(--blue); color: var(--ink); }
 body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
@@ -39,7 +42,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 @media (min-width: 480px) { :root { --gutter: 24px; } }
 @media (min-width: 768px) { :root { --gutter: 32px; } }
 @media (min-width: 1441px) { :root { --gutter: clamp(48px, calc(48px + (100vw / var(--z) - 1440px) * .2), 128px); } }
-.micro { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.micro { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; text-transform: uppercase; }
 .glow { text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent), 0 0 18px color-mix(in srgb, currentColor 35%, transparent); }
 .glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
 
@@ -93,13 +96,13 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     var(--c) 0 100% / var(--l) 3px, var(--c) 0 100% / 3px var(--l), var(--c) 100% 100% / var(--l) 3px, var(--c) 100% 100% / 3px var(--l);
   background-repeat: no-repeat; filter: drop-shadow(0 0 6px var(--blue)); opacity: 0; transform: scale(1.05); transition: opacity .18s, transform .18s; }
 .shot:hover::after, .shot:focus-visible::after { opacity: 1; transform: none; }
-@media (hover: none) { .shot::after { opacity: .6; transform: none; } }
+@media (hover: none) { .shot:active::after { opacity: 1; transform: none; } }
 .work { position: relative; z-index: 51; margin: 0; min-width: 0; }
 .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }
-.label .no { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; color: var(--blue-text); }
-.label h3 { margin: 0; font-family: var(--f-body); font-weight: 700; font-size: 17px; line-height: 1.25; text-wrap: balance; }
+.label .no { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; color: var(--blue-text); }
+.label :is(h2, h3) { margin: 0; font-family: var(--f-body); font-weight: 700; font-size: 17px; line-height: 1.25; text-wrap: balance; }
 .label .who { font-size: 14px; }
-.label .meta { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; color: var(--ink-dim); line-height: 1.7; font-variant-numeric: tabular-nums; }
+.label .meta { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .06em; color: var(--ink-dim); line-height: 1.7; font-variant-numeric: tabular-nums; }
 
 /* ---------- rooms ---------- */
 .room { position: relative; margin-top: clamp(64px, 8vw, 120px); }
@@ -110,7 +113,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* QR tag naming each section (decoration only, not scannable) */
 .qrtag { display: grid; justify-items: center; gap: 6px; color: var(--ink-dim); }
 .qrtag svg { display: block; width: clamp(48px, 5vw, 80px); height: auto; }
-.qrtag span { font-size: 10px; letter-spacing: .14em; white-space: nowrap; }
+.qrtag span { font-size: calc(var(--small) - 1px); letter-spacing: .14em; white-space: nowrap; }
 .study > .qrtag { float: right; margin: 0 0 12px 16px; }
 .room-head { position: relative; --h2: clamp(40px, 6vw, 84px); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "num title qr" ". text qr"; gap: 0 clamp(18px, 2.6vw, 36px); align-items: baseline; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
 /* numeral caps match the title caps: Anton/Space Mono cap ratio is 1.243, less a little for the 1.5px outline */
@@ -150,8 +153,6 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .outro .globe svg { width: clamp(90px, 10vw, 140px); height: auto; color: var(--blue); }
 .foot { margin-top: clamp(28px, 4vw, 48px); border-top: 1.5px solid var(--ink); padding-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: end; }
 .brand { width: 150px; height: auto; display: block; }
-.top .mark { display: inline-flex; align-items: center; gap: 14px; }
-.brand-sm { width: 76px; height: auto; display: block; }
 .legal { color: var(--ink-dim); line-height: 1.7; text-transform: none; letter-spacing: .04em; }
 .legal b { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; }
 
@@ -170,15 +171,30 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 @media (max-width: 860px) {
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "photo" "text"; }
-  .room-head { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "num title" "qr text"; }
-  .room-head .qrtag { justify-self: start; margin-top: 12px; }
-  .name { font-size: clamp(64px, 17.6vw, 244px); }
-  .lead { margin: 18px 9% 0 7%; }
+  /* phone heading: numeral, title and QR on one line, the description takes the full width under them */
+  .room-head { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "num title qr" "text text text"; column-gap: 14px; --h2: clamp(32px, 10.4vw, 40px); }
+  .room-head .qrtag svg { width: 40px; }
+  .room-head p { margin-top: 12px; }
+  /* the name spans the column: Anton "CONNECTION" measures ~4.4em wide */
+  .name { font-size: calc((100vw - 2 * var(--gutter)) / 4.42); }
+  /* the prologue print fits the screen under the name: width follows the screen height on tall tablets */
+  .lead { margin: 18px auto 0 7%; width: min(84%, max(220px, calc((100 * var(--svh) - 330px) * .66))); }
   .lead .tag { left: -4px; }
+  .lead .panel { bottom: 120px; }  /* end the grid behind the print, not under its caption */
   .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); row-gap: clamp(20px, 3vw, 44px); max-width: none; }
   .hang .work { display: block; grid-row: auto; }
   .hang .work.port { width: min(100%, 420px); }
-  .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* study wall becomes a contact strip you swipe: same height prints, edge to edge */
+  .strip { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    margin-inline: calc(-1 * var(--gutter)); padding: 14px var(--gutter) 10px; scroll-padding-inline: var(--gutter); scrollbar-width: thin; scrollbar-color: var(--ink-faint) transparent; }
+  .strip figure { flex: 0 0 auto; scroll-snap-align: start; }
+  .strip .shot { width: auto; }
+  .strip .shot img { width: auto; height: 220px; }
+  .strip figcaption { white-space: nowrap; }
+  /* lights down: time and globe share the line under the words */
+  .outro { gap: 14px 16px; align-items: center; }
+  .outro p { flex: 1 0 100%; }
+  .outro .globe svg { width: 64px; }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .shot, .shot img, .shot::after { transition: none; } .shot:hover { transform: none; } }
@@ -186,10 +202,10 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 <main class="wrap">
   <div class="top micro">
-    <span class="mark"><svg class="brand-sm" viewBox="-100 -42 200 84" role="img" aria-label="Skimart"><use href="#skimart-mark"/></svg><span><b>L'Boulevard</b> — 2025-2026</span></span>
+    <span><b>L'Boulevard</b> — 2025-2026</span>
     <nav class="handles" aria-label="Tagged on Instagram">
-      <a href="https://www.instagram.com/sepultura/" target="_blank" rel="noopener">@sepultura</a>
-      <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">@lboulevard_festival</a>
+      <a href="https://www.instagram.com/sepultura/" target="_blank" rel="noopener">sepultura</a>
+      <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">lboulevard_festival</a>
     </nav>
   </div>
 
@@ -200,7 +216,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
       <div class="panel" aria-hidden="true"><svg data-warpgrid data-cols="9" data-rows="12" data-amp="26" data-seed="11"></svg></div>
       <button class="shot" type="button" data-cap="01 · Looking up · 2026 · 22:31:11 · 1/100 s · f/1.6 · ISO 125 · IMG_0511" aria-label="Look closer at 01, Looking up"><img src="images/frame-03.jpg" alt="Singer looking up into the lights, a fan's horns raised in front of the stage" width="1282" height="1882"></button>
       <span class="tag micro">01 · Prologue</span>
-      <figcaption class="label"><h3>Looking up</h3><span class="meta">IMG_0511 · 2026 · 22:31:11 · 1/100 s · f/1.6 · ISO 125</span></figcaption>
+      <figcaption class="label"><h2>Looking up</h2><span class="meta">IMG_0511 · 2026 · 22:31:11 · 1/100 s · f/1.6 · ISO 125</span></figcaption>
     </figure>
 
     <div class="intro">
@@ -299,12 +315,12 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </div>
 
   <footer class="foot">
-    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart"><g id="skimart-mark">
+    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart">
       <g fill="none" stroke="#eeffe5" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
       <line x1="-88" x2="88" y1="-24" y2="-24" stroke-width="1"/><line x1="-88" x2="88" y1="24" y2="24" stroke-width="1"/></g>
       <rect x="-78" y="-14" width="156" height="28" fill="#251726"/>
       <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="#eeffe5" letter-spacing="1">SKIMART</text>
-    </g></svg>
+    </svg>
     <div class="legal micro">
       <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
       © 2025–2026 Skimart™. All rights reserved.<br>
@@ -373,10 +389,14 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   function alignCap(){ if(v.hidden) return; var z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;   /* rects are in screen px, padding is scaled by the page zoom */
     cap.style.paddingLeft=Math.max(0, (img.getBoundingClientRect().left-cap.getBoundingClientRect().left)/z)+'px'; }
   img.addEventListener('load',alignCap); new ResizeObserver(alignCap).observe(img);
-  img.addEventListener('click',function(e){ var r=img.getBoundingClientRect(); show(cur+(e.clientX<r.left+r.width/2?-1:1)); });
+  /* one release handler for tap, click and swipe: browsers drop the click of a tap made right after a swipe,
+     so a short press is read on release instead. Swipe > 40px moves one work; a press that barely moved is a tap on a half */
+  img.draggable=false;
   img.addEventListener('pointerdown',function(e){ x0=e.clientX; });
-  img.addEventListener('pointerup',function(e){ if(x0===null) return; var dx=e.clientX-x0; x0=null;
-    if(Math.abs(dx)>40){ show(cur+(dx<0?1:-1)); img.addEventListener('click',function(ev){ ev.stopImmediatePropagation(); },{capture:true,once:true}); } });
+  img.addEventListener('pointercancel',function(){ x0=null; });
+  img.addEventListener('pointerup',function(e){ if(x0===null) return; var dx=e.clientX-x0, r=img.getBoundingClientRect(); x0=null;
+    if(Math.abs(dx)>40) show(cur+(dx<0?1:-1));
+    else if(Math.abs(dx)<10) show(cur+(e.clientX<r.left+r.width/2?-1:1)); });
   document.addEventListener('keydown',function(e){ if(v.hidden) return;
     if(e.key==='Escape') close(); else if(e.key==='ArrowRight') show(cur+1); else if(e.key==='ArrowLeft') show(cur-1);
     else if(e.key==='Tab'){ var f=[].slice.call(v.querySelectorAll('button')), first=f[0], last=f[f.length-1];
