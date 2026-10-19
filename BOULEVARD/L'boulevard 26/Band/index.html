@@ -101,7 +101,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 /* ---------- rooms ---------- */
 .room { margin-top: clamp(64px, 8vw, 120px); }
-.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: center; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
+.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: start; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
 .room-head .num { font-family: var(--f-mono); font-weight: 700; font-size: clamp(64px, 8vw, 120px); line-height: .8; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
 .room-head h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(40px, 6vw, 84px); line-height: .9; }
 .room-head p { margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
