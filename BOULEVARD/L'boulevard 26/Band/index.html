@@ -22,7 +22,11 @@
   --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --f-mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: dark;
+  /* page scale: on wide screens the whole layout renders at 75%, like browser zoom 75% (type, spacing, photos);
+     --svh and the gutter divide it back out so window-height and window-width sizes still match the real window */
+  --z: 1; --svh: calc(1svh / var(--z));
 }
+@media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
 * { box-sizing: border-box; }
 ::selection { background: var(--blue); color: var(--ink); }
 body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
@@ -34,7 +38,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 :root { --gutter: 16px; }
 @media (min-width: 480px) { :root { --gutter: 24px; } }
 @media (min-width: 768px) { :root { --gutter: 32px; } }
-@media (min-width: 1441px) { :root { --gutter: clamp(48px, calc(48px + (100vw - 1440px) * .2), 128px); } }
+@media (min-width: 1441px) { :root { --gutter: clamp(48px, calc(48px + (100vw / var(--z) - 1440px) * .2), 128px); } }
 .micro { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
 .glow { text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent), 0 0 18px color-mix(in srgb, currentColor 35%, transparent); }
 .glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
@@ -52,7 +56,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name photo" "text photo"; grid-template-rows: auto 1fr; container-type: inline-size;
   column-gap: clamp(16px, 3vw, 40px); padding-top: clamp(28px, 3.4vw, 48px); }
 .name { grid-area: name; position: relative; margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase;
-  font-size: clamp(64px, min(13.5cqi, 22svh), 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
+  font-size: clamp(64px, min(13.5cqi, calc(22 * var(--svh))), 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
 .name .sub { display: block; margin-top: .14em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .16em; line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; white-space: normal; }
 .lead { grid-area: photo; position: relative; z-index: 51; margin: 0; align-self: start; }
 .lead .panel { position: absolute; inset: 4% -7% 10% 9%; border: 2px solid var(--blue); transform: skew(-8deg); z-index: -1; overflow: hidden; }
@@ -60,8 +64,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .lead .tag { position: absolute; left: -12px; bottom: 18%; background: var(--ink); color: var(--wall); padding: 4px 9px; transform: rotate(-90deg); transform-origin: left bottom; font-weight: 700; white-space: nowrap; }
 .lead .label { margin-top: 16px; }
 /* keep the whole entrance on the first screen: the portrait's width follows the screen height */
-@media (min-width: 861px) { .lead { justify-self: end; width: min(100%, calc((100svh - 160px) * .55)); } }
-.intro { grid-area: text; padding-top: clamp(24px, min(5vw, 5svh), 72px); display: grid; gap: 22px; align-content: start; }
+@media (min-width: 861px) { .lead { justify-self: end; width: min(100%, calc((calc(100 * var(--svh)) - 160px) * .55)); } }
+.intro { grid-area: text; padding-top: clamp(24px, min(5vw, calc(5 * var(--svh))), 72px); display: grid; gap: 22px; align-content: start; }
 .byline { margin: 0; display: grid; gap: 4px; font-size: 16px; color: var(--ink-dim); }
 .byline strong { color: var(--ink); font-weight: 700; font-size: 18px; }
 .byline b { color: var(--blue-text); font-weight: 700; }
@@ -123,7 +127,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* a portrait (1282x1882) beside a landscape (1882x1282) is the same height when the landscape column is
    (1882/1282)^2 = 2.155 times wider: both prints start and end on one line, no empty wall above the landscape.
    Each pair is also capped so a whole print fits the window (portrait height <= 100svh - 260px, room for the room heading above it). */
-.hang { --gap: clamp(20px, 3vw, 44px); --ph: calc((100svh - 260px) / 1.468); }
+.hang { --gap: clamp(20px, 3vw, 44px); --ph: calc((calc(100 * var(--svh)) - 260px) / 1.468); }
 .hang.lp { grid-template-columns: minmax(0, 2.155fr) minmax(0, 1fr); }
 .hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 2.155fr); }
 .hang.pp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -366,7 +370,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   document.getElementById('vclose').onclick=close;
   v.addEventListener('click',function(e){ if(e.target===v||e.target.classList.contains('stage')) close(); });
   /* caption starts where the photo starts; photos differ in width, so re-measure on load and whenever the photo's box changes */
-  function alignCap(){ if(v.hidden) return; cap.style.paddingLeft=Math.max(0, img.getBoundingClientRect().left-cap.getBoundingClientRect().left)+'px'; }
+  function alignCap(){ if(v.hidden) return; var z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;   /* rects are in screen px, padding is scaled by the page zoom */
+    cap.style.paddingLeft=Math.max(0, (img.getBoundingClientRect().left-cap.getBoundingClientRect().left)/z)+'px'; }
   img.addEventListener('load',alignCap); new ResizeObserver(alignCap).observe(img);
   img.addEventListener('click',function(e){ var r=img.getBoundingClientRect(); show(cur+(e.clientX<r.left+r.width/2?-1:1)); });
   img.addEventListener('pointerdown',function(e){ x0=e.clientX; });
