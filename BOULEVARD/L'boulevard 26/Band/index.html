@@ -75,7 +75,16 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
 .shot img { display: block; width: 100%; height: auto; max-width: 100%; transition: filter .25s; }
 .shot:hover img { filter: contrast(1.06) brightness(1.04); }
-.shot:focus-visible, .handles a:focus-visible, .plan a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.handles a:focus-visible, .plan a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+/* selection corners, like a game's upgrade card: they snap in on hover and keyboard focus */
+.shot:focus-visible { outline: none; }
+.shot::after { content: ""; position: absolute; inset: calc(-1 * clamp(8px, 1.2vw, 14px)); pointer-events: none;
+  --l: clamp(18px, 2.4vw, 34px); --c: linear-gradient(var(--blue), var(--blue));
+  background: var(--c) 0 0 / var(--l) 3px, var(--c) 0 0 / 3px var(--l), var(--c) 100% 0 / var(--l) 3px, var(--c) 100% 0 / 3px var(--l),
+    var(--c) 0 100% / var(--l) 3px, var(--c) 0 100% / 3px var(--l), var(--c) 100% 100% / var(--l) 3px, var(--c) 100% 100% / 3px var(--l);
+  background-repeat: no-repeat; filter: drop-shadow(0 0 6px var(--blue)); opacity: 0; transform: scale(1.05); transition: opacity .18s, transform .18s; }
+.shot:hover::after, .shot:focus-visible::after { opacity: 1; transform: none; }
+@media (hover: none) { .shot::after { opacity: .6; transform: none; } }
 .work { position: relative; z-index: 51; margin: 0; min-width: 0; }
 .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }
 .label .no { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; color: var(--blue-text); }
@@ -135,7 +144,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .shot img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .shot img, .shot::after { transition: none; } }
 </style>
 
 <main class="wrap">
