@@ -1,0 +1,323 @@
+<title>L&#39;boulevard-Band-26</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,400..800&family=Pinyon+Script&family=Six+Caps&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: V0.1's Skimart sheet as the entrance (giant name eclipsed by the prologue frame, script crossing it, warped grid),
+   then V0.2's exhibition: three curated rooms hung in pairs with wall labels, a study wall, and V0.1's lights-down close. */
+:root {
+  --wall: #251726;        /* Getfedo brand-dark: ground / gallery wall */
+  --wall-2: #2f1f31;
+  --ink: #eeffe5;         /* Getfedo brand-light = the mat on every print */
+  --ink-dim: rgba(238,255,229,.66);
+  --ink-faint: rgba(238,255,229,.16);
+  --blue: #337aff;        /* Getfedo brand-mid: large marks */
+  --blue-text: #3d81ff;   /* small blue text */
+  --f-head: "Anton", "Bebas Neue", "Arial Narrow", sans-serif;
+  --f-tall: "Six Caps", "Anton", "Arial Narrow", sans-serif;
+  --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-script: "Pinyon Script", "Snell Roundhand", cursive;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+::selection { background: var(--blue); color: var(--ink); }
+body { position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .4; mix-blend-mode: screen;
+  background: url("assets/grain.jpg") 0 0 / 512px 512px repeat; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.micro { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.glow { text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent), 0 0 18px color-mix(in srgb, currentColor 35%, transparent); }
+.glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
+
+/* ---------- top strip ---------- */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
+.top b { color: var(--ink); }
+.top .acc { color: var(--blue-text); }
+.handles { display: flex; flex-wrap: wrap; gap: 10px; }
+.handles a { font-family: var(--f-mono); font-size: 13px; letter-spacing: .02em; text-transform: none; color: var(--blue-text); text-decoration: none;
+  border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
+.handles a:hover { border-color: var(--blue-text); color: var(--ink); }
+
+/* ---------- entrance: the V0.1 sheet ---------- */
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name name" "text photo";
+  column-gap: clamp(16px, 3vw, 40px); padding-top: clamp(28px, 3.4vw, 48px); }
+.name { grid-area: name; position: relative; margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(64px, 17.6vw, 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
+.name .sub { display: block; margin-top: .14em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .16em; line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; white-space: normal; }
+.spark { position: absolute; z-index: 4; width: clamp(40px, 5.2vw, 72px); left: -.07em; top: -.12em; color: var(--ink); filter: drop-shadow(0 0 6px var(--ink)); }
+.lead { grid-area: photo; position: relative; z-index: 51; margin: clamp(-170px, -12vw, -40px) 0 0; align-self: start; }
+.lead .panel { position: absolute; inset: 4% -7% 10% 9%; border: 2px solid var(--blue); transform: skew(-8deg); z-index: -1; overflow: hidden; }
+.lead .panel svg { width: 100%; height: 100%; display: block; transform: skew(8deg) scale(1.15); }
+.lead .tag { position: absolute; left: -12px; bottom: 18%; background: var(--ink); color: var(--wall); padding: 4px 9px; transform: rotate(-90deg); transform-origin: left bottom; font-weight: 700; white-space: nowrap; }
+.lead .label { margin-top: 16px; }
+.intro { grid-area: text; padding-top: clamp(40px, 5vw, 72px); display: grid; gap: 22px; align-content: start; }
+.byline { margin: 0; display: grid; gap: 4px; font-size: 16px; color: var(--ink-dim); }
+.byline strong { color: var(--ink); font-weight: 700; font-size: 18px; }
+.byline b { color: var(--blue-text); font-weight: 700; }
+.statement { margin: 0; max-width: 46ch; font-size: 16px; line-height: 1.6; text-wrap: pretty; }
+.statement em { font-style: normal; color: var(--ink-dim); }
+.plan { display: flex; flex-wrap: wrap; gap: 8px; }
+.plan a { color: var(--ink); text-decoration: none; border: 1px solid var(--ink-faint); padding: 9px 12px; min-height: 40px; display: inline-flex; align-items: center; gap: 8px; }
+.plan a b { color: var(--blue-text); font-weight: 700; }
+.plan a:hover { border-color: var(--ink); }
+.credit { margin: 0; padding-top: 12px; border-top: 1px solid var(--ink-faint); color: var(--ink-dim); max-width: 56ch; line-height: 1.7; text-transform: none; letter-spacing: .04em; }
+
+/* ---------- works and wall labels ---------- */
+.shot { position: relative; display: block; width: 100%; padding: 0; border: 0; background: var(--ink); cursor: zoom-in;
+  box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
+.shot img { display: block; width: 100%; height: auto; max-width: 100%; transition: filter .25s; }
+.shot:hover img { filter: contrast(1.06) brightness(1.04); }
+.shot:focus-visible, .handles a:focus-visible, .plan a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.work { position: relative; z-index: 51; margin: 0; min-width: 0; }
+.label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }
+.label .no { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; color: var(--blue-text); }
+.label h3 { margin: 0; font-family: var(--f-body); font-weight: 700; font-size: 17px; line-height: 1.25; text-wrap: balance; }
+.label .who { font-size: 14px; }
+.label .meta { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; color: var(--ink-dim); line-height: 1.7; font-variant-numeric: tabular-nums; }
+
+/* ---------- rooms ---------- */
+.room { margin-top: clamp(64px, 8vw, 120px); }
+.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: end; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
+.room-head .num { font-family: var(--f-mono); font-weight: 700; font-size: clamp(64px, 8vw, 120px); line-height: .8; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
+.room-head h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(40px, 6vw, 84px); line-height: .9; }
+.room-head p { margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
+.room-head .k { color: var(--blue-text); }
+.hang { margin-top: clamp(32px, 4.4vw, 60px); display: grid; gap: clamp(20px, 3vw, 44px); align-items: end; }
+.hang.lp { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); }
+.hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); }
+.hang.pp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hang.centre { grid-template-columns: minmax(0, 1fr); }
+.hang.centre .label { grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 4px 18px; }
+.hang.coda { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+.coda-text { font-family: var(--f-script); font-size: clamp(44px, 6vw, 88px); line-height: 1.05; color: var(--blue); transform: rotate(-4deg); text-align: center; }
+
+/* ---------- study wall ---------- */
+.study { margin-top: clamp(64px, 8vw, 120px); padding-top: clamp(20px, 3vw, 32px); border-top: 1px solid var(--ink-faint); }
+.study h2 { margin: 0; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: clamp(20px, 2.4vw, 30px); text-transform: uppercase; letter-spacing: .03em; }
+.study > p { margin: 8px 0 0; color: var(--ink-dim); max-width: 56ch; }
+.strip { margin-top: 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 20px); align-items: end; }
+.strip figure { margin: 0; min-width: 0; position: relative; z-index: 51; }
+.strip .shot { box-shadow: none; }
+.strip figcaption { padding-top: 8px; color: var(--ink-dim); }
+
+/* ---------- lights down + exit ---------- */
+.outro { margin-top: clamp(56px, 7vw, 100px); display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; }
+.outro p { margin: 0; font-family: var(--f-tall); font-size: clamp(110px, 17vw, 240px); line-height: .8; letter-spacing: .03em; }
+.outro .globe { margin-left: auto; display: flex; align-items: center; gap: 14px; color: var(--blue-text); }
+.outro .globe svg { width: clamp(90px, 10vw, 140px); height: auto; color: var(--blue); }
+.foot { margin-top: clamp(28px, 4vw, 48px); border-top: 1.5px solid var(--ink); padding-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: end; }
+.brand { width: 150px; height: auto; display: block; }
+.legal { color: var(--ink-dim); line-height: 1.7; text-transform: none; letter-spacing: .04em; }
+.legal b { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; }
+
+/* ---------- closer look ---------- */
+.viewer { position: fixed; inset: 0; z-index: 60; background: rgba(28,17,29,.97); display: grid; grid-template-rows: auto 1fr;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.viewer[hidden] { display: none; }
+.bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; color: var(--ink-dim); }
+.bar .ctrls { display: flex; gap: 8px; }
+.bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
+.bar button:hover { border-color: var(--blue); }
+.bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.stage { min-height: 0; display: grid; place-items: center; padding-top: 12px; }
+.stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "photo" "text"; }
+  .lead { margin: 18px 9% 0 7%; }
+  .lead .tag { left: -4px; }
+    .hang.lp, .hang.pl, .hang.pp, .hang.coda { grid-template-columns: minmax(0, 1fr); }
+  .hang .work.port { width: min(100%, 420px); }
+  .hang.centre .label { grid-template-columns: minmax(0, 1fr); }
+  .coda-text { order: 2; }
+  .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .shot img { transition: none; } }
+</style>
+
+<main class="wrap">
+  <div class="top micro">
+    <span><b>L'Boulevard</b> — 2025-2026</span>
+    <nav class="handles" aria-label="Tagged on Instagram">
+      <a href="https://www.instagram.com/sepultura/" target="_blank" rel="noopener">@sepultura</a>
+      <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">@lboulevard_festival</a>
+    </nav>
+  </div>
+
+  <section class="hero" id="entrance" aria-label="Entrance">
+    <h1 class="name glow-soft"><svg class="spark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" aria-hidden="true"> <g> <g> <path fill="currentColor" d="M1537.392578,1019.335327c-405.244873,91.770508-459.000244,129.096558-530.298523,432.192871 c-71.298279-303.096313-148.613953-359.698364-530.297974-432.192871 c421.555908-81.556396,458.999695-129.096619,530.297974-432.19281 C1078.392334,890.238708,1094.088013,937.778931,1537.392578,1019.335327z"/> <path fill="currentColor" d="M1006.195923,1182.795044c-44.137512-74.020264-101.509705-123.851685-182.475037-161.79187 c84.381104-36.495972,139.539856-82.67395,180.766479-151.261475c39.828308,70.762512,94.956604,117.932373,186.427551,155.431885 C1106.096924,1063.064087,1049.22998,1110.378784,1006.195923,1182.795044z"/> </g> <g> <path fill="currentColor" d="M776.807434,1247.263672c-7.352844-3.741577-14.71405-7.544556-22.080933-11.420654 c-363.781555-191.388306-591.379456-474.488098-508.337067-632.330811 c83.035797-157.830505,445.259674-130.621429,809.040771,60.766907c7.366821,3.875183,14.671387,7.788269,21.918701,11.728149 c-356.247742-180.994751-705.614258-203.991638-786.97052-49.35144 C209.015518,781.305908,425.858856,1056.196411,776.807434,1247.263672z"/> <path fill="currentColor" d="M1223.192627,752.736938c7.351807,3.740662,14.714478,7.54364,22.081421,11.419739 c363.781006,191.388306,591.378906,474.489075,508.336548,632.331238 c-83.0354,157.830078-445.260132,130.62146-809.041687-60.766846c-7.365967-3.875122-14.670471-7.788696-21.918335-11.728638 c356.24823,180.994751,705.615295,203.991699,786.971985,49.352417 C1790.984985,1218.694824,1574.142578,943.804199,1223.192627,752.736938z"/> </g> <g> <path fill="currentColor" d="M1223.192627,1247.263672c7.352783-3.741577,14.714478-7.544556,22.081421-11.420654 c363.781006-191.388306,591.378906-474.488098,508.336548-632.330811 c-83.0354-157.830505-445.259277-130.621429-809.040771,60.766907c-7.366882,3.875183-14.671387,7.788269-21.918274,11.728149 c356.247253-180.994751,705.614319-203.991638,786.971008-49.35144 C1790.984985,781.305908,1574.141602,1056.196411,1223.192627,1247.263672z"/> <path fill="currentColor" d="M776.807434,752.736938c-7.351868,3.740662-14.71405,7.54364-22.080933,11.419739 c-363.781555,191.388306-591.379456,474.489075-508.337067,632.331238 c83.035797,157.830078,445.26059,130.62146,809.041748-60.766846c7.365845-3.875122,14.67041-7.788696,21.918213-11.728638 c-356.24823,180.994751-705.614746,203.991699-786.971008,49.352417 C209.015518,1218.694824,425.857941,943.804199,776.807434,752.736938z"/> </g> </g> </svg>Connection<span class="sub">The stage and audience</span></h1>
+
+    <figure class="lead">
+      <div class="panel" aria-hidden="true"><svg data-warpgrid data-cols="9" data-rows="12" data-amp="26" data-seed="11"></svg></div>
+      <button class="shot" type="button" data-cap="01 · Looking up · 2026 · 22:31:11 · 1/100 s · f/1.6 · ISO 125 · IMG_0511" aria-label="Look closer at 01, Looking up"><img src="images/frame-03.jpg" alt="Singer looking up into the lights, a fan's horns raised in front of the stage" width="1282" height="1882"></button>
+      <span class="tag micro">01 · Prologue</span>
+      <figcaption class="label"><h3>Looking up</h3><span class="meta">IMG_0511 · 2026 · 22:31:11 · 1/100 s · f/1.6 · ISO 125</span></figcaption>
+    </figure>
+
+    <div class="intro">
+      <p class="byline"><strong>Photographs by Ghoujlami Mohamed</strong><span>Metal Day, L'Boulevard · Stade R.U.C, Casablanca · <b class="glow">20.09.2025 · 19.09.2026</b></span></p>
+      <p class="statement">A stage only works when someone looks back. Thirteen photographs from two Metal Days a year apart, hung by what they show, not by the clock. First the floor, then the stage, then the moment the two meet. <em>— Skimart</em></p>
+      <nav class="plan micro" aria-label="Floor plan">
+        <a href="#room-1"><b>I</b> The floor</a>
+        <a href="#room-2"><b>II</b> The stage</a>
+        <a href="#room-3"><b>III</b> The look</a>
+        <a href="#study"><b>+4</b> Study wall</a>
+      </nav>
+      <p class="credit micro">2026 works: Sepultura unless noted. 2025 works are credited only where the photograph confirms the act. Canon EOS 70D · EF 50mm f/1.4 USM (2026), EF 50mm f/1.8 STM (2025). Matted in #EEFFE5.</p>
+    </div>
+  </section>
+
+  <section class="room" id="room-1" aria-labelledby="r1">
+    <header class="room-head">
+      <div class="num" aria-hidden="true">I</div>
+      <div><span class="k micro">4 works</span><h2 id="r1">The floor</h2><p>Before anyone on stage moves, the crowd is already performing.</p></div>
+    </header>
+    <div class="hang lp">
+      <figure class="work land"><button class="shot" type="button" data-cap="02 · Horns for the opener · Suicide Machine · 2026 · 20:53:57 · 1/100 s · f/1.6 · ISO 100 · IMG_0416" aria-label="Look closer at 02, Horns for the opener"><img src="images/frame-02.jpg" alt="Suicide Machine on stage, crowd silhouettes with horns raised, the band's logo glowing on the screen" width="1882" height="1282"></button>
+        <figcaption class="label"><span class="no">02</span><h3>Horns for the opener</h3><span class="who">Suicide Machine</span><span class="meta">IMG_0416 · 2026 · 20:53:57 · 1/100 s · f/1.6 · ISO 100</span></figcaption></figure>
+      <figure class="work port"><button class="shot" type="button" data-cap="03 · The pit in haze · 2026 · 22:31:19 · 1/100 s · f/1.6 · ISO 250 · IMG_0513" aria-label="Look closer at 03, The pit in haze"><img src="images/frame-05.jpg" alt="Haze over the stage, the end of the band name on the backdrop, the crowd in silhouette below" width="1282" height="1882"></button>
+        <figcaption class="label"><span class="no">03</span><h3>The pit in haze</h3><span class="meta">IMG_0513 · 2026 · 22:31:19 · 1/100 s · f/1.6 · ISO 250</span></figcaption></figure>
+    </div>
+    <div class="hang pl">
+      <figure class="work port"><button class="shot" type="button" data-cap="04 · Front row · During Pagan Ulver · 2025 · 20:43:56 · 1/200 s · f/2.2 · ISO 8000 · IMG_9291" aria-label="Look closer at 04, Front row"><img src="images/frame-25-9291.jpg" alt="Raised hands and faces pressed at the front barrier, bright screens behind" width="1282" height="1882" loading="lazy"></button>
+        <figcaption class="label"><span class="no">04</span><h3>Front row</h3><span class="who">During Pagan Ulver</span><span class="meta">IMG_9291 · 2025 · 20:43:56 · 1/200 s · f/2.2 · ISO 8000</span></figcaption></figure>
+      <figure class="work land"><button class="shot" type="button" data-cap="05 · Into the light · 2025 · 20:22:27 · 1/200 s · f/2.2 · ISO 3200 · IMG_9271" aria-label="Look closer at 05, Into the light"><img src="images/frame-25-9271.jpg" alt="A crowd in silhouette facing a bright stage, one arm raised" width="1882" height="1282" loading="lazy"></button>
+        <figcaption class="label"><span class="no">05</span><h3>Into the light</h3><span class="meta">IMG_9271 · 2025 · 20:22:27 · 1/200 s · f/2.2 · ISO 3200</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="room" id="room-2" aria-labelledby="r2">
+    <header class="room-head">
+      <div class="num" aria-hidden="true">II</div>
+      <div><span class="k micro">4 works</span><h2 id="r2">The stage</h2><p>Light does most of the work. The band stays small inside it.</p></div>
+    </header>
+    <div class="hang pl">
+      <figure class="work port"><button class="shot" type="button" data-cap="06 · Stage right · 2026 · 22:31:14 · 1/100 s · f/1.6 · ISO 400 · IMG_0512" aria-label="Look closer at 06, Stage right"><img src="images/frame-04.jpg" alt="Tall view of the stage: singer at centre, guitarist headbanging on the right, beams cutting through haze" width="1282" height="1882"></button>
+        <figcaption class="label"><span class="no">06</span><h3>Stage right</h3><span class="meta">IMG_0512 · 2026 · 22:31:14 · 1/100 s · f/1.6 · ISO 400</span></figcaption></figure>
+      <figure class="work land"><button class="shot" type="button" data-cap="07 · Fan of light · 2026 · 22:51:29 · 1/60 s · f/2 · ISO 100 · IMG_0553" aria-label="Look closer at 07, Fan of light"><img src="images/frame-07.jpg" alt="Light beams fanning out over the drum riser, the band small against the glowing backdrop" width="1882" height="1282"></button>
+        <figcaption class="label"><span class="no">07</span><h3>Fan of light</h3><span class="meta">IMG_0553 · 2026 · 22:51:29 · 1/60 s · f/2 · ISO 100</span></figcaption></figure>
+    </div>
+    <div class="hang pp">
+      <figure class="work port"><button class="shot" type="button" data-cap="08 · Centre stage · Pagan Ulver · 2025 · 20:47:19 · 1/200 s · f/2.2 · ISO 1250 · IMG_9297" aria-label="Look closer at 08, Centre stage"><img src="images/frame-25-9297.jpg" alt="The Pagan Ulver singer at the microphone stand, drummer and keyboard player behind in haze" width="1282" height="1882" loading="lazy"></button>
+        <figcaption class="label"><span class="no">08</span><h3>Centre stage</h3><span class="who">Pagan Ulver</span><span class="meta">IMG_9297 · 2025 · 20:47:19 · 1/200 s · f/2.2 · ISO 1250</span></figcaption></figure>
+      <figure class="work port"><button class="shot" type="button" data-cap="09 · Flare · Pagan Ulver · 2025 · 20:43:06 · 1/200 s · f/2.2 · ISO 1600 · IMG_9287" aria-label="Look closer at 09, Flare"><img src="images/frame-25-9287.jpg" alt="The Pagan Ulver singer in face paint under a burst of stage light, a photographer kneeling below" width="1282" height="1882" loading="lazy"></button>
+        <figcaption class="label"><span class="no">09</span><h3>Flare</h3><span class="who">Pagan Ulver</span><span class="meta">IMG_9287 · 2025 · 20:43:06 · 1/200 s · f/2.2 · ISO 1600</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="room" id="room-3" aria-labelledby="r3">
+    <header class="room-head">
+      <div class="num" aria-hidden="true">III</div>
+      <div><span class="k micro">4 works</span><h2 id="r3">The look</h2><p>A giant eye on the screen, a crowd under it. The connection, made literal.</p></div>
+    </header>
+    <div class="hang pl">
+      <figure class="work port"><button class="shot" type="button" data-cap="10 · Between heads · Pagan Ulver · 2025 · 20:47:26 · 1/200 s · f/2.2 · ISO 800 · IMG_9298" aria-label="Look closer at 10, Between heads"><img src="images/frame-25-9298.jpg" alt="The Pagan Ulver singer seen between the dark heads of the crowd" width="1282" height="1882" loading="lazy"></button>
+        <figcaption class="label"><span class="no">10</span><h3>Between heads</h3><span class="who">Pagan Ulver</span><span class="meta">IMG_9298 · 2025 · 20:47:26 · 1/200 s · f/2.2 · ISO 800</span></figcaption></figure>
+      <figure class="work land"><button class="shot" type="button" data-cap="11 · At the rail · 2025 · 23:00:05 · 1/200 s · f/1.8 · ISO 10000 · IMG_9436" aria-label="Look closer at 11, At the rail"><img src="images/frame-25-9436.jpg" alt="Spectators leaning on the barrier, all facing the same way" width="1882" height="1282" loading="lazy"></button>
+        <figcaption class="label"><span class="no">11</span><h3>At the rail</h3><span class="meta">IMG_9436 · 2025 · 23:00:05 · 1/200 s · f/1.8 · ISO 10000</span></figcaption></figure>
+    </div>
+    <div class="hang centre">
+      <figure class="work land"><button class="shot" type="button" data-cap="12 · The eye watches back · 2026 · 22:56:58 · 1/60 s · f/1.8 · ISO 250 · IMG_0565" aria-label="Look closer at 12, The eye watches back"><img src="images/frame-01.jpg" alt="A giant projected eye on the left screen, the singer raising a fist at centre stage" width="1882" height="1282"></button>
+        <figcaption class="label"><span class="no">12 · Centrepiece</span><h3>The eye watches back</h3><span class="meta">IMG_0565 · 2026 · 22:56:58 · 1/60 s · f/1.8 · ISO 250</span></figcaption></figure>
+    </div>
+    <div class="hang coda">
+      <p class="coda-text glow" aria-hidden="true">eye<br>to eye</p>
+      <figure class="work port"><button class="shot" type="button" data-cap="13 · One arm up · 2026 · 22:57:07 · 1/60 s · f/1.8 · ISO 320 · IMG_0567" aria-label="Look closer at 13, One arm up"><img src="images/frame-09.jpg" alt="The projected eye on the left, the singer under the lights, one fan's arm raised" width="1282" height="1882"></button>
+        <figcaption class="label"><span class="no">13</span><h3>One arm up</h3><span class="meta">IMG_0567 · 2026 · 22:57:07 · 1/60 s · f/1.8 · ISO 320</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="study" id="study" aria-labelledby="study-title">
+    <h2 id="study-title">Study wall</h2>
+    <p>The rest of the roll. Each one sits seconds away from a hung work and lost the edit to its twin.</p>
+    <div class="strip">
+      <figure><button class="shot" type="button" data-cap="Study · IMG_0415 · Suicide Machine · 2026 · 20:53:54 · twin of 02" aria-label="Look closer at IMG_0415"><img src="images/frame-11.jpg" alt="Suicide Machine on stage, arms and horns raised across the crowd, the band's logo on the screen" width="1882" height="1282"></button><figcaption class="micro">IMG_0415 · twin of 02</figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="Study · IMG_0552 · 2026 · 22:51:19 · twin of 07" aria-label="Look closer at IMG_0552"><img src="images/frame-06.jpg" alt="Band in silhouette against a bright screen, light beams crossing the whole stage" width="1882" height="1282"></button><figcaption class="micro">IMG_0552 · twin of 07</figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="Study · IMG_0566 · 2026 · 22:57:02 · twin of 13" aria-label="Look closer at IMG_0566"><img src="images/frame-08.jpg" alt="The projected eye at the frame's edge, a guitarist bent over his instrument under rows of lights" width="1282" height="1882"></button><figcaption class="micro">IMG_0566 · twin of 13</figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="Study · IMG_0568 · 2026 · 22:57:11 · twin of 12" aria-label="Look closer at IMG_0568"><img src="images/frame-10.jpg" alt="The projected eye filling the left side, the singer at centre, horns up in the crowd" width="1882" height="1282"></button><figcaption class="micro">IMG_0568 · twin of 12</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="outro glow-soft">
+    <p>Lights down</p>
+    <div class="micro"><time datetime="2026-09-19T22:57:11">22:57:11</time></div>
+    <div class="globe micro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" aria-hidden="true"> <g> <g> <g> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c1.70282-0.02182,3.40625-0.020142,5.10968-0.017639c156.480591-0.427734,296.404907,72.25061,387.096313,186.108093 c34.069702,42.722351,61.185303,91.258362,79.622925,143.927551c13.011841,37.16925,21.720947,76.40448,25.479858,117.099426 c1.067627,11.413757,1.734131,22.927856,1.977417,34.565247c0.069336,1.725525,0.091064,3.452454,0.112671,5.179382 c1.861084,146.382751-60.244263,278.673157-160.390381,370.278992 c-84.991821,77.76123-197.397705,126.202515-321.363403,129.008545c-1.702881,0.044434-3.405762,0.090332-5.109131,0.112061"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c1.70282-0.02182,3.40625-0.020142,5.10968-0.017639c61.28418,0.42691,119.485474,22.590454,171.456299,59.075317 l0.02356-0.000854c51.852051,36.416077,97.520142,87.035706,133.858765,144.539795 c29.650146,46.895264,53.112061,98.364502,68.679443,150.407166c3.310669,11.078552,6.267334,22.160767,8.845093,33.224487 c2.827515,12.149048,5.230103,24.279358,7.133423,36.321594c3.472046,21.840881,5.403076,43.4646,5.670898,64.566345 c0.108154,8.492493-0.041992,17.106628-0.476929,25.771118c-2.755737,56.795105-16.664429,116.641663-39.571655,173.928528 l-0.023438,0.000854c-27.539429,68.939453-68.115234,134.164429-117.828247,185.97229l-0.023438,0.000488 c-62.952637,65.580322-140.612183,109.604614-225.208374,112.360107c-1.702881,0.044434-3.405762,0.090332-5.109131,0.112061"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c45.300476-0.575653,88.558777,24.237122,127.46283,63.870178c38.974609,39.701843,73.573486,94.317993,101.507324,153.207092 c17.771851,37.487671,32.820312,76.689941,44.568115,114.893005c3.800537,12.372986,7.268799,24.632141,10.356445,36.706787 l0.023438-0.000793c0.349243,1.439514,0.723022,2.877625,1.072144,4.292786 c10.718506,42.85321,16.741821,83.04541,17.166016,116.401001c0.179199,14.09906-0.619263,29.440552-2.306274,45.691895 c-5.356812,51.315308-19.752808,111.877563-41.232788,171.678711c-22.875,63.604248-53.782104,126.34021-90.435303,176.207642 l-0.024292,0.000854c-44.514648,60.590454-97.503418,102.218872-154.864868,103.278687 c-0.259766,0.027466-0.495728,0.029907-0.756836,0.033813"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c28.742126-0.365143,56.403992,26.041992,81.556702,67.102844c25.755493,42.070984,48.915039,99.530029,67.94104,159.360474 c6.28418,19.769836,12.123047,39.783447,17.437134,59.589661c3.202393,11.812988,6.190796,23.557495,8.988159,35.115234h0.023438 c5.518433,22.784729,10.317871,44.869141,14.295898,65.545105c8.284546,43.144226,12.988892,80.088379,13.292236,103.90979 c0.192627,15.139587-1.251099,35.599976-4.186646,59.628784c-5.697632,46.89502-17.043213,107.371216-32.829956,168.282959 c-15.62915,60.36499-35.653931,121.141113-58.88855,169.489014c-27.567627,57.34729-59.640625,97.21936-94.33667,98.203979 c-0.259766,0.027466-0.495728,0.029907-0.756836,0.033813"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1025.13623,1492.934692 c0.261108-0.003906,0.49707-0.006348,0.756836-0.033813c15.929321-1.408936,30.483521-40.159424,43.076172-95.564819 c10.777832-47.38562,20.099854-106.984253,27.634521-165.708984c7.813721-60.927979,13.651733-120.956299,17.154785-165.552002 c2.565063-32.706787,3.863037-57.140381,3.731445-67.525085c-0.1698-13.317871-3.255615-49.525696-8.634888-96.658264 c-3.780029-33.123535-8.694336-71.64978-14.49939-111.39502c-1.605225-10.911072-3.283203-21.914429-5.008789-32.941528 c-0.978149-6.281128-1.980713-12.561401-3.007324-18.842773l-0.023438,0.000549 c-9.877563-60.443237-21.607788-119.585083-34.415527-163.027588c-12.338501-41.886108-25.674316-69.185669-39.300354-69.012329" /> <polyline fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" points="1012.600281,506.673035 1013.488159,576.551758 1015.452698,731.096313 1015.577393,740.93689 1015.84552,762.014038 1017.666626,905.29834 1019.756714,1069.683472 1021.846252,1234.068604 1023.935486,1398.429443 1025.13623,1492.934692 "/> </g> <g> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c-1.70343,0.02179-3.406311,0.066254-5.109192,0.112091c-79.757385,1.794281-154.708923,22.50296-220.649902,57.742828 c-38.117798,20.3349-73.192749,45.528442-104.477295,74.767639c-8.4646,7.867371-16.618286,16.03949-24.46051,24.514404 c-83.44519,89.572021-133.844543,210.167419-132.166016,342.261841c0.76825,60.440979,12.386414,118.212341,32.960876,171.468933 c29.064148,75.24707,76.042114,141.488647,135.641357,193.586914 c87.089966,76.189209,201.145935,122.153442,325.68689,121.824707c1.70343,0.001709,3.40686,0.003296,5.109741-0.0177"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1025.13623,1492.934692 c-0.922607,0.011475-1.845154,0.022949-2.744263,0.01123c-0.780029,0.009521-1.585205-0.003906-2.365479,0.00647 c-84.92218-0.60083-163.916321-42.94104-228.639221-107.253784c-50.99176-50.669922-93.118347-114.937744-122.283447-183.204712 c-24.28656-56.757935-39.640076-116.233032-43.673401-172.917358l0.000244-0.024292 c-0.602722-8.320374-0.96814-16.572998-1.071594-24.734253c-0.555481-43.668152,5.957642-89.721863,18.482727-135.496826 c14.334412-52.375916,36.529541-104.354858,65.002197-151.917114l0.024292-0.000854 c7.737671-12.945251,15.953186-25.565613,24.599426-37.765808c6.112854-8.619202,12.464417-17.052185,19.008057-25.25 c25.874573-32.435547,54.988525-61.221008,86.631714-84.572998h0.024048 c50.887512-37.555603,108.318604-61.046814,169.359558-63.029266c1.702881-0.045837,3.405762-0.090302,5.109192-0.112091"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1025.13623,1492.934692 c-0.922607,0.011475-1.845154,0.022949-2.744263,0.01123c-0.023193-0.000244-0.046692,0.00061-0.071045,0.00061 c-56.719604-0.604248-110.157593-40.808472-155.718445-99.757324 c-37.887146-49.014648-70.355713-111.039673-94.769226-174.067017l-0.023438,0.00061 c-22.970703-59.329956-38.854492-119.531372-45.44342-170.670776c-2.047852-15.944458-3.18573-31.001648-3.362427-44.887939 c-0.426025-33.520508,4.641724-74.090149,14.35907-117.463623c11.396118-50.846985,29.20282-105.538818,52.112244-157.124146 c4.73877-10.682983,9.714844-21.228088,14.88324-31.585388c4.475952-8.953491,9.09613-17.765869,13.860291-26.367432 c20.445312-36.979675,43.607788-70.539612,68.863892-97.54895l0.023499-0.000854 c37.767517-40.440796,80.288025-66.226166,125.49408-66.800659"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1012.600281,506.673035 c-28.694336,0.364563-55.631531,27.371399-79.708496,68.96344c-18.127075,31.319763-34.659241,70.922913-49.068848,113.645813 c-3.078613,9.10144-6.060547,18.319458-8.946533,27.654297c-2.000366,6.484375-3.952026,13.015442-5.856201,19.569946 c-16.026123,55.117981-28.550903,112.131714-36.681946,161.139099c-7.230774,43.555481-11.016479,80.749268-10.712585,104.665466 c0.190674,15.021301,2.127808,35.273132,5.600647,59.006531c6.86261,46.71228,19.718445,106.927734,37.049866,167.489746 c17.15863,59.971924,38.72168,120.266602,63.179077,168.079956c28.77594,56.299438,61.61377,95.251465,96.048523,96.044312 c0.544922,0.016479,1.088989,0.009521,1.632446,0.003052"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1025.13623,1492.934692 c-16.227966,0.206055-32.052551-38.584106-46.273438-94.571533c-11.979919-47.143433-22.812744-106.486328-31.814636-165.023926 l-0.023193-0.000244c-9.337402-60.757568-16.723389-120.640747-21.334595-165.110107 c-3.394043-32.512451-5.31189-56.810791-5.442993-67.171692c-0.169678-13.318176,2.017395-49.711304,6.195007-97.059998 c4.222107-47.562561,10.456543-106.198914,18.384888-163.675049c0.086914-0.640198,0.17334-1.279297,0.260254-1.91925 c1.365967-9.78949,2.756287-19.531128,4.194397-29.178833c7.462891-49.52063,16.140747-96.453308,25.806335-132.657227 c11.27179-42.138306,23.885986-69.72049,37.512024-69.893799"/> <polyline fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" points="1012.600281,506.673035 1013.488159,576.551758 1015.452698,731.096313 1015.577393,740.93689 1015.84552,762.014038 1017.666626,905.29834 1019.756714,1069.683472 1021.846252,1234.068604 1023.935486,1398.429443 1025.13623,1492.934692 "/> </g> <g> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M786.841187,564.527954 l0.023499-0.000793c17.061096,2.030762,34.141724,3.777832,51.242798,5.287231h0.024048 c16.320251,1.44873,32.613647,2.66095,48.951172,3.660156l0.023499-0.000854 c15.272705,0.917847,30.494751,1.647217,45.785583,2.162781h0.023254c14.060425,0.483643,28.118103,0.801758,42.173218,0.930359 c12.802673,0.144836,25.626038,0.147339,38.399902-0.015076c12.822266-0.138916,25.641724-0.443665,38.412476-0.866394 c14.095703-0.462952,28.164795-1.091736,42.232056-1.90863l0.024292-0.000854 c15.31958-0.88092,30.614136-1.950806,45.906128-3.232666c16.377808-1.368225,32.75415-2.972107,49.103149-4.8125 l0.02356-0.000854c17.152832-1.920654,34.301636-4.102722,51.424561-6.520996"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M625.902039,701.835876 c27.212036,5.829041,54.533386,11.018127,81.941956,15.568176l0.024292-0.000854 c27.124268,4.50531,54.33374,8.37146,81.606995,11.57312c26.46814,3.118042,52.998291,5.620483,79.544922,7.530212 c25.24469,1.831787,50.529663,3.096008,75.807068,3.815613c2.249146,0.065674,4.473694,0.132263,6.721985,0.15094h0.022644 c21.325378,0.556641,42.692139,0.711548,64.005493,0.463806c8.847656-0.11261,17.670288-0.271423,26.516235-0.526428h0.024048 c14.734985-0.376587,29.467529-0.942383,44.198486-1.69751l0.023438-0.000549 c25.275146-1.31488,50.544189-3.173706,75.758423-5.57605c26.537964-2.514465,53.02063-5.642578,79.472412-9.386047 c27.230469-3.847473,54.405884-8.333191,81.478149-13.480652c27.355469-5.174866,54.608032-11.009766,81.75769-17.506165"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M549.677002,847.507935 c30.907959,8.124634,61.97052,15.395142,93.164795,21.813232c31.383789,6.46228,62.898376,12.046997,94.52124,16.779297 c31.574158,4.709351,63.25708,8.565491,94.97522,11.545166c31.33905,2.961487,62.715027,5.070862,94.104126,6.351562 c30.394958,1.222534,60.826538,1.664307,91.224243,1.301147c30.422974-0.339172,60.834595-1.483154,91.188477-3.406616 c31.395264-1.98468,62.732056-4.819214,93.987549-8.505371c31.680176-3.715515,63.254639-8.304626,94.747925-13.744263 c1.959229-0.332397,3.918823-0.688599,5.878052-1.044495c16.076416-2.807129,32.125488-5.874023,48.125244-9.177185 c13.403198-2.749268,26.758057-5.663513,40.110596-8.743591h0.02356c31.06897-7.113953,61.961304-15.125061,92.701172-23.985779" /> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M1511.999146,993.535095 c-32.830566,9.99939-65.863281,19.008301-99.098633,27.025269c-33.328491,8.042664-66.812134,15.11615-100.450195,21.174622 c-33.377686,6.055298-66.886108,11.118896-100.502075,15.189941c-32.646851,3.987061-65.400879,7.029541-98.189697,9.150146 c-31.299927,2.053711-62.633667,3.256714-94.001831,3.608398c-31.368713,0.35083-62.723389-0.126099-94.066345-1.45459 c-32.857178-1.356812-65.701416-3.6604-98.46405-6.911255c-33.710083-3.285522-67.337708-7.590088-100.859924-12.865601 c-33.782532-5.296509-67.435852-11.588745-100.935974-18.875488l0.000244-0.024292 c-31.958313-6.927551-63.762024-14.780945-95.387878-23.535461"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M558.701599,1177.529053 c36.589661,9.521851,73.401306,17.833496,110.394409,24.961182h0.012878 c34.111267,6.560669,68.34137,12.097046,102.70343,16.620728c30.759766,4.057983,61.600647,7.287598,92.483398,9.703369 c27.546997,2.156616,55.138367,3.669434,82.734009,4.526001c24.930969,0.771851,49.881042,1.019653,74.824341,0.728882 c24.930481-0.291016,49.84137-1.105957,74.744934-2.446533h0.013184c27.539917-1.491821,55.058105-3.626343,82.515015-6.415894 c30.773804-3.107422,61.471802-7.04187,92.080322-11.787231c34.171143-5.302979,68.224487-11.602173,102.107056-18.935669 c36.761963-7.93396,73.325317-17.073608,109.623657-27.403809"/> <path fill="none" stroke="currentColor" stroke-width="19.569962" stroke-miterlimit="10" d="M694.336243,1371.130493 c32.237854,5.770874,64.595947,10.622803,97.047119,14.567017c25.038391,3.040649,50.12262,5.543579,75.238159,7.494507 c20.256531,1.592407,40.534363,2.831787,60.834045,3.702026c17.134888,0.753174,34.280396,1.243774,51.422302,1.472534 c15.015747,0.215576,30.041565,0.247437,45.065979,0.069824c15.023071-0.17749,30.031738-0.539551,45.024658-1.110107 l0.012817,0.000244c17.091553-0.624878,34.166626-1.497681,51.238403-2.633545 c20.205933-1.345825,40.393799-3.033081,60.552246-5.073975c24.940796-2.521973,49.835938-5.580811,74.684814-9.164307 l0.013062-0.000488c32.158813-4.647339,64.213623-10.198853,96.138916-16.641846"/> </g> </g> <g> <path fill="currentColor" d="M481.078156,610.433533c62.118683,4.699585,129.839447,14.461914,201.285736,28.862061 c-8.4646,7.867371-16.618286,16.03949-24.46051,24.514404c-60.125061-11.68042-117.417236-20.013916-170.781738-24.706482 c-171.157471-15.096008-282.853638,12.546387-316.589722,70.492249l-4.398499,7.555969l1.665131-8.585632 c0.84346-4.36438,2.06575-8.68573,3.622391-12.846008C196.113495,629.986511,305.329865,597.099365,481.078156,610.433533z"/> <path fill="currentColor" d="M1843.415283,1320.393433c-1.556396,4.160034-3.491821,8.206543-5.738525,12.044189l-4.399292,7.556763 l1.665161-8.586182c12.768555-65.817993-56.613403-157.895508-195.36438-259.264526 c-38.545044-28.137695-81.346558-56.199036-127.691772-83.787964c-0.243286-11.63739-0.90979-23.151489-1.977417-34.566101 c56.398315,33.045837,107.838013,66.840881,153.105591,100.760681c20.876709,15.634155,40.046875,31.029541,57.510498,46.115479 C1821.072021,1187.567627,1864.470825,1264.383667,1843.415283,1320.393433z"/> <path fill="currentColor" d="M1841.972412,1319.495117c-32.639893,58.578491-145.026245,84.302979-316.445679,72.446045 c-172.482666-11.934814-387.070068-60.88855-604.233459-137.846069 c-217.162842-76.954102-414.69223-174.040649-556.198975-273.373901 c-140.637833-98.7229-211.741943-189.472168-200.213837-255.532471l3.438721-14.061035l-6.198074,13.080566 c-2.172546,3.885742-4.025543,7.977844-5.510345,12.163269c-23.451523,66.179443,42.389648,159.364319,185.396591,262.388184 c142.535004,102.683899,344.813782,203.100159,569.572266,282.74823 c224.760132,79.646362,445.133301,129.005371,620.523438,138.983521c26.045654,1.48291,50.630005,2.067261,73.712524,1.773926 c132.865723-1.688843,215.55896-32.490845,235.539551-88.875244c1.4823-4.182373,2.618164-8.52832,3.379517-12.917603 l1.491455-8.610474L1841.972412,1319.495117z"/> </g> </g> </svg><span>33.57°N<br>7.59°W</span></div>
+  </div>
+
+  <footer class="foot">
+    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart">
+      <g fill="none" stroke="#eeffe5" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
+      <line x1="-88" x2="88" y1="-24" y2="-24" stroke-width="1"/><line x1="-88" x2="88" y1="24" y2="24" stroke-width="1"/></g>
+      <rect x="-78" y="-14" width="156" height="28" fill="#251726"/>
+      <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="#eeffe5" letter-spacing="1">SKIMART</text>
+    </svg>
+    <div class="legal micro">
+      <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
+      © 2025–2026 Skimart™. All rights reserved.<br>
+      Skimart™ is a trademark of Mohamed, used to identify music and visual art services.<br>
+      13 works hung, 4 on the study wall · 1882*1282 / 1282*1882 px
+    </div>
+  </footer>
+</main>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Closer look">
+  <div class="bar micro"><span id="vcap"></span><div class="ctrls">
+    <button type="button" id="vprev" aria-label="Previous work">Prev</button>
+    <button type="button" id="vnext" aria-label="Next work">Next</button>
+    <button type="button" id="vclose">Close</button></div></div>
+  <div class="stage"><img id="vimg" alt=""></div>
+</div>
+
+<script>
+(function(){
+  /* warped wireframe grid (Skimart kit) */
+  function rng(s){ return function(){ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
+  function warp(svg){
+    var r=svg.getBoundingClientRect(), w=r.width||300, h=r.height||400;
+    var cols=+svg.dataset.cols||9, rows=+svg.dataset.rows||11, amp=+svg.dataset.amp||30, R=rng(+svg.dataset.seed||1);
+    var p1=R()*6,p2=R()*6,f1=1.5+R()*2,f2=1.5+R()*2,cx=.3+R()*.4,cy=.3+R()*.4;
+    function d(u,v){ var dx=Math.sin(v*f1*Math.PI+p1)*amp+Math.sin((u+v)*5+p2)*amp*.25, dy=Math.sin(u*f2*Math.PI+p2)*amp+Math.cos((u-v)*4+p1)*amp*.25;
+      var bx=u-cx,by=v-cy,k=Math.exp(-(bx*bx+by*by)*9)*amp*1.4; return [u*w+dx+bx*k, v*h+dy+by*k]; }
+    var out='';
+    function line(fn){ var s=''; for(var i=0;i<=60;i++){ var p=fn(i/60); s+=(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1); } out+='<path d="'+s+'"/>'; }
+    for(var c=0;c<=cols;c++) line(function(t){ return d(c/cols,t); });
+    for(var q=0;q<=rows;q++) line(function(t){ return d(t,q/rows); });
+    svg.setAttribute('viewBox','0 0 '+w+' '+h);
+    svg.innerHTML='<g fill="none" stroke="#337aff" stroke-width="1.6" stroke-linecap="round" opacity=".85">'+out+'</g>';
+  }
+  var grids=[].slice.call(document.querySelectorAll('[data-warpgrid]'));
+  function drawAll(){ grids.forEach(warp); }
+  drawAll(); var t; window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(drawAll,150); });
+
+  /* closer look: walks the hang in order (01–07), then the study wall; #01…#07 or #IMG_xxxx opens a work */
+  var shots=[].slice.call(document.querySelectorAll('.shot'));
+  var v=document.getElementById('viewer'), img=document.getElementById('vimg'), cap=document.getElementById('vcap'), main=document.querySelector('main');
+  var cur=0, opener=null, n=shots.length, x0=null;
+  function key(i){ var c=shots[i].dataset.cap; return c.indexOf('Study')===0 ? c.split(' · ')[1] : c.split(' · ')[0]; }
+  function show(i){ cur=(i+n)%n; var s=shots[cur].querySelector('img'); img.src=s.src; img.alt=s.alt; cap.textContent=shots[cur].dataset.cap;
+    [cur+1,cur-1].forEach(function(k){ new Image().src=shots[(k+n)%n].querySelector('img').src; });
+    try{ history.replaceState(null,'','#'+key(cur)); }catch(e){} }
+  function open(i,b){ opener=b; show(i); v.hidden=false; main.inert=true;
+    document.documentElement.style.overflow=document.body.style.overflow='hidden'; document.getElementById('vclose').focus(); }
+  function close(){ v.hidden=true; main.inert=false; document.documentElement.style.overflow=document.body.style.overflow='';
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} if(opener) opener.focus(); }
+  shots.forEach(function(b,i){ b.addEventListener('click',function(){ open(i,b); }); });
+  document.getElementById('vprev').onclick=function(){ show(cur-1); };
+  document.getElementById('vnext').onclick=function(){ show(cur+1); };
+  document.getElementById('vclose').onclick=close;
+  v.addEventListener('click',function(e){ if(e.target===v||e.target.classList.contains('stage')) close(); });
+  img.addEventListener('click',function(e){ var r=img.getBoundingClientRect(); show(cur+(e.clientX<r.left+r.width/2?-1:1)); });
+  img.addEventListener('pointerdown',function(e){ x0=e.clientX; });
+  img.addEventListener('pointerup',function(e){ if(x0===null) return; var dx=e.clientX-x0; x0=null;
+    if(Math.abs(dx)>40){ show(cur+(dx<0?1:-1)); img.addEventListener('click',function(ev){ ev.stopImmediatePropagation(); },{capture:true,once:true}); } });
+  document.addEventListener('keydown',function(e){ if(v.hidden) return;
+    if(e.key==='Escape') close(); else if(e.key==='ArrowRight') show(cur+1); else if(e.key==='ArrowLeft') show(cur-1);
+    else if(e.key==='Tab'){ var f=[].slice.call(v.querySelectorAll('button')), first=f[0], last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); } } });
+  var h=location.hash.slice(1); if(h){ var k=shots.findIndex(function(s,i){ return key(i)===h; }); if(k>=0) open(k,shots[k]); }
+})();
+</script>
