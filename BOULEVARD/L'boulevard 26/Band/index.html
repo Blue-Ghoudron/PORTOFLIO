@@ -157,16 +157,18 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .legal b { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; }
 
 /* ---------- closer look ---------- */
-.viewer { position: fixed; inset: 0; z-index: 60; background: rgba(28,17,29,.97); display: grid; grid-template-rows: auto 1fr;
+.viewer { position: fixed; inset: 0; z-index: 60; background: #1c111d; display: grid; grid-template-rows: auto auto 1fr;
   padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .viewer[hidden] { display: none; }
-.bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; color: var(--ink-dim); }
-#vcap { text-transform: none; letter-spacing: .06em; flex: 1 1 0; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; color: var(--ink-dim); }
+#vcap { margin: 14px 0 0; color: var(--ink-dim); text-transform: none; letter-spacing: .06em; line-height: 1.6; min-width: 0; }
 .bar .ctrls { display: flex; gap: 8px; }
 .bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
-.bar button:hover { border-color: var(--blue); }
+.bar button { transition: background-color .15s, border-color .15s; }
+.bar button:hover, .bar button:active { background: var(--blue); border-color: var(--blue); color: var(--ink); }
 .bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 12px; }
+.stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 8px; }
+@media (max-width: 860px) { .stage { align-items: flex-start; } }  /* phones: the print sits right under its caption */
 .stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 
 @media (max-width: 860px) {
@@ -331,10 +333,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 </main>
 
 <div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Closer look">
-  <div class="bar micro"><span id="vcap"></span><div class="ctrls">
+  <div class="bar micro"><div class="ctrls">
     <button type="button" id="vprev" aria-label="Previous work">Prev</button>
     <button type="button" id="vnext" aria-label="Next work">Next</button>
     <button type="button" id="vclose">Close</button></div></div>
+  <p class="micro" id="vcap" aria-live="polite"></p>
   <div class="stage"><img id="vimg" alt=""></div>
 </div>
 
