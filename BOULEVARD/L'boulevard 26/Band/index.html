@@ -116,13 +116,19 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .room-head p { grid-area: text; margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
 /* each pair shares two rows (photo, label) so both photos end on one line and both labels start on one line,
    whatever each label holds (an act name adds a line) */
-.hang { margin-top: clamp(32px, 4.4vw, 60px); display: grid; column-gap: clamp(20px, 3vw, 44px); row-gap: 0; grid-template-rows: auto auto; }
+.hang { margin-top: clamp(32px, 4.4vw, 60px); display: grid; column-gap: var(--gap); row-gap: 0; grid-template-rows: auto auto; }
 .hang .work { grid-row: span 2; display: grid; grid-template-rows: subgrid; row-gap: 0; }
 .hang .work > .shot { align-self: end; }
 .hang .work > .label { align-self: start; }
-.hang.lp { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); }
-.hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); }
+/* a portrait (1282x1882) beside a landscape (1882x1282) is the same height when the landscape column is
+   (1882/1282)^2 = 2.155 times wider: both prints start and end on one line, no empty wall above the landscape.
+   Each pair is also capped so a whole print fits the window (portrait height <= 100svh - 260px, room for the room heading above it). */
+.hang { --gap: clamp(20px, 3vw, 44px); --ph: calc((100svh - 260px) / 1.468); }
+.hang.lp { grid-template-columns: minmax(0, 2.155fr) minmax(0, 1fr); }
+.hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 2.155fr); }
 .hang.pp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hang.lp, .hang.pl { max-width: calc(var(--ph) * 3.155 + var(--gap)); margin-inline: auto; }
+.hang.pp { max-width: calc(var(--ph) * 2 + var(--gap)); margin-inline: auto; }
 
 /* ---------- study wall ---------- */
 .study { position: relative; margin-top: clamp(64px, 8vw, 120px); padding-top: clamp(20px, 3vw, 32px); border-top: 1px solid var(--ink-faint); }
@@ -165,7 +171,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .name { font-size: clamp(64px, 17.6vw, 244px); }
   .lead { margin: 18px 9% 0 7%; }
   .lead .tag { left: -4px; }
-  .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); row-gap: clamp(20px, 3vw, 44px); }
+  .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); row-gap: clamp(20px, 3vw, 44px); max-width: none; }
   .hang .work { display: block; grid-row: auto; }
   .hang .work.port { width: min(100%, 420px); }
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
