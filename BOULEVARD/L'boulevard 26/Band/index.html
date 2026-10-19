@@ -48,7 +48,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name name" "text photo";
   column-gap: clamp(16px, 3vw, 40px); padding-top: clamp(28px, 3.4vw, 48px); }
 .name { grid-area: name; position: relative; margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase;
-  font-size: clamp(64px, 17.6vw, 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
+  font-size: clamp(64px, min(17.6vw, 22svh), 244px); line-height: .84; letter-spacing: -.005em; white-space: nowrap; }
 .name .sub { display: block; margin-top: .14em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .16em; line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; white-space: normal; }
 .spark { position: absolute; z-index: 4; width: clamp(40px, 5.2vw, 72px); left: -.07em; top: -.12em; color: var(--ink); filter: drop-shadow(0 0 6px var(--ink)); }
 .lead { grid-area: photo; position: relative; z-index: 51; margin: clamp(-170px, -12vw, -40px) 0 0; align-self: start; }
@@ -56,7 +56,9 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .lead .panel svg { width: 100%; height: 100%; display: block; transform: skew(8deg) scale(1.15); }
 .lead .tag { position: absolute; left: -12px; bottom: 18%; background: var(--ink); color: var(--wall); padding: 4px 9px; transform: rotate(-90deg); transform-origin: left bottom; font-weight: 700; white-space: nowrap; }
 .lead .label { margin-top: 16px; }
-.intro { grid-area: text; padding-top: clamp(40px, 5vw, 72px); display: grid; gap: 22px; align-content: start; }
+/* keep the whole entrance on the first screen: the portrait's width follows the screen height */
+@media (min-width: 861px) { .lead { justify-self: end; width: min(100%, calc((100svh - 160px) * .55)); } }
+.intro { grid-area: text; padding-top: clamp(24px, min(5vw, 5svh), 72px); display: grid; gap: 22px; align-content: start; }
 .byline { margin: 0; display: grid; gap: 4px; font-size: 16px; color: var(--ink-dim); }
 .byline strong { color: var(--ink); font-weight: 700; font-size: 18px; }
 .byline b { color: var(--blue-text); font-weight: 700; }
