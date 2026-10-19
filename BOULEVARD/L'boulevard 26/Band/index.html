@@ -136,7 +136,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .viewer[hidden] { display: none; }
 .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; color: var(--ink-dim); }
-#vcap { text-transform: none; letter-spacing: .06em; }
+#vcap { text-transform: none; letter-spacing: .06em; flex: 1 1 0; min-width: 0; }
 .bar .ctrls { display: flex; gap: 8px; }
 .bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
 .bar button:hover { border-color: var(--blue); }
@@ -325,6 +325,9 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   document.getElementById('vnext').onclick=function(){ show(cur+1); };
   document.getElementById('vclose').onclick=close;
   v.addEventListener('click',function(e){ if(e.target===v||e.target.classList.contains('stage')) close(); });
+  /* caption starts where the photo starts; photos differ in width, so re-measure on load and whenever the photo's box changes */
+  function alignCap(){ if(v.hidden) return; cap.style.paddingLeft=Math.max(0, img.getBoundingClientRect().left-cap.getBoundingClientRect().left)+'px'; }
+  img.addEventListener('load',alignCap); new ResizeObserver(alignCap).observe(img);
   img.addEventListener('click',function(e){ var r=img.getBoundingClientRect(); show(cur+(e.clientX<r.left+r.width/2?-1:1)); });
   img.addEventListener('pointerdown',function(e){ x0=e.clientX; });
   img.addEventListener('pointerup',function(e){ if(x0===null) return; var dx=e.clientX-x0; x0=null;
