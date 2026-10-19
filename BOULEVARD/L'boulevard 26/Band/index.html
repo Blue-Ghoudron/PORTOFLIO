@@ -96,6 +96,13 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     var(--c) 0 100% / var(--l) 3px, var(--c) 0 100% / 3px var(--l), var(--c) 100% 100% / var(--l) 3px, var(--c) 100% 100% / 3px var(--l);
   background-repeat: no-repeat; filter: drop-shadow(0 0 6px var(--blue)); opacity: 0; transform: scale(1.05); transition: opacity .18s, transform .18s; }
 .shot:hover::after, .shot:focus-visible::after { opacity: 1; transform: none; }
+/* the cream mat is printed into every file, 41px wide: 41/1882 of a landscape's width, 41/1282 of a portrait's.
+   Padding % follows the width on all four sides, so this ring sits exactly on the mat and turns it blue */
+.shot::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; padding: 2.19%; background: var(--blue);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); opacity: 0; transition: opacity .2s; }
+.shot:has(img[width="1282"])::before { padding: 3.21%; }
+.shot:hover::before, .shot:focus-visible::before, .shot:active::before { opacity: 1; }
 @media (hover: none) { .shot:active::after { opacity: 1; transform: none; } }
 .work { position: relative; z-index: 51; margin: 0; min-width: 0; }
 .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }
@@ -168,7 +175,9 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .bar button:hover, .bar button:active { background: var(--blue); border-color: var(--blue); color: var(--ink); }
 .bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 8px; }
-@media (max-width: 860px) { .stage { align-items: flex-start; } }  /* phones: the print sits right under its caption */
+/* phones: caption and print sit together in the middle of the screen */
+@media (max-width: 860px) { .viewer { grid-template-rows: auto 1fr auto auto 1fr; } #vcap { grid-row: 3; } .stage { grid-row: 4; }
+  .stage img { max-height: calc(100svh - 230px); } }
 .stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 
 @media (max-width: 860px) {
@@ -199,7 +208,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .outro .globe svg { width: 64px; }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .shot, .shot img, .shot::after { transition: none; } .shot:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .shot, .shot img, .shot::before, .shot::after { transition: none; } .shot:hover { transform: none; } }
 </style>
 
 <main class="wrap">
