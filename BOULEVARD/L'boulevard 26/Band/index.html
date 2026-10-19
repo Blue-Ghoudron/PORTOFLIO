@@ -83,7 +83,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 /* ---------- rooms ---------- */
 .room { margin-top: clamp(64px, 8vw, 120px); }
-.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: end; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
+.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: center; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
 .room-head .num { font-family: var(--f-mono); font-weight: 700; font-size: clamp(64px, 8vw, 120px); line-height: .8; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
 .room-head h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(40px, 6vw, 84px); line-height: .9; }
 .room-head p { margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
@@ -92,10 +92,6 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .hang.lp { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); }
 .hang.pl { grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr); }
 .hang.pp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.hang.centre { grid-template-columns: minmax(0, 1fr); }
-.hang.centre .label { grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 4px 18px; }
-.hang.coda { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
-.coda-text { font-family: var(--f-script); font-size: clamp(44px, 6vw, 88px); line-height: 1.05; color: var(--blue); transform: rotate(-4deg); text-align: center; }
 
 /* ---------- study wall ---------- */
 .study { margin-top: clamp(64px, 8vw, 120px); padding-top: clamp(20px, 3vw, 32px); border-top: 1px solid var(--ink-faint); }
@@ -132,10 +128,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "photo" "text"; }
   .lead { margin: 18px 9% 0 7%; }
   .lead .tag { left: -4px; }
-    .hang.lp, .hang.pl, .hang.pp, .hang.coda { grid-template-columns: minmax(0, 1fr); }
+    .hang.lp, .hang.pl, .hang.pp { grid-template-columns: minmax(0, 1fr); }
   .hang .work.port { width: min(100%, 420px); }
-  .hang.centre .label { grid-template-columns: minmax(0, 1fr); }
-  .coda-text { order: 2; }
   .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
@@ -223,12 +217,9 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
       <figure class="work land"><button class="shot" type="button" data-cap="11 · At the rail · 2025 · 23:00:05 · 1/200 s · f/1.8 · ISO 10000 · IMG_9436" aria-label="Look closer at 11, At the rail"><img src="images/frame-25-9436.jpg" alt="Spectators leaning on the barrier, all facing the same way" width="1882" height="1282" loading="lazy"></button>
         <figcaption class="label"><span class="no">11</span><h3>At the rail</h3><span class="meta">IMG_9436 · 2025 · 23:00:05 · 1/200 s · f/1.8 · ISO 10000</span></figcaption></figure>
     </div>
-    <div class="hang centre">
+    <div class="hang lp">
       <figure class="work land"><button class="shot" type="button" data-cap="12 · The eye watches back · 2026 · 22:56:58 · 1/60 s · f/1.8 · ISO 250 · IMG_0565" aria-label="Look closer at 12, The eye watches back"><img src="images/frame-01.jpg" alt="A giant projected eye on the left screen, the singer raising a fist at centre stage" width="1882" height="1282"></button>
         <figcaption class="label"><span class="no">12 · Centrepiece</span><h3>The eye watches back</h3><span class="meta">IMG_0565 · 2026 · 22:56:58 · 1/60 s · f/1.8 · ISO 250</span></figcaption></figure>
-    </div>
-    <div class="hang coda">
-      <p class="coda-text glow" aria-hidden="true">eye<br>to eye</p>
       <figure class="work port"><button class="shot" type="button" data-cap="13 · One arm up · 2026 · 22:57:07 · 1/60 s · f/1.8 · ISO 320 · IMG_0567" aria-label="Look closer at 13, One arm up"><img src="images/frame-09.jpg" alt="The projected eye on the left, the singer under the lights, one fan's arm raised" width="1282" height="1882"></button>
         <figcaption class="label"><span class="no">13</span><h3>One arm up</h3><span class="meta">IMG_0567 · 2026 · 22:57:07 · 1/60 s · f/1.8 · ISO 320</span></figcaption></figure>
     </div>
