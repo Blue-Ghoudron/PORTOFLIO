@@ -104,9 +104,18 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .y2k { position: absolute; z-index: 52; pointer-events: none; height: auto; overflow: visible; }
 .y2k[data-sparkle] { color: var(--ink); filter: drop-shadow(0 0 6px rgba(238,255,229,.7)); }
 .y2k[data-globe], .y2k[data-reticle] { color: var(--blue); }
-.y2k[data-qr] { color: var(--ink-dim); }
-@media (max-width: 860px) { .y2k.wide { display: none; } }
-.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px clamp(18px, 2.6vw, 36px); align-items: start; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
+/* QR tag naming each section (decoration only, not scannable) */
+.qrtag { display: grid; justify-items: center; gap: 6px; color: var(--ink-dim); }
+.qrtag svg { display: block; width: clamp(48px, 5vw, 80px); height: auto; }
+.qrtag span { font-size: 10px; letter-spacing: .14em; white-space: nowrap; }
+.study > .qrtag { float: right; margin: 0 0 12px 16px; }
+@media (max-width: 860px) { .y2k.wide { display: none; }
+  /* phones: the QR tag sits under the numeral so the heading keeps its width */
+  .room-head { grid-template-columns: auto minmax(0, 1fr); }
+  .room-head > div { grid-column: 2; grid-row: 1 / span 2; }
+  .room-head > .num { grid-column: 1; grid-row: 1; }
+  .room-head .qrtag { grid-column: 1; grid-row: 2; justify-self: start; margin-top: 10px; } }
+.room-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px clamp(18px, 2.6vw, 36px); align-items: start; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
 .room-head .num { font-family: var(--f-mono); font-weight: 700; font-size: clamp(64px, 8vw, 120px); line-height: .8; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
 .room-head h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(40px, 6vw, 84px); line-height: .9; }
 .room-head p { margin: 10px 0 0; max-width: 46ch; color: var(--ink-dim); }
@@ -119,7 +128,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .study { position: relative; margin-top: clamp(64px, 8vw, 120px); padding-top: clamp(20px, 3vw, 32px); border-top: 1px solid var(--ink-faint); }
 .study h2 { margin: 0; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: clamp(20px, 2.4vw, 30px); text-transform: uppercase; letter-spacing: .03em; }
 .study > p { margin: 8px 0 0; color: var(--ink-dim); max-width: 56ch; }
-.strip { margin-top: 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 20px); align-items: end; }
+.strip { clear: both; margin-top: 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 20px); align-items: end; }
 .strip figure { margin: 0; min-width: 0; position: relative; z-index: 51; }
 .strip .shot { box-shadow: none; }
 .strip figcaption { padding-top: 8px; color: var(--ink-dim); }
@@ -196,10 +205,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="room" id="room-1" aria-labelledby="r1">
-    <svg class="y2k wide" data-reticle data-rings="3" aria-hidden="true" style="width: clamp(140px, 12vw, 200px); right: 2%; top: 0"></svg>
+    <svg class="y2k wide" data-reticle data-rings="3" aria-hidden="true" style="width: clamp(140px, 12vw, 200px); right: clamp(110px, 9vw, 150px); top: 0"></svg>
     <header class="room-head">
       <div class="num" aria-hidden="true">I</div>
       <div><h2 id="r1">The floor</h2><p>Before anyone on stage moves, the crowd is already performing.</p></div>
+      <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="3"></svg><span class="micro">Section I</span></div>
     </header>
     <div class="hang lp">
       <figure class="work land"><button class="shot" type="button" data-cap="02 · Horns for the opener · Suicide Machine · 2026 · 20:53:57 · 1/100 s · f/1.6 · ISO 100 · IMG_0416" aria-label="Look closer at 02, Horns for the opener"><img src="images/frame-02.jpg" alt="Suicide Machine on stage, crowd silhouettes with horns raised, the band's logo glowing on the screen" width="1882" height="1282"></button>
@@ -216,10 +226,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="room" id="room-2" aria-labelledby="r2">
-    <svg class="y2k wide" data-globe aria-hidden="true" style="width: clamp(170px, 17vw, 280px); right: 3%; top: clamp(-30px, -1vw, -8px)"></svg>
+    <svg class="y2k wide" data-globe aria-hidden="true" style="width: clamp(170px, 17vw, 280px); right: clamp(110px, 9vw, 150px); top: clamp(-30px, -1vw, -8px)"></svg>
     <header class="room-head">
       <div class="num" aria-hidden="true">II</div>
       <div><h2 id="r2">The stage</h2><p>Light does most of the work. The band stays small inside it.</p></div>
+      <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="11"></svg><span class="micro">Section II</span></div>
     </header>
     <div class="hang pl">
       <figure class="work port"><button class="shot" type="button" data-cap="06 · Stage right · 2026 · 22:31:14 · 1/100 s · f/1.6 · ISO 400 · IMG_0512" aria-label="Look closer at 06, Stage right"><img src="images/frame-04.jpg" alt="Tall view of the stage: singer at centre, guitarist headbanging on the right, beams cutting through haze" width="1282" height="1882"></button>
@@ -236,11 +247,12 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="room" id="room-3" aria-labelledby="r3">
-    <svg class="y2k wide" data-sparkle aria-hidden="true" style="width: clamp(30px, 3.4vw, 56px); right: 12%; top: clamp(20px, 3vw, 44px)"></svg>
-    <svg class="y2k wide" data-sparkle aria-hidden="true" style="width: clamp(16px, 1.6vw, 26px); right: calc(12% + clamp(40px, 4.4vw, 70px)); top: clamp(52px, 6vw, 92px)"></svg>
+    <svg class="y2k wide" data-sparkle aria-hidden="true" style="width: clamp(30px, 3.4vw, 56px); right: calc(clamp(110px, 9vw, 150px) + 4%); top: clamp(20px, 3vw, 44px)"></svg>
+    <svg class="y2k wide" data-sparkle aria-hidden="true" style="width: clamp(16px, 1.6vw, 26px); right: calc(clamp(110px, 9vw, 150px) + 4% + clamp(40px, 4.4vw, 70px)); top: clamp(52px, 6vw, 92px)"></svg>
     <header class="room-head">
       <div class="num" aria-hidden="true">III</div>
       <div><h2 id="r3">The look</h2><p>A giant eye on the screen, a crowd under it. The connection, made literal.</p></div>
+      <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="19"></svg><span class="micro">Section III</span></div>
     </header>
     <div class="hang pl">
       <figure class="work port"><button class="shot" type="button" data-cap="10 · Between heads · Pagan Ulver · 2025 · 20:47:26 · 1/200 s · f/2.2 · ISO 800 · IMG_9298" aria-label="Look closer at 10, Between heads"><img src="images/frame-25-9298.jpg" alt="The Pagan Ulver singer seen between the dark heads of the crowd" width="1282" height="1882" loading="lazy"></button>
@@ -257,7 +269,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="study" id="study" aria-labelledby="study-title">
-    <svg class="y2k" data-qr data-seed="7" aria-hidden="true" style="width: clamp(52px, 5vw, 80px); right: 0; top: clamp(20px, 3vw, 32px)"></svg>
+    <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="7"></svg><span class="micro">Study wall</span></div>
     <h2 id="study-title">Study wall</h2>
     <p>The rest of the roll. Each one sits seconds away from a hung work and lost the edit to its twin.</p>
     <div class="strip">
