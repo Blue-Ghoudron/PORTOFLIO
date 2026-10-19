@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>L&#39;boulevard-Band-26</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +27,7 @@
 * { box-sizing: border-box; }
 ::selection { background: var(--blue); color: var(--ink); }
 body { position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
-body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .4; mix-blend-mode: screen;
+body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
   background: url("assets/grain.jpg") 0 0 / 512px 512px repeat; }
 .wrap { max-width: 1320px; margin: 0 auto; padding-block: 14px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -121,7 +125,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
 .bar button:hover { border-color: var(--blue); }
 .bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.stage { min-height: 0; display: grid; place-items: center; padding-top: 12px; }
+.stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 12px; }
 .stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 
 @media (max-width: 860px) {
