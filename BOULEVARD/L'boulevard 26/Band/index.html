@@ -35,7 +35,7 @@
   --blue-text: #1f5fd6;
   color-scheme: light;
 }
-:root[data-theme="light"] body::after { mix-blend-mode: multiply; opacity: .1; }
+:root[data-theme="light"] body::after, :root[data-theme="light"] .top::after { mix-blend-mode: multiply; opacity: .1; }
 :root[data-theme="light"] :is(.glow, .glow-soft) { text-shadow: none; }  /* stage glow only reads on the dark wall */
 /* the closer look stays dark in both themes, so the photo and its cream mat sit on the dark wall */
 :root[data-theme="light"] .viewer { --ink: #eeffe5; --ink-dim: rgba(238,255,229,.66); --ink-faint: rgba(238,255,229,.16); --wall-2: #2f1f31; --blue-text: #3d81ff; color-scheme: dark; }
@@ -44,10 +44,10 @@
 :root { --small: calc(11px / var(--z) * .95); }
 @media (max-width: 1439px) { :root { --small: 11px; } }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }  /* iOS: no text inflation in landscape */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 120px; }  /* anchors land below the pinned bar */  /* iOS: no text inflation in landscape */
 ::selection { background: var(--blue); color: var(--ink); }
 body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
-body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
+body::after, .top::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
   background: url("assets/grain.jpg") 0 0 / 512px 512px repeat; }
 .wrap { max-width: 2048px; margin: 0 auto; overflow-x: clip; padding-block: 14px 40px;
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
@@ -62,7 +62,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 /* ---------- top strip ---------- */
 /* above the giant page name, whose trimmed ascent reaches up over the strip and would swallow clicks */
-.top { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
+.top { position: sticky; top: 0; z-index: 55; padding-top: 10px; background: var(--wall); box-shadow: 0 0 0 100vmax var(--wall); clip-path: inset(0 -100vmax); /* pinned above the prints (51), below the viewer (60); shadow paints the gutters */ display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
+.top::after { inset: 0 -100vmax; }  /* the bar sits above the page grain, so it carries its own */
 .top b { color: var(--ink); }
 .top .acc { color: var(--blue-text); }
 .handles { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -81,8 +82,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* phones: the four pages as an even 2 x 2 block, theme and handles share the line under it, edge to edge */
 @media (max-width: 560px) { .top { gap: 6px; } .pages { flex: 1 0 100%; display: grid; grid-template-columns: 1fr 1fr; } .pages a { justify-content: center; padding-inline: 8px; }
   .theme { margin-left: 0; } .handles { flex: 1; justify-content: flex-end; gap: 6px; } .handles a { font-size: 12px; padding-inline: 10px; } }
-.pages a.skimart { letter-spacing: .2em; }
-@media (max-width: 560px) { .pages a.skimart { grid-column: 1 / -1; } }
+/* phones: the pinned bar stays short, the pages swipe in one row */
+@media (max-width: 560px) { .pages { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .pages a { flex: none; } }
 
 /* ---------- entrance: the V0.1 sheet ---------- */
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name photo" "text photo"; grid-template-rows: auto 1fr; container-type: inline-size;
@@ -262,7 +263,6 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 <main class="wrap">
   <div class="top micro">
     <nav class="pages" aria-label="Pages">
-      <a href="../../../index.html" class="skimart">SKIMART</a>
       <a href="../index.html">L'Boulevard</a>
       <a href="../Movement/index.html">Movement</a>
       <a href="index.html" aria-current="page">Connection</a>

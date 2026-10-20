@@ -4,10 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SKIMART — Photographer / Visual Artist</title>
+<script>/* saved choice, else the system setting; in <head> so the page paints in the right theme */
+try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;--line:#262626}
+  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
+  :root[data-theme="light"]{--bg:#f2efe9;--ink:#151515;--mute:#5f5c57;--dim:#8f8b84;--line:#dbd7cf;--soft:#2c2b29;--card:#e4e0d8;color-scheme:light}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Archivo,system-ui,sans-serif}
   a,button{color:inherit;font:inherit;background:none;border:0;cursor:pointer;text-decoration:none;text-align:left}
@@ -19,7 +22,9 @@
   .tagline{display:block;margin-top:6px;color:var(--mute);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
   .meta{margin:26px 0 30px;display:grid;gap:2px}
   .meta a{font-size:13px;color:var(--mute);width:fit-content}
-  .meta a:hover{color:var(--ink)}
+  .meta a:hover,.meta button:hover{color:var(--ink)}
+  .meta button{font-size:13px;color:var(--mute);width:fit-content;margin-top:10px}
+  body.lbv-on #theme{display:none}  /* the exhibition has its own switch */
 
   .sec{border-top:1px solid var(--line)}
   .sec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
@@ -52,13 +57,13 @@
   .home img{width:100%;height:100%;object-fit:cover}
   .home .lbl{display:block;margin-top:26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
   .home h1{font-weight:400;font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:12px 0 16px}
-  .home p{max-width:520px;color:#cfcbc4}
+  .home p{max-width:520px;color:var(--soft)}
   .cta{display:inline-block;margin-top:22px;font-size:12px;letter-spacing:.24em;border-bottom:1px solid var(--ink);padding-bottom:5px}
   .cta:hover{letter-spacing:.3em}
   .loc{display:block;margin-top:34px;font-size:11px;letter-spacing:.24em;color:var(--dim)}
   .meta a[aria-current]{color:var(--ink)}
 
-  .about>p{max-width:560px;color:#cfcbc4;margin-bottom:16px}
+  .about>p{max-width:560px;color:var(--soft);margin-bottom:16px}
   .about .todo{border:1px dashed var(--dim);padding:12px 14px;color:var(--mute);font-size:13px}
   .about dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px;max-width:640px;margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
   .about dt{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-top:3px}
@@ -69,18 +74,52 @@
   .proj h2{font-weight:400;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.01em}
   .proj .info{color:var(--mute);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:6px 0 28px}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1100px}
-  .grid figure{overflow:hidden;background:#111}
+  .grid figure{overflow:hidden;background:var(--card)}
   .grid img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;transition:transform .5s,opacity .5s;opacity:0}
   .grid img.in{opacity:1}
   .grid figure:hover img{transform:scale(1.025)}
   .grid .wide{grid-column:1/-1}
   .grid .wide img{aspect-ratio:16/9}
-  .poster img{object-fit:contain;background:#111}
-  .door{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1100px}
-  .door a{display:block}
-  .door img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
-  .door span{display:block;margin-top:10px}
-  .door small{color:var(--mute);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  .poster img{object-fit:contain;background:var(--card)}
+
+  /* L'Boulevard: an exhibition inside the portfolio, framed in its own plum and blue */
+  .ex{margin-left:8px;padding:1px 5px;border:1px solid #3d81ff;color:#3d81ff;font-size:9px;letter-spacing:.14em;text-transform:uppercase;vertical-align:1px}
+  .glink{display:flex;align-items:center;padding:5px 0;font-size:13px;color:var(--mute)}
+  .glink:hover,.glink[aria-current]{color:var(--ink)}
+  .glink .go{margin-left:auto;opacity:0;transition:.2s}
+  .glink:hover .go{opacity:1}
+  /* the exhibition fills the view, a small margin all round */
+  body.lbv-on main{padding:12px}
+  .lbv iframe{display:block;width:100%;height:calc(100svh - 24px);border:0;background:var(--bg)}
+  /* while the exhibition is open the whole portfolio wears its palette, following its light/dark switch */
+  body{transition:background-color .4s,color .4s}
+  body.lbv-on{--bg:#251726;--ink:#eeffe5;--mute:rgba(238,255,229,.66);--dim:rgba(238,255,229,.42);--line:rgba(238,255,229,.16);--acc:#3d81ff}
+  body.lbv-on[data-lbv="light"]{--bg:#eeffe5;--ink:#251726;--mute:rgba(37,23,38,.68);--dim:rgba(37,23,38,.45);--line:rgba(37,23,38,.18);--acc:#1f5fd6}
+  body.lbv-on aside{background:var(--bg)}
+  body.lbv-on .glink[aria-current]{color:var(--acc)}
+  body.lbv-on .ex{border-color:var(--acc);color:var(--acc)}
+
+  /* zoom cue on every photo */
+  [data-zoom]{position:relative;cursor:zoom-in}
+  [data-zoom]::after{content:"⤢";position:absolute;right:10px;bottom:10px;width:30px;height:30px;display:grid;place-items:center;background:rgba(10,10,10,.72);color:#efece6;font-size:15px;opacity:.0;transform:translateY(4px);transition:.25s}
+  [data-zoom]:hover::after,[data-zoom]:focus-visible::after{opacity:1;transform:none}
+  @media (hover:none){[data-zoom]::after{opacity:.85;transform:none}}
+  .hint{display:inline-flex;gap:8px;align-items:center;color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:-14px 0 24px}
+  .hint b{font-weight:400;color:var(--mute);font-size:14px;letter-spacing:0}
+
+  .lb{--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;color:var(--ink);position:fixed;inset:0;z-index:20;background:rgba(6,6,6,.96);display:none;grid-template-rows:auto 1fr auto}
+  .lb.on{display:grid}
+  .lb header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+  .lb .stage{position:relative;overflow:hidden;display:grid;place-items:center;cursor:zoom-in}
+  .lb .stage.z{cursor:zoom-out}
+  .lb .stage img{max-width:calc(100vw - 140px);max-height:calc(100svh - 130px);object-fit:contain;transition:transform .3s ease;user-select:none;-webkit-user-drag:none}
+  .lb .stage.z img{transition:none}
+  .lb .nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:72px;font-size:26px;color:var(--mute);z-index:2}
+  .lb .nav:hover{color:var(--ink)}
+  .lb .prev{left:8px}.lb .next{right:8px}
+  .lb .x{font-size:22px;color:var(--ink);width:40px;height:40px}
+  .lb footer{padding:12px 20px 18px;text-align:center;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+  @media (max-width:820px){.lb .stage img{max-width:100vw;max-height:calc(100svh - 120px)}.lb .nav{display:none}}
 
   .burger{display:none}
 
@@ -93,7 +132,9 @@
     aside.menu .navbody{display:block;padding-bottom:16px}
     .meta{margin:4px 0 16px}
     main{margin:0;padding:24px 16px 64px}
-    .grid,.door{grid-template-columns:1fr 1fr}
+    body.lbv-on main{padding:8px}
+    .lbv iframe{height:calc(100svh - 80px)}
+    .grid{grid-template-columns:1fr 1fr}
   }
 </style>
 </head>
@@ -107,12 +148,19 @@
   <div class="navbody" id="navbody">
     <nav class="meta mono" aria-label="About">
       <a href="#about">about</a><a href="mailto:ghoujlamimohamed@gmail.com">contact</a><a href="https://www.instagram.com/_skimart_/">instagram ↗</a>
+      <button id="theme" type="button"></button>
     </nav>
     <nav id="work" aria-label="Work"></nav>
   </div>
 </aside>
 
 <main id="view"></main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <header><span id="lb-t"></span><button class="x" id="lb-x" aria-label="Close">×</button></header>
+  <div class="stage" id="lb-s"><button class="nav prev" id="lb-p" aria-label="Previous photo">←</button><img id="lb-i" alt=""><button class="nav next" id="lb-n" aria-label="Next photo">→</button></div>
+  <footer id="lb-c"></footer>
+</div>
 
 <script>
 const F = f => 'assets/home/' + f + '.jpg';
@@ -129,7 +177,7 @@ const WORK = [
     {id:'disco-atlas', group:'American Arts Center', name:'Disco Atlas', info:'American Arts Center · 26.06.2025', imgs:["x449771_372156", "x899978_736484", "x883002_833465", "x635699_568221"]},
     {id:'noches', group:'American Arts Center', name:'Noches de Ramadán', info:'Jinān Al Andalus · American Arts Center · 24.02.2026', imgs:['x334930_867208','x558783_464613','x833362_974196','x525055_910195']},
     {id:'boulevard', group:"L'Boulevard", name:'Overview', info:'Three rooms · each opens in its own style', boulevard:true,
-     doors:[['Connection','The stage and audience','b-con','Band'],['Movement','Away from the stage','b-mov','Movement'],['Faces and Eyes','Portraits','b-fac','Faces']]},
+     doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
   ]},
   {id:'design', name:'Design', projects:[
     {id:'aac', name:'American Art Center', info:'Poster design', poster:true, imgs:['x815196_567852','x190932_899304','x905172_741900','x913199_406854','x276823_230940','x980645_442674','x885431_556498']},
@@ -143,13 +191,14 @@ const WORK = [
 ];
 
 const nav = document.getElementById('work'), view = document.getElementById('view');
-const item = (s, p) => `<li><a href="#${s.id}/${p.id}">${p.name.toLowerCase()}<span class="go">→</span></a>
-  ${p.doors ? `<ul class="sub">${p.doors.map(d => `<li><a href="${LBV + d[3]}/index.html" class="ext">${d[0].toLowerCase()} ↗</a></li>`).join('')}</ul>` : ''}</li>`;
+const item = (s, p) => `<li><a href="#${s.id}/${p.id}">${p.name.toLowerCase()}<span class="go">→</span></a></li>`;
 const toggle = (id, label, n, cls) => `<button class="tog ${cls}" aria-expanded="false" aria-controls="${id}"><span>${label}<span class="n mono">${n}</span></span><span class="pm" aria-hidden="true">+</span></button>`;
 nav.innerHTML = WORK.map(s => {
   const groups = [...new Set(s.projects.map(p => p.group))];
   const body = groups[0] ? groups.map((g, gi) => {
     const ps = s.projects.filter(p => p.group === g), id = `g-${s.id}-${gi}`;
+    // the exhibition is one click: no fold-out, its rooms are in its own nav
+    if (ps[0].boulevard) return `<li class="gsec"><a class="glink" href="#${s.id}/${ps[0].id}">${g.toLowerCase()}<span class="ex mono">exhibition</span><span class="go">→</span></a></li>`;
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
@@ -167,7 +216,8 @@ document.querySelector('.burger').onclick = e => {
 function openSec(id){ setOpen(nav.querySelector(`[data-sec="${id}"]`), true); }
 
 function render(){
-  const [sid, pid] = location.hash.slice(1).split('/');
+  const [sid, pid, room] = location.hash.slice(1).split('/');
+  document.body.classList.remove('lbv-on');
   document.querySelectorAll('aside a[aria-current]').forEach(a => a.removeAttribute('aria-current'));
   const sec = WORK.find(s => s.id === sid), p = sec && sec.projects.find(x => x.id === pid);
   if (sid === 'about') {
@@ -181,7 +231,7 @@ function render(){
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
     view.innerHTML = `<section class="home">
-      <div class="photo"><img src="${F('s23')}" alt="Man in round sunglasses and a Space Invaders jacket under purple club light"></div>
+      <div class="photo" data-zoom tabindex="0" role="button" aria-label="Enlarge photo"><img src="${F('s23')}" alt="Man in round sunglasses and a Space Invaders jacket under purple club light"></div>
       <span class="lbl">Photographer / Visual Artist</span>
       <h1>Real moments.<br>Visual stories.</h1>
       <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
@@ -191,15 +241,58 @@ function render(){
   } else {
     openSec(sid);
     const cur = nav.querySelector(`a[href="#${sid}/${pid}"]`); cur.setAttribute('aria-current', 'page');
-    const g = cur.closest('.gsec'); if (g) setOpen(g, true);
-    view.innerHTML = `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p>` + (p.doors
-      ? `<div class="door">${p.doors.map(d => `<a href="${LBV + d[3]}/index.html"><img src="${F(d[2])}" alt="${d[0]} cover photograph"><span>${d[0]} ↗</span><small>${d[1]}</small></a>`).join('')}</div>`
-      : `<div class="grid ${p.poster ? 'poster' : ''}">${p.imgs.map((f, i) => `<figure class="${!p.poster && i === 3 ? 'wide' : ''}"><img src="${F(f)}" alt="${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}" loading="lazy"></figure>`).join('')}</div>`) + `</section>`;
+    const g = cur.closest('.gsec'); if (g && g.querySelector(':scope>.tog')) setOpen(g, true);
+    if (p.boulevard) {
+      document.body.classList.add('lbv-on');
+      // same rule as the exhibition's theme.js, so the frame and the portfolio agree before it loads
+      try { document.body.dataset.lbv = localStorage.getItem('lbv-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); } catch (err) {}
+    }
+    view.innerHTML = p.boulevard
+      // the exhibition's own pages run in a frame, so its rooms open here instead of leaving the portfolio
+      ? `<section class="lbv"><iframe src="${LBV}${room ? room + '/' : ''}index.html" title="L'Boulevard exhibition"></iframe></section>`
+      : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p><div class="grid ${p.poster ? 'poster' : ''}">${p.imgs.map((f, i) => `<figure data-zoom tabindex="0" role="button" aria-label="Enlarge ${p.poster ? 'poster' : 'photo'} ${i + 1}" class="${!p.poster && i === 3 ? 'wide' : ''}"><img src="${F(f)}" alt="${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}" loading="lazy"></figure>`).join('')}</div></section>`;
     document.getElementById('side').classList.remove('menu');
   }
   view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
   scrollTo(0, 0);
 }
+// mirror the exhibition's light/dark choice onto the portfolio while it is open (same origin, so the frame is readable)
+view.addEventListener('load', e => {
+  if (e.target.tagName !== 'IFRAME') return;
+  let root; try { root = e.target.contentDocument.documentElement; } catch (err) { return; }  // file:// blocks frame access
+  const sync = () => document.body.dataset.lbv = root.dataset.theme || 'dark';
+  sync(); new MutationObserver(sync).observe(root, {attributes: true, attributeFilter: ['data-theme']});
+}, true);
+
+const themeBtn = document.getElementById('theme'), root = document.documentElement;
+const themeLabel = () => { const l = root.dataset.theme === 'light'; themeBtn.textContent = l ? 'dark' : 'light'; themeBtn.setAttribute('aria-label', `Switch to ${l ? 'dark' : 'light'} theme`); };
+themeBtn.onclick = () => { root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light'; try { localStorage.setItem('skm-theme', root.dataset.theme); } catch (e) {} themeLabel(); };
+themeLabel();
+
+// lightbox: click a photo → full screen; click again → 2× zoom that follows the pointer
+const lb = document.getElementById('lb'), lbi = document.getElementById('lb-i'), lbs = document.getElementById('lb-s');
+let set = [], at = 0, last = null;
+const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'); lbi.style.transform = '';
+  lbi.src = set[at].src; lbi.alt = set[at].alt; document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}`; };
+const openLb = fig => { last = fig; set = [...view.querySelectorAll('[data-zoom] img')]; document.getElementById('lb-t').textContent = (view.querySelector('h2') || {}).textContent || 'SKIMART';
+  lb.classList.add('on'); document.body.style.overflow = 'hidden'; show(set.indexOf(fig.querySelector('img'))); document.getElementById('lb-x').focus(); };
+const closeLb = () => { lb.classList.remove('on'); document.body.style.overflow = ''; last && last.focus(); };
+view.addEventListener('click', e => { const f = e.target.closest('[data-zoom]'); if (f) openLb(f); });
+view.addEventListener('keydown', e => { const f = e.target.closest('[data-zoom]'); if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLb(f); } });
+document.getElementById('lb-x').onclick = closeLb;
+document.getElementById('lb-p').onclick = e => { e.stopPropagation(); show(at - 1); };
+document.getElementById('lb-n').onclick = e => { e.stopPropagation(); show(at + 1); };
+const pan = e => { const r = lbi.getBoundingClientRect(), b = lbs.getBoundingClientRect();
+  const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+  lbi.style.transform = `scale(2) translate(${-x * 50}%, ${-y * 50}%)`; };
+lbs.addEventListener('click', e => { if (e.target.closest('.nav')) return;
+  if (e.target !== lbi) return closeLb();
+  lbs.classList.toggle('z') ? pan(e) : lbi.style.transform = ''; });
+lbs.addEventListener('mousemove', e => lbs.classList.contains('z') && pan(e));
+addEventListener('keydown', e => { if (!lb.classList.contains('on')) return;
+  if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); });
+let tx = null; lbs.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive: true});
+lbs.addEventListener('touchend', e => { if (tx === null || lbs.classList.contains('z')) return; const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) show(at + (d < 0 ? 1 : -1)); tx = null; });
 addEventListener('hashchange', render); render();
 </script>
 </body>
