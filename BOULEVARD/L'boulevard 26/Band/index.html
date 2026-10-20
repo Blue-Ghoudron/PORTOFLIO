@@ -131,6 +131,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); opacity: 0; transition: opacity .2s; }
 .shot:has(img[width="1282"])::before { padding: 3.21%; }
 .shot:focus-visible::before, .shot:active::before { opacity: 1; }
+/* light theme: the ring stays on and paints the cream mat plum; hover and focus still turn it blue */
+:root[data-theme="light"] .shot::before { opacity: 1; background: var(--ink); transition: background-color .2s; padding: calc(2.19% + 1px); }  /* +1px hides the seam at the photo edge */
+:root[data-theme="light"] .shot:has(img[width="1282"])::before { padding: calc(3.21% + 1px); }
+:root[data-theme="light"] .shot:is(:focus-visible, :active)::before { background: var(--blue); }
+@media (hover: hover) { :root[data-theme="light"] .shot:hover::before { background: var(--blue); } }
 @media (hover: none) { .shot:active::after { opacity: 1; transform: none; } }
 .work { position: relative; z-index: 51; margin: 0; min-width: 0; }
 .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }

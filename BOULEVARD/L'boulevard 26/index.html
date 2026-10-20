@@ -92,14 +92,19 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* below the desktop scale a wrapped label (Faces and Eyes) would lift its print: the prints share a height, so start them on one line and the labels line up */
 @media (max-width: 1439px) { .doors { align-items: start; } }
 .door { display: block; color: inherit; text-decoration: none; }
-.door img { display: block; width: 100%; height: auto; box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
+.door .print { position: relative; display: block; } .door img { display: block; width: 100%; height: auto; box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
+/* light theme: paint the cream mat printed into each cover plum, like the prints in the rooms (41/1882 of the width, 41/1282 for Connection) */
+:root[data-theme="light"] .door .print::before { content: ""; position: absolute; inset: 0; pointer-events: none; padding: calc(2.19% + 1px); background: var(--ink);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+:root[data-theme="light"] .door .print:has(img[width="1282"])::before { padding: calc(3.21% + 1px); }  /* +1px hides the seam at the photo edge */
 .door .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 18px; display: grid; gap: 2px; min-height: 92px; }
 .door .no { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-text); }
 .door h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(28px, 3vw, 44px); line-height: 1.05; transition: color .2s; }
 .door p { margin: 0; color: var(--ink-dim); }
 .door:hover h2 { color: var(--blue-text); }
 .door:focus-visible { outline: 2px solid var(--blue); outline-offset: 8px; }
-@media (hover: hover) { .door img { transition: transform .25s ease-out; } .door:hover img { transform: scale(1.02); } }
+@media (hover: hover) { .door .print { transition: transform .25s ease-out; } .door:hover .print { transform: scale(1.02); } }
 
 .foot { margin-top: clamp(56px, 7vw, 100px); border-top: 1.5px solid var(--ink); padding-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: end; }
 .brand { width: 150px; height: auto; display: block; }
@@ -115,7 +120,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 }
 /* touch screens: 44px tap targets (after the base rules, which set 40px) */
 @media (pointer: coarse) { .top a, .theme { min-height: 44px; } }
-@media (prefers-reduced-motion: reduce) { .door img { transition: none; } .door:hover img { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .door .print { transition: none; } .door:hover .print { transform: none; } }
 </style>
 
 <main class="wrap">
@@ -139,15 +144,15 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
   <nav class="doors" aria-label="Rooms">
     <a class="door" href="Movement/index.html">
-      <img src="Movement/images/mov-25-9206.jpg" alt="A whole crowd blurred into motion in front of a bright stage" width="1882" height="1095">
+      <span class="print"><img src="Movement/images/mov-25-9206.jpg" alt="A whole crowd blurred into motion in front of a bright stage" width="1882" height="1095"></span>
       <span class="label"><span class="no">I · 14 photographs</span><h2>Movement</h2><p>Away from the stage</p></span>
     </a>
     <a class="door" href="Band/index.html">
-      <img src="Band/images/frame-03.jpg" alt="Singer looking up into the lights, a fan's horns raised in front of the stage" width="1282" height="1882">
+      <span class="print"><img src="Band/images/frame-03.jpg" alt="Singer looking up into the lights, a fan's horns raised in front of the stage" width="1282" height="1882"></span>
       <span class="label"><span class="no">II · 17 photographs</span><h2>Connection</h2><p>The stage and audience</p></span>
     </a>
     <a class="door" href="Faces/index.html">
-      <img src="Faces/images/fac-25-9304.jpg" alt="A young man with curly hair, his face in shadow, one eye catching the light" width="1882" height="2782">
+      <span class="print"><img src="Faces/images/fac-25-9304.jpg" alt="A young man with curly hair, his face in shadow, one eye catching the light" width="1882" height="2782"></span>
       <span class="label"><span class="no">III · 38 photographs</span><h2>Faces and Eyes</h2><p>Close to the lens</p></span>
     </a>
   </nav>
