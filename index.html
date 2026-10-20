@@ -9,8 +9,8 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
-  :root[data-theme="light"]{--bg:#f2efe9;--ink:#151515;--mute:#5f5c57;--dim:#8f8b84;--line:#dbd7cf;--soft:#2c2b29;--card:#e4e0d8;color-scheme:light}
+  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#7d7a75;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
+  :root[data-theme="light"]{--bg:#f2efe9;--ink:#151515;--mute:#5f5c57;--dim:#6f6c67;--line:#dbd7cf;--soft:#2c2b29;--card:#e4e0d8;color-scheme:light}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Archivo,system-ui,sans-serif}
   a,button{color:inherit;font:inherit;background:none;border:0;cursor:pointer;text-decoration:none;text-align:left}
@@ -38,7 +38,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .gsec .list ul{padding:2px 0 8px 14px}
   .list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
   .open>.list{grid-template-rows:1fr}
-  .list>div{overflow:hidden}
+  .list>div{overflow:hidden;visibility:hidden;transition:visibility .3s}
+  .open>.list>div{visibility:visible}
+  .sec:not(.open) .list>div{visibility:hidden}
   .list ul{list-style:none;padding:0 0 14px 16px}
   .list a{position:relative;display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:13px;color:var(--mute)}
   .list a .go{opacity:0;transform:translateX(-4px);transition:.2s}
@@ -93,11 +95,12 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .lbv iframe{display:block;width:100%;height:calc(100svh - 24px);border:0;background:var(--bg)}
   /* while the exhibition is open the whole portfolio wears its palette, following its light/dark switch */
   body{transition:background-color .4s,color .4s}
-  body.lbv-on{--bg:#251726;--ink:#eeffe5;--mute:rgba(238,255,229,.66);--dim:rgba(238,255,229,.42);--line:rgba(238,255,229,.16);--acc:#3d81ff}
-  body.lbv-on[data-lbv="light"]{--bg:#eeffe5;--ink:#251726;--mute:rgba(37,23,38,.68);--dim:rgba(37,23,38,.45);--line:rgba(37,23,38,.18);--acc:#1f5fd6}
+  body.lbv-on{--bg:#251726;--ink:#eeffe5;--mute:rgba(238,255,229,.66);--dim:rgba(238,255,229,.55);--line:rgba(238,255,229,.16);--acc:#3d81ff}
+  body.lbv-on[data-lbv="light"]{--bg:#eeffe5;--ink:#251726;--mute:rgba(37,23,38,.68);--dim:rgba(37,23,38,.62);--line:rgba(37,23,38,.18);--acc:#1f5fd6}
   body.lbv-on aside{background:var(--bg)}
   body.lbv-on .glink[aria-current]{color:var(--acc)}
   body.lbv-on .ex{border-color:var(--acc);color:var(--acc)}
+  :root[data-theme="light"] body:not(.lbv-on) .ex{border-color:#1f5fd6;color:#1f5fd6}  /* #3d81ff is 3.2:1 on the light page */
 
   /* zoom cue on every photo */
   [data-zoom]{position:relative;cursor:zoom-in}
@@ -107,7 +110,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .hint{display:inline-flex;gap:8px;align-items:center;color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:-14px 0 24px}
   .hint b{font-weight:400;color:var(--mute);font-size:14px;letter-spacing:0}
 
-  .lb{--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;color:var(--ink);position:fixed;inset:0;z-index:20;background:rgba(6,6,6,.96);display:none;grid-template-rows:auto 1fr auto}
+  .lb{--ink:#efece6;--mute:#8d8a85;--dim:#878480;color:var(--ink);position:fixed;inset:0;z-index:20;background:rgba(6,6,6,.96);display:none;grid-template-rows:auto 1fr auto}
   .lb.on{display:grid}
   .lb header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
   .lb .stage{position:relative;overflow:hidden;display:grid;place-items:center;cursor:zoom-in}
@@ -131,9 +134,12 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
     .navbody{display:none}
     aside.menu .navbody{display:block;padding-bottom:16px}
     .meta{margin:4px 0 16px}
-    main{margin:0;padding:24px 16px 64px}
-    body.lbv-on main{padding:8px}
-    .lbv iframe{height:calc(100svh - 80px)}
+    main{margin:0;padding:24px 16px 64px;min-height:0}
+    /* the exhibition fills exactly what the menu bar leaves, so only the frame scrolls */
+    body.lbv-on{display:flex;flex-direction:column;height:100svh}
+    body.lbv-on main{padding:8px;flex:1;display:flex;flex-direction:column}
+    .lbv{flex:1;display:flex;flex-direction:column}
+    .lbv iframe{height:auto;flex:1}
     .grid{grid-template-columns:1fr 1fr}
   }
 </style>
@@ -260,6 +266,8 @@ function render(){
 view.addEventListener('load', e => {
   if (e.target.tagName !== 'IFRAME') return;
   let root; try { root = e.target.contentDocument.documentElement; } catch (err) { return; }  // file:// blocks frame access
+  const dir = new URL('.', e.target.contentWindow.location.href).href, base = new URL(LBV, location.href).href;
+  if (dir.startsWith(base)) { const r = dir.slice(base.length).replace(/\/$/, ''); history.replaceState(null, '', '#photography/boulevard' + (r ? '/' + r : '')); }
   const sync = () => document.body.dataset.lbv = root.dataset.theme || 'dark';
   sync(); new MutationObserver(sync).observe(root, {attributes: true, attributeFilter: ['data-theme']});
 }, true);
@@ -275,8 +283,9 @@ let set = [], at = 0, last = null;
 const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'); lbi.style.transform = '';
   lbi.src = set[at].src; lbi.alt = set[at].alt; document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}`; };
 const openLb = fig => { last = fig; set = [...view.querySelectorAll('[data-zoom] img')]; document.getElementById('lb-t').textContent = (view.querySelector('h2') || {}).textContent || 'SKIMART';
+  document.getElementById('side').inert = view.inert = true;
   lb.classList.add('on'); document.body.style.overflow = 'hidden'; show(set.indexOf(fig.querySelector('img'))); document.getElementById('lb-x').focus(); };
-const closeLb = () => { lb.classList.remove('on'); document.body.style.overflow = ''; last && last.focus(); };
+const closeLb = () => { document.getElementById('side').inert = view.inert = false; lb.classList.remove('on'); document.body.style.overflow = ''; last && last.focus(); };
 view.addEventListener('click', e => { const f = e.target.closest('[data-zoom]'); if (f) openLb(f); });
 view.addEventListener('keydown', e => { const f = e.target.closest('[data-zoom]'); if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLb(f); } });
 document.getElementById('lb-x').onclick = closeLb;
@@ -290,6 +299,10 @@ lbs.addEventListener('click', e => { if (e.target.closest('.nav')) return;
   lbs.classList.toggle('z') ? pan(e) : lbi.style.transform = ''; });
 lbs.addEventListener('mousemove', e => lbs.classList.contains('z') && pan(e));
 addEventListener('keydown', e => { if (!lb.classList.contains('on')) return;
+  if (e.key === 'Tab') {  // keep Tab cycling inside the viewer instead of leaving the page
+    const f = [...lb.querySelectorAll('button')].filter(b => b.checkVisibility()), i = f.indexOf(document.activeElement);
+    if (e.shiftKey ? i <= 0 : i === f.length - 1) { e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); }
+  }
   if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); });
 let tx = null; lbs.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive: true});
 lbs.addEventListener('touchend', e => { if (tx === null || lbs.classList.contains('z')) return; const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) show(at + (d < 0 ? 1 : -1)); tx = null; });

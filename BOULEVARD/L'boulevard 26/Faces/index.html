@@ -98,7 +98,7 @@ body::after, .top::after { content: ""; position: absolute; inset: 0; z-index: 5
   font-size: min(calc((100cqi - var(--lw) - var(--gap) - 40px) / 3.52), calc(var(--lw) * 1.478 / 2)); line-height: 1; letter-spacing: -.005em; white-space: nowrap; }
 .name .ln { display: block; text-box: trim-both cap alphabetic; }
 .name .ln + .ln { margin-top: .07em; }
-.name .sub { display: block; margin-top: .9em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .108em; line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; white-space: normal; }
+.name .sub { display: block; margin-top: .9em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: .108em; line-height: 1.1; letter-spacing: .06em; color: var(--blue-text); text-shadow: none; white-space: normal; }
 /* the intro fills the wall under the name, beside the portrait, and ends on the frame's bottom line */
 .intro { grid-column: 1; grid-row: 2; align-self: end; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px clamp(16px, 2.4vw, 36px); align-items: start; padding-top: clamp(24px, 3vw, 40px); }
 .byline { grid-column: 1 / -1; margin: 0; display: grid; gap: 4px; font-size: 16px; color: var(--ink-dim); }
@@ -199,7 +199,7 @@ body::after, .top::after { content: ""; position: absolute; inset: 0; z-index: 5
 .label .no { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; color: var(--blue-text); }
 .label :is(h2, h3) { margin: 0; font-family: var(--f-body); font-weight: 700; font-size: 17px; line-height: 1.25; text-wrap: balance; }
 /* sitter's Instagram, tagged with the user's OK */
-.who { color: var(--blue-text); text-decoration: none; text-transform: none; letter-spacing: .02em; }
+.who { color: var(--blue-text); text-decoration: underline; text-underline-offset: .2em; text-transform: none; letter-spacing: .02em; }
 .label .who { justify-self: start; font-family: var(--f-mono); font-size: 13px; }
 .who:hover { color: var(--ink); text-decoration: underline; }
 .who:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
@@ -446,10 +446,10 @@ body::after, .top::after { content: ""; position: absolute; inset: 0; z-index: 5
       <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="currentColor" letter-spacing="1">SKIMART</text>
     </svg>
     <div class="legal micro">
-      <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
+      <b>Shot &amp; designed by Skimart</b> · No beauty, only function<br>
       © 2025–2026 Skimart™. All rights reserved.<br>
       Skimart™ is a trademark of Mohamed, used to identify music and visual art services.<br>
-      10 works hung, 4 frames in sequence, 22 in the gallery · 1882 px wide · Layout draft
+      10 works hung, 4 frames in sequence, 22 in the gallery
     </div>
   </footer>
 </main>

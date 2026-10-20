@@ -55,8 +55,23 @@ with sync_playwright() as p:
 
         pg.click('.home [data-zoom]')
         ok(pg.locator('#lb.on').is_visible(), f'{vn} hero viewer opens')
+        for key in ['Tab'] * 6 + ['Shift+Tab'] * 6:  # pf-qsm.29: focus must stay inside the open viewer
+            pg.keyboard.press(key)
+            ok(pg.evaluate('!!document.activeElement.closest("#lb")'), f'{vn} {key} leaves the open viewer')
         pg.keyboard.press('Escape')
         ok(not pg.locator('#lb.on').count(), f'{vn} viewer closes on Esc')
+
+        # pf-qsm.29: links in closed menu sections must not take focus
+        hidden = pg.evaluate('''[...document.querySelectorAll('#work a, #work button')]
+            .filter(e => e.checkVisibility({visibilityProperty: true}) && e.closest('.list') && !e.closest('.open > .list')).length''')
+        ok(hidden == 0, f'{vn} {hidden} links in closed menu sections can take focus')
+
+        # pf-qsm.28: no page taller than the screen when there is nothing more to show
+        for route in ['', '#photography/boulevard']:
+            pg.goto(B + 'index.html' + route); pg.wait_for_timeout(600)
+            extra = pg.evaluate('document.documentElement.scrollHeight - innerHeight')
+            if route or w < 1440:
+                ok(extra <= 0, f'{vn} index.html{route} is {extra}px taller than the screen')
 
         hrefs = pg.eval_on_selector_all('#work a[href^="#"]', 'as => as.map(a => a.getAttribute("href"))')
         ok(len(hrefs) > 0, f'{vn} no menu links found')
@@ -93,6 +108,18 @@ with sync_playwright() as p:
             f = pg.frame_locator('.lbv iframe'); f.locator('.pages a').first.wait_for()
             f.locator('.pages a').nth(i).click(); pg.wait_for_timeout(500)
             ok(pg.frames[1].url.endswith('index.html'), f'{vn} frame room {n} -> {pg.frames[1].url}')
+        # pf-qsm.2: the room is kept in the address, so refresh and shared links reopen it
+        for room in ['Movement', 'Band', 'Faces']:
+            pg.goto(B + 'index.html#photography/boulevard')
+            f = pg.frame_locator('.lbv iframe'); f.locator('.pages a').first.wait_for()
+            f.locator(f'.pages a[href*="{room}/"]').first.click(); pg.wait_for_timeout(600)
+            ok(pg.url.endswith(f'#photography/boulevard/{room}'), f'{vn} room {room} not in address: {pg.url}')
+            pg.reload(); pg.wait_for_timeout(800)
+            ok(f'/{room}/index.html' in pg.frames[1].url, f'{vn} refresh in {room} -> {pg.frames[1].url}')
+        for hr in hrefs + ['#about']:
+            pg.goto(B + 'index.html' + hr); pg.reload(); pg.wait_for_timeout(300)
+            ok(pg.url.endswith(hr) and pg.locator('main section').count() == 1, f'{vn} refresh on {hr}')
+
         pg.goto(B + 'index.html#photography/boulevard')
         f = pg.frame_locator('.lbv iframe'); f.locator('#theme').wait_for(); pg.wait_for_timeout(300)
         b0 = pg.evaluate('document.body.dataset.lbv')
