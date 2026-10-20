@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L&#39;Boulevard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script src="theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,400..800&family=Six+Caps&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* L'Boulevard entrance: the series title, then one door per page, all three hung at one eye line */
+:root {
+  --wall: #251726;        /* Getfedo brand-dark: ground / gallery wall */
+  --wall-2: #2f1f31;
+  --viewer: #1c111d;      /* closer-look backdrop */
+  --ink: #eeffe5;         /* Getfedo brand-light = the mat on every print */
+  --ink-dim: rgba(238,255,229,.66);
+  --ink-faint: rgba(238,255,229,.16);
+  --blue: #337aff;        /* Getfedo brand-mid: large marks */
+  --blue-text: #3d81ff;   /* small blue text */
+  --f-head: "Anton", "Bebas Neue", "Arial Narrow", sans-serif;
+  --f-tall: "Six Caps", "Anton", "Arial Narrow", sans-serif;
+  --f-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+  /* page scale: on wide screens the whole layout renders at 75%, like browser zoom 75% (type, spacing, photos);
+     --svh and the gutter divide it back out so window-height and window-width sizes still match the real window */
+  --z: 1; --svh: calc(1svh / var(--z));
+}
+/* light theme: cream wall, plum ink, same blue (small blue text a shade deeper to stay readable on cream) */
+:root[data-theme="light"] {
+  --wall: #eeffe5; --wall-2: #e1efd8; --viewer: #eeffe5;
+  --ink: #251726; --ink-dim: rgba(37,23,38,.68); --ink-faint: rgba(37,23,38,.18);
+  --blue-text: #1f5fd6;
+  color-scheme: light;
+}
+:root[data-theme="light"] body::after { mix-blend-mode: multiply; opacity: .1; }
+:root[data-theme="light"] :is(.glow, .glow-soft) { text-shadow: none; }  /* stage glow only reads on the dark wall */
+@media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
+/* small mono labels: 11px nominal; under the page scale they grow back so they read at ~10.5px on screen */
+:root { --small: calc(11px / var(--z) * .95); }
+@media (max-width: 1439px) { :root { --small: 11px; } }
+* { box-sizing: border-box; }
+::selection { background: var(--blue); color: var(--ink); }
+body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
+  background: url("Band/assets/grain.jpg") 0 0 / 512px 512px repeat; }
+.wrap { max-width: 2048px; margin: 0 auto; overflow-x: clip; padding-block: 14px 40px;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+/* side margins: 16 phone, 24 tablet, 32 laptop, then 48 growing to 128 on large screens */
+:root { --gutter: 16px; }
+@media (min-width: 480px) { :root { --gutter: 24px; } }
+@media (min-width: 768px) { :root { --gutter: 32px; } }
+@media (min-width: 1441px) { :root { --gutter: clamp(48px, calc(48px + (100vw / var(--z) - 1440px) * .2), 128px); } }
+.micro { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; text-transform: uppercase; }
+.glow { text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent), 0 0 18px color-mix(in srgb, currentColor 35%, transparent); }
+.glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
+
+/* ---------- top strip ---------- */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
+.top b { color: var(--ink); }
+.top .acc { color: var(--blue-text); }
+.handles { display: flex; flex-wrap: wrap; gap: 10px; }
+.handles a { font-family: var(--f-mono); font-size: 13px; letter-spacing: .02em; text-transform: none; color: var(--blue-text); text-decoration: none;
+  border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
+.handles a:hover { border-color: var(--blue-text); color: var(--ink); }
+/* page switch: one link per page, the current page sits in the blue frame */
+.pages { display: flex; gap: 6px; }
+.pages a { color: var(--ink-dim); text-decoration: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
+.pages a:hover { border-color: var(--blue-text); color: var(--ink); }
+.pages a[aria-current="page"] { border-color: var(--blue); color: var(--ink); }
+.pages a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.theme { margin-left: auto; font: inherit; color: var(--ink-dim); background: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; cursor: pointer; transition: border-color .2s, color .2s; }
+.theme:hover { border-color: var(--blue-text); color: var(--ink); }
+.theme:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.top .home { color: inherit; text-decoration: none; }
+.top .home:hover b { color: var(--blue-text); }
+
+/* ---------- entrance ---------- */
+/* the name's trimmed ascent reaches up over the top strip; keep the strip clickable */
+.top { position: relative; z-index: 1; }
+.hero { container-type: inline-size; padding-top: clamp(24px, 3vw, 40px); }
+/* Anton caps: L'BOULEVARD is ~4.6em wide, so the name fills the wall edge to edge */
+.name { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: calc(100cqi / 4.7); line-height: 1; letter-spacing: -.005em; white-space: nowrap; }
+.name .ln { display: block; text-box: trim-both cap alphabetic; }
+.name .sub { display: block; margin-top: .5em; font-family: var(--f-body); font-stretch: 125%; font-weight: 800; font-size: max(.09em, 15px); line-height: 1.1; letter-spacing: .06em; color: var(--blue); text-shadow: none; }
+.statement { margin: clamp(20px, 2.4vw, 32px) 0 0; max-width: 46ch; font-size: 16px; line-height: 1.6; color: var(--ink-dim); text-wrap: pretty; }
+
+/* ---------- three doors, one per page: columns follow each cover's ratio so the prints share a height ---------- */
+.doors { margin-top: clamp(48px, 6vw, 96px); display: grid; grid-template-columns: 1.719fr .681fr .677fr; gap: clamp(20px, 3vw, 44px); align-items: end; }
+.door { display: block; color: inherit; text-decoration: none; }
+.door img { display: block; width: 100%; height: auto; box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
+.door .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 18px; display: grid; gap: 2px; min-height: 92px; }
+.door .no { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-text); }
+.door h2 { margin: 0; font-family: var(--f-head); font-weight: 400; text-transform: uppercase; font-size: clamp(28px, 3vw, 44px); line-height: 1.05; transition: color .2s; }
+.door p { margin: 0; color: var(--ink-dim); }
+.door:hover h2 { color: var(--blue-text); }
+.door:focus-visible { outline: 2px solid var(--blue); outline-offset: 8px; }
+@media (hover: hover) { .door img { transition: transform .25s ease-out; } .door:hover img { transform: scale(1.02); } }
+
+.foot { margin-top: clamp(56px, 7vw, 100px); border-top: 1.5px solid var(--ink); padding-top: 18px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px 28px; align-items: end; }
+.brand { width: 150px; height: auto; display: block; }
+.legal { color: var(--ink-dim); line-height: 1.7; text-transform: none; letter-spacing: .04em; }
+.legal b { color: var(--ink); text-transform: uppercase; letter-spacing: .12em; }
+
+@media (max-width: 760px) {
+  .doors { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .door:nth-child(n+2) { width: min(82%, 420px); }
+  .door:nth-child(3) { justify-self: end; }
+  .door .label { min-height: 0; }
+  .foot { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .door img { transition: none; } .door:hover img { transform: none; } }
+</style>
+
+<main class="wrap">
+  <div class="top micro">
+    <span><b>L'Boulevard</b> — 2025-2026</span>
+    <nav class="pages" aria-label="Pages">
+      <a href="Movement/index.html">Movement</a>
+      <a href="Band/index.html">Connection</a>
+      <a href="Faces/index.html">Faces and Eyes</a>
+    </nav>
+    <button class="theme micro" type="button" id="theme">Light</button>
+    <nav class="handles" aria-label="Tagged on Instagram">
+      <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">lboulevard_festival</a>
+    </nav>
+  </div>
+
+  <section class="hero" aria-label="Entrance">
+    <h1 class="name glow-soft"><span class="ln">L'Boulevard</span><span class="sub">Metal Day · Casablanca</span></h1>
+    <p class="statement">Two Metal Days, three rooms: the crowd in motion, the stage and the people looking back at it, and the faces between sets.</p>
+  </section>
+
+  <nav class="doors" aria-label="Rooms">
+    <a class="door" href="Movement/index.html">
+      <img src="Movement/images/mov-25-9206.jpg" alt="A whole crowd blurred into motion in front of a bright stage" width="1882" height="1095">
+      <span class="label"><span class="no">I · 14 photographs</span><h2>Movement</h2><p>Away from the stage</p></span>
+    </a>
+    <a class="door" href="Band/index.html">
+      <img src="Band/images/frame-03.jpg" alt="Singer looking up into the lights, a fan's horns raised in front of the stage" width="1282" height="1882">
+      <span class="label"><span class="no">II · 17 photographs</span><h2>Connection</h2><p>The stage and audience</p></span>
+    </a>
+    <a class="door" href="Faces/index.html">
+      <img src="Faces/images/fac-25-9304.jpg" alt="A young man with curly hair, his face in shadow, one eye catching the light" width="1882" height="2782">
+      <span class="label"><span class="no">III · 34 photographs</span><h2>Faces and Eyes</h2><p>Close to the lens</p></span>
+    </a>
+  </nav>
+
+  <footer class="foot">
+    <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart">
+      <g fill="none" stroke="currentColor" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
+      <line x1="-88" x2="88" y1="-24" y2="-24" stroke-width="1"/><line x1="-88" x2="88" y1="24" y2="24" stroke-width="1"/></g>
+      <rect x="-78" y="-14" width="156" height="28" style="fill: var(--wall)"/>
+      <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="currentColor" letter-spacing="1">SKIMART</text>
+    </svg>
+    <div class="legal micro">
+      <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
+      © 2025–2026 Skimart™. All rights reserved.<br>
+      Skimart™ is a trademark of Mohamed, used to identify music and visual art services.
+    </div>
+  </footer>
+</main>

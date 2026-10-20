@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Movement</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<script src="../theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,400..800&family=Six+Caps&family=Space+Mono:wght@400;700&display=swap">
 <style>
@@ -12,6 +13,7 @@
 :root {
   --wall: #251726;        /* Getfedo brand-dark: ground / gallery wall */
   --wall-2: #2f1f31;
+  --viewer: #1c111d;      /* closer-look backdrop */
   --ink: #eeffe5;         /* Getfedo brand-light = the mat on every print */
   --ink-dim: rgba(238,255,229,.66);
   --ink-faint: rgba(238,255,229,.16);
@@ -26,6 +28,15 @@
      --svh and the gutter divide it back out so window-height and window-width sizes still match the real window */
   --z: 1; --svh: calc(1svh / var(--z));
 }
+/* light theme: cream wall, plum ink, same blue (small blue text a shade deeper to stay readable on cream) */
+:root[data-theme="light"] {
+  --wall: #eeffe5; --wall-2: #e1efd8; --viewer: #eeffe5;
+  --ink: #251726; --ink-dim: rgba(37,23,38,.68); --ink-faint: rgba(37,23,38,.18);
+  --blue-text: #1f5fd6;
+  color-scheme: light;
+}
+:root[data-theme="light"] body::after { mix-blend-mode: multiply; opacity: .1; }
+:root[data-theme="light"] :is(.glow, .glow-soft) { text-shadow: none; }  /* stage glow only reads on the dark wall */
 @media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
 /* small mono labels: 11px nominal; under the page scale they grow back so they read at ~10.5px on screen */
 :root { --small: calc(11px / var(--z) * .95); }
@@ -60,6 +71,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .pages a:hover { border-color: var(--blue-text); color: var(--ink); }
 .pages a[aria-current="page"] { border-color: var(--blue); color: var(--ink); }
 .pages a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.theme { margin-left: auto; font: inherit; color: var(--ink-dim); background: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; cursor: pointer; transition: border-color .2s, color .2s; }
+.theme:hover { border-color: var(--blue-text); color: var(--ink); }
+.theme:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.top .home { color: inherit; text-decoration: none; }
+.top .home:hover b { color: var(--blue-text); }
 
 /* ---------- entrance: the wide frame on the right, the name fills the wall beside it and sits on the frame's bottom line ---------- */
 .hero { --gap: clamp(20px, 2.4vw, 36px); --lw: min(58cqi, calc((100 * var(--svh) - 200px) * 1.468)); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--gap); container-type: inline-size; padding-top: clamp(24px, 3vw, 40px); }
@@ -182,7 +198,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 
 /* ---------- closer look ---------- */
-.viewer { position: fixed; inset: 0; z-index: 60; background: #1c111d; display: grid; grid-template-rows: auto auto 1fr;
+.viewer { position: fixed; inset: 0; z-index: 60; background: var(--viewer); display: grid; grid-template-rows: auto auto 1fr;
   padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .viewer[hidden] { display: none; }
 .bar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; color: var(--ink-dim); }
@@ -229,12 +245,13 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 <main class="wrap">
   <div class="top micro">
-    <span><b>L'Boulevard</b> — 2025-2026</span>
+    <span><a class="home" href="../index.html"><b>L'Boulevard</b></a> — 2025-2026</span>
     <nav class="pages" aria-label="Pages">
       <a href="index.html" aria-current="page">Movement</a>
       <a href="../Band/index.html">Connection</a>
       <a href="../Faces/index.html">Faces and Eyes</a>
     </nav>
+    <button class="theme micro" type="button" id="theme">Light</button>
     <nav class="handles" aria-label="Tagged on Instagram">
       <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">lboulevard_festival</a>
     </nav>
@@ -339,10 +356,10 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
   <footer class="foot">
     <svg class="brand" viewBox="-100 -42 200 84" role="img" aria-label="Skimart">
-      <g fill="none" stroke="#eeffe5" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
+      <g fill="none" stroke="currentColor" stroke-width="2"><ellipse rx="96" ry="38"/><ellipse rx="70" ry="38" stroke-width="1"/><ellipse rx="40" ry="38" stroke-width="1"/>
       <line x1="-88" x2="88" y1="-24" y2="-24" stroke-width="1"/><line x1="-88" x2="88" y1="24" y2="24" stroke-width="1"/></g>
-      <rect x="-78" y="-14" width="156" height="28" fill="#251726"/>
-      <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="#eeffe5" letter-spacing="1">SKIMART</text>
+      <rect x="-78" y="-14" width="156" height="28" style="fill: var(--wall)"/>
+      <text text-anchor="middle" y="8" font-size="23" font-family="Archivo, Arial, sans-serif" font-weight="800" font-stretch="120%" fill="currentColor" letter-spacing="1">SKIMART</text>
     </svg>
     <div class="legal micro">
       <b>Shoot &amp; designed by Skimart</b> · No beauty, only function<br>
