@@ -30,13 +30,15 @@
 }
 /* light theme: cream wall, plum ink, same blue (small blue text a shade deeper to stay readable on cream) */
 :root[data-theme="light"] {
-  --wall: #eeffe5; --wall-2: #e1efd8; --viewer: #eeffe5;
+  --wall: #eeffe5; --wall-2: #e1efd8;
   --ink: #251726; --ink-dim: rgba(37,23,38,.68); --ink-faint: rgba(37,23,38,.18);
   --blue-text: #1f5fd6;
   color-scheme: light;
 }
 :root[data-theme="light"] body::after { mix-blend-mode: multiply; opacity: .1; }
 :root[data-theme="light"] :is(.glow, .glow-soft) { text-shadow: none; }  /* stage glow only reads on the dark wall */
+/* the closer look stays dark in both themes, so the photo and its cream mat sit on the dark wall */
+:root[data-theme="light"] .viewer { --ink: #eeffe5; --ink-dim: rgba(238,255,229,.66); --ink-faint: rgba(238,255,229,.16); --wall-2: #2f1f31; --blue-text: #3d81ff; color-scheme: dark; }
 @media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
 /* small mono labels: 11px nominal; under the page scale they grow back so they read at ~10.5px on screen */
 :root { --small: calc(11px / var(--z) * .95); }
@@ -230,7 +232,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .bar button:active { background: var(--blue); border-color: var(--blue); color: var(--ink); }
 @media (hover: hover) { .bar button:hover { background: var(--blue); border-color: var(--blue); color: var(--ink); } }
 .bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 8px; }
+.stage { position: relative; min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 8px; }
+/* stack prints: each frame's label sits beside its frame, or on it when the photo fills the width (placed by placeFrames) */
+#vframes { list-style: none; margin: 0; padding: 0; }
+#vframes li { position: absolute; pointer-events: none; color: var(--ink-dim); text-transform: none; letter-spacing: .06em; line-height: 1.6; }
+#vframes li.on { padding: 4px 8px; color: var(--ink); background: color-mix(in srgb, var(--viewer) 82%, transparent); }
 /* phones: caption and print sit together in the middle of the screen */
 @media (max-width: 860px) { .viewer { grid-template-rows: auto 1fr auto auto 1fr; } #vcap { grid-row: 3; } .stage { grid-row: 4; }
   .stage img { max-height: calc(100svh - 230px); } }
@@ -297,7 +303,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
           <a href="#room-1"><b>I</b> Looking back</a>
           <a href="#room-2"><b>II</b> Covered</a>
           <a href="#room-3"><b>III</b> Painted</a>
-          <a href="#seventeen"><b>+4</b> 17 seconds</a>
+          <a href="#seventeen"><b>+4</b> 14 seconds</a>
           <a href="#gallery"><b>+22</b> Gallery</a>
         </nav>
         <p class="credit micro">Canon EOS 70D. 2025: EF 50mm f/1.8 STM (02: EF-S 18–55mm). 2026: EF 50mm f/1.4 USM. Camera data from the original files. Matted in #EEFFE5.</p>
@@ -335,8 +341,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     <div class="drift flip">
       <figure class="work a"><button class="shot" type="button" data-cap="05 · Hand over the eye · 2025 · 20:46:01 · 1/200 s · f/2.2 · ISO 12800 · IMG_9295 · @w8yolo" aria-label="Look closer at 05, Hand over the eye"><img src="images/fac-25-9295.jpg" alt="The same curly-haired young man, two fingers spread across one eye" width="1882" height="2782" loading="lazy"></button>
         <figcaption class="label"><span class="no">05</span><h3>Hand over the eye</h3><a class="who" href="https://www.instagram.com/w8yolo/" target="_blank" rel="noopener">@w8yolo</a><span class="meta">IMG_9295 · 2025 · 20:46:01 · 1/200 s · f/2.2 · ISO 12800</span></figcaption></figure>
-      <figure class="work b"><button class="shot" type="button" data-cap="06 · Spikes · 2026 · 22:49:25 · 1/60 s · f/2 · ISO 6400 · IMG_0547 · @rasha_wt" aria-label="Look closer at 06, Spikes"><img src="images/fac-26-0547.jpg" alt="A woman in dark spiked glasses and dark lipstick, the crowd blurred behind" width="1882" height="2782" loading="lazy"></button>
-        <figcaption class="label"><span class="no">06</span><h3>Spikes</h3><a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a><span class="meta">IMG_0547 · 2026 · 22:49:25 · 1/60 s · f/2 · ISO 6400</span></figcaption></figure>
+      <figure class="work b"><button class="shot" type="button" data-cap="06 · Spikes · 2026 · 22:49:13 · 1/60 s · f/1.4 · ISO 3200 · IMG_0544 · @rasha_wt" aria-label="Look closer at 06, Spikes"><img src="images/fac-26-0544.jpg" alt="Spiked glasses, tongue out, both hands in the horns" width="1882" height="2782" loading="lazy"></button>
+        <figcaption class="label"><span class="no">06</span><h3>Spikes</h3><a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a><span class="meta">IMG_0544 · 2026 · 22:49:13 · 1/60 s · f/1.4 · ISO 3200</span></figcaption></figure>
       <figure class="work c"><button class="shot" type="button" data-cap="07 · Veil · 2026 · 23:20:33 · 1/100 s · f/1.8 · ISO 6400 · IMG_0586 · @ssala7_dr" aria-label="Look closer at 07, Veil"><img src="images/fac-26-0586.jpg" alt="A face hidden under a veil and curly hair, both hands raised in the horns" width="1882" height="2782" loading="lazy"></button>
         <figcaption class="label"><span class="no">07</span><h3>Veil</h3><a class="who" href="https://www.instagram.com/ssala7_dr/" target="_blank" rel="noopener">@ssala7_dr</a><span class="meta">IMG_0586 · 2026 · 23:20:33 · 1/100 s · f/1.8 · ISO 6400</span></figcaption></figure>
     </div>
@@ -355,8 +361,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
         <figcaption class="label"><span class="no">08</span><h3>White eyes</h3><a class="who" href="https://www.instagram.com/or.atticus/" target="_blank" rel="noopener">@or.atticus</a><span class="meta">IMG_9362 · 2025 · 21:53:45 · 1/200 s · f/1.8 · ISO 8000</span></figcaption></figure>
       <figure class="work b"><button class="shot" type="button" data-cap="09 · Smoke · 2026 · 20:12:54 · 1/125 s · f/1.4 · ISO 3200 · IMG_0357" aria-label="Look closer at 09, Smoke"><img src="images/fac-26-0357.jpg" alt="A man with long locks and dark sunglasses, a cigarette in his mouth" width="1882" height="2782" loading="lazy"></button>
         <figcaption class="label"><span class="no">09</span><h3>Smoke</h3><span class="meta">IMG_0357 · 2026 · 20:12:54 · 1/125 s · f/1.4 · ISO 3200</span></figcaption></figure>
-      <figure class="work c"><button class="shot" type="button" data-cap="10 · The line · 2026 · 22:57:35 · 1/60 s · f/1.8 · ISO 6400 · IMG_0570 · @marcy.777n" aria-label="Look closer at 10, The line"><img src="images/fac-26-0570.jpg" alt="A woman with a black line painted down through one eye, hands in the horns around her face" width="1882" height="2782" loading="lazy"></button>
-        <figcaption class="label"><span class="no">10</span><h3>The line</h3><a class="who" href="https://www.instagram.com/marcy.777n/" target="_blank" rel="noopener">@marcy.777n</a><span class="meta">IMG_0570 · 2026 · 22:57:35 · 1/60 s · f/1.8 · ISO 6400</span></figcaption></figure>
+      <figure class="work c"><button class="shot" type="button" data-cap="10 · The line · 2026 · 22:57:46 · 1/60 s · f/1.8 · ISO 4000 · IMG_0572 · @marcy.777n" aria-label="Look closer at 10, The line"><img src="images/fac-26-0572.jpg" alt="A woman with a black line painted down through one eye, a hand in her hair, close to the lens" width="1882" height="2782" loading="lazy"></button>
+        <figcaption class="label"><span class="no">10</span><h3>The line</h3><a class="who" href="https://www.instagram.com/marcy.777n/" target="_blank" rel="noopener">@marcy.777n</a><span class="meta">IMG_0572 · 2026 · 22:57:46 · 1/60 s · f/1.8 · ISO 4000</span></figcaption></figure>
     </div>
   </section>
 
@@ -364,14 +370,14 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
   <section class="seq" id="seventeen" aria-labelledby="seventeen-title">
     <span class="cubes" aria-hidden="true"><img src="../Band/assets/Y2K_078.svg" alt=""><img src="../Band/assets/Y2K_078.svg" alt=""><img src="../Band/assets/Y2K_078.svg" alt=""><img src="../Band/assets/Y2K_078.svg" alt=""></span>
-    <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="9"></svg><span class="micro">17 seconds</span></div>
-    <h2 id="seventeen-title">17 seconds</h2>
-    <p>One face behind spiked glasses, four frames, 2026, 22:49:13 to 22:49:30. Scroll sideways.</p>
-    <div class="film" tabindex="0" role="group" aria-label="17 seconds, frames 1 to 4">
-      <figure><button class="shot" type="button" data-cap="F1 · +0 s · 2026 · 22:49:13 · 1/60 s · f/1.4 · ISO 3200 · IMG_0544 · @rasha_wt" aria-label="Look closer at frame 1"><img src="images/fac-26-0544.jpg" alt="Spiked glasses, tongue out, both hands in the horns" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F1</b> · +0 s · IMG_0544 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
-      <figure><button class="shot" type="button" data-cap="F2 · +3 s · 2026 · 22:49:16 · 1/60 s · f/2 · ISO 6400 · IMG_0545 · @rasha_wt" aria-label="Look closer at frame 2"><img src="images/fac-26-0545.jpg" alt="The same face in spiked glasses, wider, the crowd around her" width="1882" height="1282" loading="lazy"></button><figcaption class="micro"><b>F2</b> · +3 s · IMG_0545 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
-      <figure><button class="shot" type="button" data-cap="F3 · +7 s · 2026 · 22:49:20 · 1/60 s · f/2 · ISO 6400 · IMG_0546 · @rasha_wt" aria-label="Look closer at frame 3"><img src="images/fac-26-0546.jpg" alt="Spiked glasses, head tilted, lips pressed" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F3</b> · +7 s · IMG_0546 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
-      <figure><button class="shot" type="button" data-cap="F4 · +17 s · 2026 · 22:49:30 · 1/60 s · f/2 · ISO 6400 · IMG_0548 · @rasha_wt" aria-label="Look closer at frame 4"><img src="images/fac-26-0548.jpg" alt="Spiked glasses from further back, standing in the crowd" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F4</b> · +17 s · IMG_0548 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
+    <div class="qrtag" aria-hidden="true"><svg data-qr data-seed="9"></svg><span class="micro">14 seconds</span></div>
+    <h2 id="seventeen-title">14 seconds</h2>
+    <p>One face behind spiked glasses, four frames, 2026, 22:49:16 to 22:49:30. Scroll sideways.</p>
+    <div class="film" tabindex="0" role="group" aria-label="14 seconds, frames 1 to 4">
+      <figure><button class="shot" type="button" data-cap="F1 · +0 s · 2026 · 22:49:16 · 1/60 s · f/2 · ISO 6400 · IMG_0545 · @rasha_wt" aria-label="Look closer at frame 1"><img src="images/fac-26-0545.jpg" alt="The same face in spiked glasses, wider, the crowd around her" width="1882" height="1282" loading="lazy"></button><figcaption class="micro"><b>F1</b> · +0 s · IMG_0545 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="F2 · +4 s · 2026 · 22:49:20 · 1/60 s · f/2 · ISO 6400 · IMG_0546 · @rasha_wt" aria-label="Look closer at frame 2"><img src="images/fac-26-0546.jpg" alt="Spiked glasses, head tilted, lips pressed" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F2</b> · +4 s · IMG_0546 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="F3 · +9 s · 2026 · 22:49:25 · 1/60 s · f/2 · ISO 6400 · IMG_0547 · @rasha_wt" aria-label="Look closer at frame 3"><img src="images/fac-26-0547.jpg" alt="Spiked glasses and dark lipstick, the crowd blurred behind" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F3</b> · +9 s · IMG_0547 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="F4 · +14 s · 2026 · 22:49:30 · 1/60 s · f/2 · ISO 6400 · IMG_0548 · @rasha_wt" aria-label="Look closer at frame 4"><img src="images/fac-26-0548.jpg" alt="Spiked glasses from further back, standing in the crowd" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>F4</b> · +14 s · IMG_0548 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a></figcaption></figure>
     </div>
   </section>
 
@@ -382,7 +388,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     <div class="gwall">
       <h3>Faces <span class="micro">You can hear them loud · 2025</span></h3>
       <div class="ggrid">
-      <figure><button class="shot" type="button" data-cap="G01 · Faces · 2025 · IMG_9158 18:59:11 / IMG_9148 18:51:30 / IMG_9315 21:00:55 · @ayven.moonson @retro_manneta @lmryoula_fati5" aria-label="Look closer at G01"><img src="images/fac-25-groups.jpg" alt="Three group portraits stacked: four young men posing at dusk, a crowd of friends making the horns by a tent, three women in face paint with their tongues out" width="1882" height="3200" loading="lazy"></button><figcaption class="micro"><b>G01</b> · IMG_9158 · IMG_9148 · IMG_9315 · <a class="who" href="https://www.instagram.com/ayven.moonson/" target="_blank" rel="noopener">@ayven.moonson</a> <a class="who" href="https://www.instagram.com/retro_manneta/" target="_blank" rel="noopener">@retro_manneta</a> <a class="who" href="https://www.instagram.com/lmryoula_fati5/" target="_blank" rel="noopener">@lmryoula_fati5</a></figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="G01 · Faces · 2025" data-frames="IMG_9158 · 18:59:11 · 1/250 s · f/3.5 · ISO 250 · @ayven.moonson|IMG_9148 · 18:51:30 · 1/250 s · f/3.5 · ISO 500 · @retro_manneta|IMG_9315 · 21:00:55 · 1/200 s · f/1.8 · ISO 8000 · @lmryoula_fati5" aria-label="Look closer at G01"><img src="images/fac-25-groups.jpg" alt="Three group portraits stacked: four young men posing at dusk, a crowd of friends making the horns by a tent, three women in face paint with their tongues out" width="1882" height="3200" loading="lazy"></button><figcaption class="micro"><b>G01</b> · IMG_9158 · IMG_9148 · IMG_9315 · <a class="who" href="https://www.instagram.com/ayven.moonson/" target="_blank" rel="noopener">@ayven.moonson</a> <a class="who" href="https://www.instagram.com/retro_manneta/" target="_blank" rel="noopener">@retro_manneta</a> <a class="who" href="https://www.instagram.com/lmryoula_fati5/" target="_blank" rel="noopener">@lmryoula_fati5</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G02 · Faces · 2025 · 19:07:54 · 1/250 s · f/5 · ISO 4000 · IMG_9169 · @ohlinsami" aria-label="Look closer at G02"><img src="images/fac-25-9169.jpg" alt="A long-haired man in corpse paint grinning, a band shirt under his jacket" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G02</b> · IMG_9169 · <a class="who" href="https://www.instagram.com/ohlinsami/" target="_blank" rel="noopener">@ohlinsami</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G03 · Faces · 2025 · 20:45:43 · 1/200 s · f/2.2 · ISO 12800 · IMG_9293 · @w8yolo" aria-label="Look closer at G03"><img src="images/fac-25-9293.jpg" alt="A curly-haired young man staring hard into the lens from the crowd" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G03</b> · IMG_9293 · <a class="who" href="https://www.instagram.com/w8yolo/" target="_blank" rel="noopener">@w8yolo</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G04 · Faces · 2025 · 21:11:26 · 1/200 s · f/1.8 · ISO 2000 · IMG_9322 · @ilyass.2k2" aria-label="Look closer at G04"><img src="images/fac-25-9322.jpg" alt="A ringed hand holding up a paperback, La Patience du diable, the face hidden behind it" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G04</b> · IMG_9322 · <a class="who" href="https://www.instagram.com/ilyass.2k2/" target="_blank" rel="noopener">@ilyass.2k2</a></figcaption></figure>
@@ -405,7 +411,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
       <figure><button class="shot" type="button" data-cap="G16 · Eyes · 2026 · 22:09:25 · 1/100 s · f/1.6 · ISO 6400 · IMG_0492 · @vixen_lm" aria-label="Look closer at G16"><img src="images/fac-26-0492.jpg" alt="A woman in sunglasses and a leather top in the crowd" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G16</b> · IMG_0492 · <a class="who" href="https://www.instagram.com/vixen_lm/" target="_blank" rel="noopener">@vixen_lm</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G17 · Eyes · 2026 · 22:17:09 · 1/100 s · f/1.6 · ISO 4000 · IMG_0496 · @pouka_es" aria-label="Look closer at G17"><img src="images/fac-26-0496.jpg" alt="A woman in the crowd turning to look back over her shoulder, light on half her face" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G17</b> · IMG_0496 · <a class="who" href="https://www.instagram.com/pouka_es/" target="_blank" rel="noopener">@pouka_es</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G18 · Eyes · 2026 · 22:36:53 · 1/60 s · f/1.6 · ISO 2000 · IMG_0527 · @or.atticus" aria-label="Look closer at G18"><img src="images/fac-26-0527.jpg" alt="A close face with white eyes and painted tear lines, tongue stretched out" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G18</b> · IMG_0527 · <a class="who" href="https://www.instagram.com/or.atticus/" target="_blank" rel="noopener">@or.atticus</a></figcaption></figure>
-      <figure><button class="shot" type="button" data-cap="G19 · Eyes · 2026 · IMG_0545 22:49:16 / IMG_0571 22:57:42 · @rasha_wt @marcy.777n" aria-label="Look closer at G19"><img src="images/fac-26-pair.jpg" alt="Two portraits stacked: a woman in spiked sunglasses making the horns, and a woman with a painted line down her face holding up both hands in the horns" width="1882" height="2523" loading="lazy"></button><figcaption class="micro"><b>G19</b> · IMG_0545 · IMG_0571 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a> <a class="who" href="https://www.instagram.com/marcy.777n/" target="_blank" rel="noopener">@marcy.777n</a></figcaption></figure>
+      <figure><button class="shot" type="button" data-cap="G19 · Eyes · 2026" data-frames="IMG_0545 · 22:49:16 · 1/60 s · f/2 · ISO 6400 · @rasha_wt|IMG_0571 · 22:57:42 · 1/60 s · f/1.8 · ISO 1600 · @marcy.777n" aria-label="Look closer at G19"><img src="images/fac-26-pair.jpg" alt="Two portraits stacked: a woman in spiked sunglasses making the horns, and a woman with a painted line down her face holding up both hands in the horns" width="1882" height="2523" loading="lazy"></button><figcaption class="micro"><b>G19</b> · IMG_0545 · IMG_0571 · <a class="who" href="https://www.instagram.com/rasha_wt/" target="_blank" rel="noopener">@rasha_wt</a> <a class="who" href="https://www.instagram.com/marcy.777n/" target="_blank" rel="noopener">@marcy.777n</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G20 · Eyes · 2026 · 22:55:10 · 1/60 s · f/1.8 · ISO 5000 · IMG_0564 · @mahddeth" aria-label="Look closer at G20"><img src="images/fac-26-0564.jpg" alt="A man with long curly hair and sunglasses, a chain round his neck" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G20</b> · IMG_0564 · <a class="who" href="https://www.instagram.com/mahddeth/" target="_blank" rel="noopener">@mahddeth</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G21 · Eyes · 2026 · 23:21:59 · 1/100 s · f/1.8 · ISO 5000 · IMG_0590 · @ssala7_dr" aria-label="Look closer at G21"><img src="images/fac-26-0590.jpg" alt="A woman with curly hair and painted eyes in a Jack Daniel's shirt" width="1882" height="2782" loading="lazy"></button><figcaption class="micro"><b>G21</b> · IMG_0590 · <a class="who" href="https://www.instagram.com/ssala7_dr/" target="_blank" rel="noopener">@ssala7_dr</a></figcaption></figure>
       <figure><button class="shot" type="button" data-cap="G22 · Eyes · 2026 · 23:22:21 · 1/100 s · f/1.8 · ISO 5000 · IMG_0594 · @ssala7_dr" aria-label="Look closer at G22"><img src="images/fac-26-0594.jpg" alt="A close face with painted eyes, a hand making the horns at her cheek" width="1882" height="1282" loading="lazy"></button><figcaption class="micro"><b>G22</b> · IMG_0594 · <a class="who" href="https://www.instagram.com/ssala7_dr/" target="_blank" rel="noopener">@ssala7_dr</a></figcaption></figure>
@@ -440,7 +446,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     <button type="button" id="vnext" aria-label="Next work">Next</button>
     <button type="button" id="vclose">Close</button></div></div>
   <p class="micro" id="vcap" aria-live="polite"></p>
-  <div class="stage"><img id="vimg" alt=""></div>
+  <div class="stage"><img id="vimg" alt=""><ol class="micro" id="vframes" aria-label="Frames, top to bottom"></ol></div>
 </div>
 
 <script>
@@ -473,12 +479,13 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   function drawAll(){ grids.forEach(warp); }
   drawAll(); var t; window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(drawAll,150); });
 
-  /* closer look (same as Connection): walks the hang in order (01–10), then the four frames of 17 seconds and the gallery; #01…#10, #F1…#F4 or #G01…#G22 opens one */
+  /* closer look (same as Connection): walks the hang in order (01–10), then the four frames of 14 seconds and the gallery; #01…#10, #F1…#F4 or #G01…#G22 opens one */
   var shots=[].slice.call(document.querySelectorAll('.shot'));
   var v=document.getElementById('viewer'), img=document.getElementById('vimg'), cap=document.getElementById('vcap'), main=document.querySelector('main');
-  var cur=0, opener=null, n=shots.length, x0=null;
+  var cur=0, opener=null, n=shots.length, x0=null, frames=document.getElementById('vframes');
   function key(i){ var c=shots[i].dataset.cap; return c.indexOf('Study')===0 ? c.split(' · ')[1] : c.split(' · ')[0]; }
   function show(i){ cur=(i+n)%n; var s=shots[cur].querySelector('img'); img.src=s.src; img.alt=s.alt; cap.textContent=shots[cur].dataset.cap;
+    frames.textContent=''; (shots[cur].dataset.frames||'').split('|').filter(Boolean).forEach(function(t){ var li=document.createElement('li'); li.textContent=t; frames.appendChild(li); });
     [cur+1,cur-1].forEach(function(k){ new Image().src=shots[(k+n)%n].querySelector('img').src; });
     try{ history.replaceState(null,'','#'+key(cur)); }catch(e){} }
   function open(i,b){ opener=b; show(i); v.hidden=false; main.inert=true;
@@ -492,7 +499,14 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   v.addEventListener('click',function(e){ if(e.target===v||e.target.classList.contains('stage')) close(); });
   /* caption starts where the photo starts; photos differ in width, so re-measure on load and whenever the photo's box changes */
   function alignCap(){ if(v.hidden) return; var z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;   /* rects are in screen px, padding is scaled by the page zoom */
-    cap.style.paddingLeft=Math.max(0, (img.getBoundingClientRect().left-cap.getBoundingClientRect().left)/z)+'px'; }
+    cap.style.paddingLeft=Math.max(0, (img.getBoundingClientRect().left-cap.getBoundingClientRect().left)/z)+'px'; placeFrames(z); }
+  /* stacks are n equal frames inside a 41/1882 mat: beside the print each label is level with its frame's middle, on a phone it sits on the frame's top */
+  function placeFrames(z){ var li=frames.children, m=li.length; if(!m||!img.naturalHeight) return;
+    var r=img.getBoundingClientRect(), st=frames.parentNode.getBoundingClientRect(), k=r.height/img.naturalHeight,
+        mat=img.naturalWidth*41/1882, fh=(img.naturalHeight-mat*(m+1))/m, room=st.right-r.right-24, beside=room>=200;
+    [].forEach.call(li,function(el,i){ var top=r.top-st.top+(mat+i*(fh+mat))*k; el.classList.toggle('on',!beside); el.style.transform=beside?'translateY(-50%)':'';
+      el.style.left=(beside ? r.right-st.left+16 : r.left-st.left+mat*k+8)/z+'px'; el.style.top=(beside ? top+fh*k/2 : top+8)/z+'px';
+      el.style.maxWidth=(beside ? room : r.width-2*mat*k-16)/z+'px'; }); }
   img.addEventListener('load',alignCap); new ResizeObserver(alignCap).observe(img);
   /* pinch-zoom belongs to the browser: a second finger or a zoomed-in screen is never a swipe or tap.
      While zoomed the photo pans freely and the buttons stay pinned, at normal size, to the zoomed view's top right */

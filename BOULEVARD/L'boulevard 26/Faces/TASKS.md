@@ -59,3 +59,6 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 - [x] Hung ↔ gallery swaps (your call): 03 ← IMG_0393 "Hood" · 04 ← IMG_9344 "Chin up" · 09 ← IMG_0357 "Smoke". 9293, 0496 and 0527 moved to the gallery in time order.
 - [x] Two vertical stacks in the gallery, made like the GRID exports (`~/.cache/lbv-faces2/stack.py`): G01 = 2025 Groups 9158 / 9148 / 9315 (your Instagram slide), G19 = 2026 0545 / 0571 (GRID/Portrait P4). All five frames tagged from their `people/` folders. Gallery is now G01–G22.
 - [ ] Room III "Painted" now holds 0357 (sunglasses and smoke, no paint); its line was widened to "dark glasses". 0545 is both F2 in "17 seconds" and in the G19 stack.
+- [x] (20.10.2026) 10 is now IMG_0572 (same sitter, closer; 0570 removed). 06 takes 0544 and 0547 joins the strip; the strip stays in time order (0545 → 0548), so it is now "14 seconds".
+- [x] Stacks (G01, G19): in the viewer each frame's label sits beside the middle of its frame (on the frame's top on narrow screens).
+- [x] The viewer stays dark in light mode (all three room pages).

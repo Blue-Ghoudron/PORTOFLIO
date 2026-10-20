@@ -30,13 +30,15 @@
 }
 /* light theme: cream wall, plum ink, same blue (small blue text a shade deeper to stay readable on cream) */
 :root[data-theme="light"] {
-  --wall: #eeffe5; --wall-2: #e1efd8; --viewer: #eeffe5;
+  --wall: #eeffe5; --wall-2: #e1efd8;
   --ink: #251726; --ink-dim: rgba(37,23,38,.68); --ink-faint: rgba(37,23,38,.18);
   --blue-text: #1f5fd6;
   color-scheme: light;
 }
 :root[data-theme="light"] body::after { mix-blend-mode: multiply; opacity: .1; }
 :root[data-theme="light"] :is(.glow, .glow-soft) { text-shadow: none; }  /* stage glow only reads on the dark wall */
+/* the closer look stays dark in both themes, so the photo and its cream mat sit on the dark wall */
+:root[data-theme="light"] .viewer { --ink: #eeffe5; --ink-dim: rgba(238,255,229,.66); --ink-faint: rgba(238,255,229,.16); --wall-2: #2f1f31; --blue-text: #3d81ff; color-scheme: dark; }
 @media (min-width: 1440px) { :root { --z: .75; } html { zoom: .75; } }
 /* small mono labels: 11px nominal; under the page scale they grow back so they read at ~10.5px on screen */
 :root { --small: calc(11px / var(--z) * .95); }
