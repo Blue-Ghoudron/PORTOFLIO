@@ -1,14 +1,15 @@
 # Faces and Eyes — tasks
 
 Page: `Faces/index.html` on `Faces-and-Eyes-Branch` (local preview: http://localhost:8000/Faces/).
-Status (20.10.2026): built with 14 photos (10 hung + 4 in the 17-second strip). Checked with Playwright, committed and pushed, PR open.
+Status (20.10.2026): built with 34 photos (10 hung, 4 in the 17-second strip, 20 in the gallery). Checked with Playwright, committed and pushed, PR open.
 
 ## 1. From you
 
 - [x] **Concept:** title "Faces and Eyes". The rooms follow what the eyes do: they look back, they are covered, they are painted.
 - [x] **Photos:** `Boulevard_20.09.2025/Lightroom/Portrait` and `Boulevard_20.09.2026/Boulevard_26.jpg/Lightroom/Portrait`, both years.
 - [x] **Branch:** Movement committed on `Movement-Branch` (not pushed), `Faces-and-Eyes-Branch` made from it.
-- [ ] **Second Instagram link** (DeprHrWDb3P) didn't load. Paste the caption if it should shape the page. The first one is your "FACES / YOU CAN HEAR THEM LOUD" post.
+- [x] **Instagram posts:** read through the public embed. DeSVtD7kUiS is "FACES / YOU CAN HEAR THEM LOUD / L'Boulvard 2025" and DeprHrWDb3P is "EYES / DEATH AND THRASH / L'Boulvard, Casablanca - 2026". They name the gallery's two walls. Photo tags need a login, so I couldn't read them.
+- [ ] **Tagging sitters:** tell me which people to tag (handle per photo). Tags go under the title as an Instagram link.
 
 ## 2. Curation (approved 20.10.2026)
 
@@ -38,6 +39,9 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 - [x] Page from Movement's template: hero with the portrait prologue, three rooms of three portraits stepping down the wall, the 17-second strip, outro ("Blink"), footer.
 - [x] Statement (~75 words), subtitle "Close to the lens", camera line (2025: EF 50mm f/1.8 STM, 02 on the EF-S 18–55mm. 2026: EF 50mm f/1.4 USM).
 - [x] "Faces and Eyes" link added to the page switch on Connection and Movement.
+
+- [x] **Gallery (21.10.2026, your request):** 20 more portraits in two walls. Faces · 2025: 9169, 9322, 9331, 9343, 9344, 9345, 9346, 9373, 9414. Eyes · 2026: 0357, 0380, 0393, 0409, 0446, 0477, 0488, 0492, 0564, 0590, 0594. Numbered G01–G20, open in the viewer, #G01 links work.
+- [x] **Hero (your note on the empty middle):** the title is now two lines (FACES / AND EYES) and reaches the photo. Byline, statement and route sit under it, beside the photo.
 
 ## 4. Check and ship
 
