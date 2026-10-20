@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKIMART — Photographer / Visual Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#5c5a57;--line:#262626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Archivo,system-ui,sans-serif}
+  a,button{color:inherit;font:inherit;background:none;border:0;cursor:pointer;text-decoration:none;text-align:left}
+  :focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+  .mono{font-family:"IBM Plex Mono",monospace}
+
+  aside{position:fixed;inset:0 auto 0 0;width:260px;padding:40px 28px 32px 40px;overflow-y:auto;border-right:1px solid var(--line)}
+  .logo{display:block;font-weight:500;letter-spacing:.22em;font-size:18px}
+  .tagline{display:block;margin-top:6px;color:var(--mute);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+  .meta{margin:26px 0 30px;display:grid;gap:2px}
+  .meta a{font-size:13px;color:var(--mute);width:fit-content}
+  .meta a:hover{color:var(--ink)}
+
+  .sec{border-top:1px solid var(--line)}
+  .sec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
+  .tog .n{color:var(--dim);font-size:11px;letter-spacing:.05em;margin-left:8px}
+  .tog .pm{font-size:16px;line-height:1;transition:transform .25s;color:var(--mute)}
+  .tog:hover .pm{color:var(--ink)}
+  .open>.tog .pm{transform:rotate(45deg);color:var(--ink)}
+  .gsec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px;color:var(--mute)}
+  .gsec>.tog:hover,.gsec.open>.tog{color:var(--ink)}
+  .gsec>.tog .pm{font-size:13px}
+  .gsec .list ul{padding:2px 0 8px 14px}
+  .list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+  .open>.list{grid-template-rows:1fr}
+  .list>div{overflow:hidden}
+  .list ul{list-style:none;padding:0 0 14px 16px}
+  .list a{position:relative;display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:13px;color:var(--mute)}
+  .list a .go{opacity:0;transform:translateX(-4px);transition:.2s}
+  .list a:hover{color:var(--ink)}
+  .list a:hover .go{opacity:1;transform:none}
+  .list a[aria-current]{color:var(--ink)}
+  .list a[aria-current]::before{content:"◆";position:absolute;left:-14px;font-size:8px;top:8px}
+  .list .sub{padding:0 0 0 14px}
+  .list .grp{color:var(--dim);font-size:11px;letter-spacing:.08em;margin:10px 0 2px -2px}
+  .list .grp:first-child{margin-top:0}
+  .list .ext{color:var(--dim);font-size:11px}
+
+  main{margin-left:260px;padding:40px clamp(20px,4vw,64px) 80px;min-height:100vh}
+
+  .home .photo{max-width:760px;aspect-ratio:3/2;overflow:hidden}
+  .home img{width:100%;height:100%;object-fit:cover}
+  .home .lbl{display:block;margin-top:26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
+  .home h1{font-weight:400;font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:12px 0 16px}
+  .home p{max-width:520px;color:#cfcbc4}
+  .cta{display:inline-block;margin-top:22px;font-size:12px;letter-spacing:.24em;border-bottom:1px solid var(--ink);padding-bottom:5px}
+  .cta:hover{letter-spacing:.3em}
+  .loc{display:block;margin-top:34px;font-size:11px;letter-spacing:.24em;color:var(--dim)}
+  .meta a[aria-current]{color:var(--ink)}
+
+  .about>p{max-width:560px;color:#cfcbc4;margin-bottom:16px}
+  .about .todo{border:1px dashed var(--dim);padding:12px 14px;color:var(--mute);font-size:13px}
+  .about dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px;max-width:640px;margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
+  .about dt{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+  .about dd a{border-bottom:1px solid var(--dim)}
+  .about dd a:hover{border-color:var(--ink)}
+  @media (max-width:560px){.about dl{grid-template-columns:1fr;gap:4px}.about dd{margin-bottom:12px}}
+
+  .proj h2{font-weight:400;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.01em}
+  .proj .info{color:var(--mute);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:6px 0 28px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1100px}
+  .grid figure{overflow:hidden;background:#111}
+  .grid img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;transition:transform .5s,opacity .5s;opacity:0}
+  .grid img.in{opacity:1}
+  .grid figure:hover img{transform:scale(1.025)}
+  .grid .wide{grid-column:1/-1}
+  .grid .wide img{aspect-ratio:16/9}
+  .poster img{object-fit:contain;background:#111}
+  .door{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1100px}
+  .door a{display:block}
+  .door img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+  .door span{display:block;margin-top:10px}
+  .door small{color:var(--mute);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+
+  .burger{display:none}
+
+  @media (max-width:820px){
+    aside{position:sticky;top:0;width:auto;height:auto;max-height:100svh;padding:16px 16px 0;background:var(--bg);border-right:0;border-bottom:1px solid var(--line);z-index:5}
+    .top{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px}
+    .burger{display:block;font-size:12px;letter-spacing:.22em}
+    .tagline{display:none}
+    .navbody{display:none}
+    aside.menu .navbody{display:block;padding-bottom:16px}
+    .meta{margin:4px 0 16px}
+    main{margin:0;padding:24px 16px 64px}
+    .grid,.door{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<aside id="side">
+  <div class="top">
+    <div><a class="logo" href="#">SKIMART</a><span class="tagline">Photographer / Visual Artist</span></div>
+    <button class="burger" aria-expanded="false" aria-controls="navbody">MENU</button>
+  </div>
+  <div class="navbody" id="navbody">
+    <nav class="meta mono" aria-label="About">
+      <a href="#about">about</a><a href="mailto:ghoujlamimohamed@gmail.com">contact</a><a href="https://www.instagram.com/_skimart_/">instagram ↗</a>
+    </nav>
+    <nav id="work" aria-label="Work"></nav>
+  </div>
+</aside>
+
+<main id="view"></main>
+
+<script>
+const F = f => 'assets/home/' + f + '.jpg';
+const LBV = "BOULEVARD/L'boulevard%2026/";
+const WORK = [
+  {id:'photography', name:'Photography', projects:[
+    {id:'technopark', group:'Street', name:'Technopark · Sidi Maarouf', info:'Street · Casablanca', imgs:["x714252_433206", "x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
+    {id:'hellboy-mehdi', group:'Clubs', name:'Mehdi Ainak & Hellboy', info:'lapero.marrokii · 27.06.2025', imgs:["x423896_575352", "x426054_884570", "x258727_548040", "x250810_951131", "x123906_781973", "x468228_490555", "x385030_955491"]},
+    {id:'summer-sessions', group:'Clubs', name:'Summer Sessions', info:'liquid.bridge · Seamens Club Casablanca · 22.08.2026', imgs:["x627811_787172", "x212123_298179", "x429051_116215", "x19901_61074", "x598590_156911", "x501188_613690", "x227090_463441", "x316163_761898", "x823059_615258", "x613504_703056", "x609377_644968", "x980983_323513", "x562246_550939", "x996677_378388", "x520530_220013", "x241472_359800", "x738420_540762"]},
+    {id:'ayoub-hattab', group:'American Arts Center', name:'Ayoub Hattab', info:'American Arts Center · 13.06.2025', imgs:["x839456_462094", "x395082_452071", "x774752_688224", "x93155_981252", "x296914_894376", "x200018_298173"]},
+    {id:'jamila', group:'American Arts Center', name:'Jamila & the Other Heroes', info:'American Arts Center · 22.11.2025', imgs:["x314200_830168", "x659645_176854", "x514453_36871", "x53647_656038", "x669414_780304", "x272404_386440", "x92561_931639"]},
+    {id:'jazz', group:'American Arts Center', name:'Jazz', info:'American Arts Center · 16.05.2025', imgs:["x371976_537633", "x75234_425976", "x787638_187070", "x931405_689754", "x212203_272216", "x789557_725989", "x162571_675568", "x419019_144295", "x657435_422153", "x100262_436316", "x157014_598127", "x779934_841075", "x171283_202206", "x924209_35169", "x86830_191438", "x551486_28416", "x765175_585970", "x31099_551549", "x598080_647526"]},
+    {id:'nanofunk', group:'American Arts Center', name:'Nanofunk', info:'American Arts Center · 28.07.2025', imgs:["x369338_339662", "x212033_187187", "x374118_196552", "x310513_96852"]},
+    {id:'disco-atlas', group:'American Arts Center', name:'Disco Atlas', info:'American Arts Center · 26.06.2025', imgs:["x449771_372156", "x899978_736484", "x883002_833465", "x635699_568221"]},
+    {id:'noches', group:'American Arts Center', name:'Noches de Ramadán', info:'Jinān Al Andalus · American Arts Center · 24.02.2026', imgs:['x334930_867208','x558783_464613','x833362_974196','x525055_910195']},
+    {id:'boulevard', group:"L'Boulevard", name:'Overview', info:'Three rooms · each opens in its own style', boulevard:true,
+     doors:[['Connection','The stage and audience','b-con','Band'],['Movement','Away from the stage','b-mov','Movement'],['Faces and Eyes','Portraits','b-fac','Faces']]},
+  ]},
+  {id:'design', name:'Design', projects:[
+    {id:'aac', name:'American Art Center', info:'Poster design', poster:true, imgs:['x815196_567852','x190932_899304','x905172_741900','x913199_406854','x276823_230940','x980645_442674','x885431_556498']},
+    {id:'personal', name:'Personal project', info:'Poster design · C-01 – C-04', poster:true, imgs:['x609322_253534','x109724_353827','x270757_649230','x118493_85813','x746891_663120','x631743_861109','x99638_123460','x416801_359515','x920834_698237','x392680_933255','x542415_54580','x498923_828204','x341207_892313','x611198_115804','x706985_590407','x799846_204911','x16309_49896','x345557_230798','x216139_42263','x91009_432688','x73419_897462','x569067_495874','x527500_851389','x637025_367152','x757374_212963','x560715_265379','x627351_372270','x708231_215066','x349515_978978']},
+    {id:'music', name:'Event & music posters', info:'Bold brutalist typography, Y2K nostalgia', poster:true, imgs:['x568923_892960']},
+    {id:'fan', name:'Fan poster', info:"I'm not a human", poster:true, imgs:['x604559_348740','x604084_219457']},
+  ]},
+  {id:'workshops', name:'Workshops', projects:[
+    {id:'poster-making', name:'Poster Making', info:'American Art Center · 13.02.2026', imgs:['x445340_902249','x750391_208495','x463316_135014','x608178_340387','x966483_675540','x378905_706440','x159531_109084','x576486_848455','x590370_229934','x657530_129159','x870785_903164','x441912_785005','x604999_281541','x823397_694830','x981258_215238','x848905_789179']},
+  ]},
+];
+
+const nav = document.getElementById('work'), view = document.getElementById('view');
+const item = (s, p) => `<li><a href="#${s.id}/${p.id}">${p.name.toLowerCase()}<span class="go">→</span></a>
+  ${p.doors ? `<ul class="sub">${p.doors.map(d => `<li><a href="${LBV + d[3]}/index.html" class="ext">${d[0].toLowerCase()} ↗</a></li>`).join('')}</ul>` : ''}</li>`;
+const toggle = (id, label, n, cls) => `<button class="tog ${cls}" aria-expanded="false" aria-controls="${id}"><span>${label}<span class="n mono">${n}</span></span><span class="pm" aria-hidden="true">+</span></button>`;
+nav.innerHTML = WORK.map(s => {
+  const groups = [...new Set(s.projects.map(p => p.group))];
+  const body = groups[0] ? groups.map((g, gi) => {
+    const ps = s.projects.filter(p => p.group === g), id = `g-${s.id}-${gi}`;
+    return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
+  }).join('') : s.projects.map(p => item(s, p)).join('');
+  return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
+    <div class="list" id="l-${s.id}"><div><ul class="mono">${body}</ul></div></div></div>`;
+}).join('');
+
+const setOpen = (el, open) => { el.classList.toggle('open', open); el.querySelector(':scope>.tog').setAttribute('aria-expanded', open); };
+nav.addEventListener('click', e => {
+  const b = e.target.closest('.tog'); if (b) setOpen(b.parentElement, !b.parentElement.classList.contains('open'));
+});
+document.querySelector('.burger').onclick = e => {
+  const m = document.getElementById('side').classList.toggle('menu'); e.target.setAttribute('aria-expanded', m);
+};
+
+function openSec(id){ setOpen(nav.querySelector(`[data-sec="${id}"]`), true); }
+
+function render(){
+  const [sid, pid] = location.hash.slice(1).split('/');
+  document.querySelectorAll('aside a[aria-current]').forEach(a => a.removeAttribute('aria-current'));
+  const sec = WORK.find(s => s.id === sid), p = sec && sec.projects.find(x => x.id === pid);
+  if (sid === 'about') {
+    document.querySelector('.meta a[href="#about"]').setAttribute('aria-current', 'page');
+    view.innerHTML = `<section class="proj about"><h2>About</h2><p class="info">Photographer / Visual Artist · Casablanca, Morocco</p>
+      <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
+      <p class="todo">Placeholder: your longer story goes here (how you started, what you look for in a picture). Send the text and it replaces this line.</p>
+      <dl><dt>Photography</dt><dd>Live music, portraits, street photography, cultural documentation</dd>
+      <dt>Graphic design</dt><dd>Posters, visual identities, editorial compositions</dd>
+      <dt>Contact</dt><dd><a href="mailto:ghoujlamimohamed@gmail.com">ghoujlamimohamed@gmail.com</a><br><a href="https://www.instagram.com/_skimart_/">@_skimart_ on Instagram ↗</a></dd></dl></section>`;
+    document.getElementById('side').classList.remove('menu');
+  } else if (!p) {
+    view.innerHTML = `<section class="home">
+      <div class="photo"><img src="${F('s23')}" alt="Man in round sunglasses and a Space Invaders jacket under purple club light"></div>
+      <span class="lbl">Photographer / Visual Artist</span>
+      <h1>Real moments.<br>Visual stories.</h1>
+      <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
+      <a class="cta" href="#photography/summer-sessions">EXPLORE MY WORK →</a>
+      <span class="loc">CASABLANCA, MOROCCO</span></section>`;
+    if (sid) openSec(sid);
+  } else {
+    openSec(sid);
+    const cur = nav.querySelector(`a[href="#${sid}/${pid}"]`); cur.setAttribute('aria-current', 'page');
+    const g = cur.closest('.gsec'); if (g) setOpen(g, true);
+    view.innerHTML = `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p>` + (p.doors
+      ? `<div class="door">${p.doors.map(d => `<a href="${LBV + d[3]}/index.html"><img src="${F(d[2])}" alt="${d[0]} cover photograph"><span>${d[0]} ↗</span><small>${d[1]}</small></a>`).join('')}</div>`
+      : `<div class="grid ${p.poster ? 'poster' : ''}">${p.imgs.map((f, i) => `<figure class="${!p.poster && i === 3 ? 'wide' : ''}"><img src="${F(f)}" alt="${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}" loading="lazy"></figure>`).join('')}</div>`) + `</section>`;
+    document.getElementById('side').classList.remove('menu');
+  }
+  view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', render); render();
+</script>
+</body>
+</html>

@@ -81,6 +81,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* phones: the four pages as an even 2 x 2 block, theme and handles share the line under it, edge to edge */
 @media (max-width: 560px) { .top { gap: 6px; } .pages { flex: 1 0 100%; display: grid; grid-template-columns: 1fr 1fr; } .pages a { justify-content: center; padding-inline: 8px; }
   .theme { margin-left: 0; } .handles { flex: 1; justify-content: flex-end; gap: 6px; } .handles a { font-size: 12px; padding-inline: 10px; } }
+.pages a.skimart { letter-spacing: .2em; }
+@media (max-width: 560px) { .pages a.skimart { grid-column: 1 / -1; } }
 
 /* ---------- entrance: the V0.1 sheet ---------- */
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name photo" "text photo"; grid-template-rows: auto 1fr; container-type: inline-size;
@@ -260,6 +262,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 <main class="wrap">
   <div class="top micro">
     <nav class="pages" aria-label="Pages">
+      <a href="../../../index.html" class="skimart">SKIMART</a>
       <a href="../index.html">L'Boulevard</a>
       <a href="../Movement/index.html">Movement</a>
       <a href="index.html" aria-current="page">Connection</a>
