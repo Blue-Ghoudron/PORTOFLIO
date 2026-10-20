@@ -12,14 +12,11 @@ python3 -m http.server 8026 --bind 127.0.0.1    # from the repo root, then open 
 
 Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe's document to sync themes, and browsers block that on `file://`.
 
-There are no tests in the repo yet (beads task `pf-qsm.1` adds `tests/flow.py`). Until then, use the `playwright-testing` skill (Playwright venv in `~/.venvs/playwright`):
-
 ```bash
-~/.venvs/playwright/bin/python ~/.claude/skills/playwright-testing/scripts/qa_check.py \
-  "http://localhost:8026/index.html" "http://localhost:8026/BOULEVARD/L'boulevard%2026/Band/index.html" --links --out <dir>
+~/.venvs/playwright/bin/python -I tests/flow.py [base-url]    # default http://localhost:8026/; exit 1 + FAILS list on any break
 ```
 
-Before saying a page change is done, click every link and button (`#work` links, CTA, about, logo, burger, `#theme`, the photo viewer; on Boulevard pages `.pages a`, `.handles a`, `#theme`) at 390, 820 and 1440 px.
+`tests/flow.py` clicks every menu link, the CTA, About, logo, burger, theme switch and photo viewer, every room inside the L'Boulevard frame, and every Boulevard page's nav, theme and handles, at 390, 820 and 1440 px. Run it before saying a page change is done. Other checks are `tests/pf-qsm.<n>_*.py` (one per beads task); their reports are in `docs/reports/`. Screenshots go to the gitignored `tests/out/` and `tests/screens/`.
 
 Paths contain an apostrophe and a space (`BOULEVARD/L'boulevard 26`): quote them in the shell and write `L'boulevard%2026` in URLs.
 

@@ -7,3 +7,7 @@
 .beads-credential-key
 .beads/proxieddb/
 *.gate.lock*
+
+# test output (screenshots, downloads) stays local
+tests/out/
+tests/screens/
