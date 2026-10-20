@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Faces and Eyes</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <script src="../theme.js"></script>
@@ -42,6 +42,7 @@
 :root { --small: calc(11px / var(--z) * .95); }
 @media (max-width: 1439px) { :root { --small: 11px; } }
 * { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }  /* iOS: no text inflation in landscape */
 ::selection { background: var(--blue); color: var(--ink); }
 body { margin: 0; position: relative; background: var(--wall); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; overflow-x: hidden; }
 body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; opacity: .18; mix-blend-mode: screen;
@@ -73,8 +74,11 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .pages a[aria-current="page"] { border-color: var(--blue); color: var(--ink); }
 .pages a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .theme { margin-left: auto; font: inherit; color: var(--ink-dim); background: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; cursor: pointer; transition: border-color .2s, color .2s; }
-.theme:hover { border-color: var(--blue-text); color: var(--ink); }
+@media (hover: hover) { .theme:hover { border-color: var(--blue-text); color: var(--ink); } }  /* no stuck hover after a tap */
 .theme:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+/* phones: the four pages as an even 2 x 2 block, theme and handles share the line under it, edge to edge */
+@media (max-width: 560px) { .top { gap: 6px; } .pages { flex: 1 0 100%; display: grid; grid-template-columns: 1fr 1fr; } .pages a { justify-content: center; padding-inline: 8px; }
+  .theme { margin-left: 0; } .handles { flex: 1; justify-content: flex-end; gap: 6px; } .handles a { font-size: 12px; padding-inline: 10px; } }
 
 /* ---------- entrance: the wide frame on the right, the name fills the wall beside it and sits on the frame's bottom line ---------- */
 .hero { --gap: clamp(20px, 2.4vw, 36px); --lw: min(40cqi, calc((100 * var(--svh) - 200px) / 1.478)); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--gap); container-type: inline-size; padding-top: clamp(24px, 3vw, 40px); }
@@ -154,9 +158,9 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .shot { position: relative; display: block; width: 100%; padding: 0; border: 0; background: var(--ink); cursor: zoom-in;
   box-shadow: 0 28px 56px -22px rgba(8,4,9,.8), 0 8px 18px -8px rgba(8,4,9,.55); }
 .shot img { display: block; width: 100%; height: auto; max-width: 100%; transition: filter .25s; }
-.shot:hover img { filter: contrast(1.06) brightness(1.04); }
 /* small zoom on hover; the whole print grows (mat included), so nothing gets cropped */
-@media (hover: hover) { .shot { transition: transform .25s ease-out; } .shot:hover { transform: scale(1.025); } }
+@media (hover: hover) { .shot { transition: transform .25s ease-out; } .shot:hover { transform: scale(1.025); } .shot:hover img { filter: contrast(1.06) brightness(1.04); }
+  .shot:hover::before, .shot:hover::after { opacity: 1; transform: none; } }  /* hover looks only where there is hover: a tap would leave them stuck */
 .handles a:focus-visible, .plan a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 /* selection corners, like a game's upgrade card: they snap in on hover and keyboard focus */
 .shot:focus-visible { outline: none; }
@@ -165,14 +169,14 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   background: var(--c) 0 0 / var(--l) 3px, var(--c) 0 0 / 3px var(--l), var(--c) 100% 0 / var(--l) 3px, var(--c) 100% 0 / 3px var(--l),
     var(--c) 0 100% / var(--l) 3px, var(--c) 0 100% / 3px var(--l), var(--c) 100% 100% / var(--l) 3px, var(--c) 100% 100% / 3px var(--l);
   background-repeat: no-repeat; filter: drop-shadow(0 0 6px var(--blue)); opacity: 0; transform: scale(1.05); transition: opacity .18s, transform .18s; }
-.shot:hover::after, .shot:focus-visible::after { opacity: 1; transform: none; }
+.shot:focus-visible::after { opacity: 1; transform: none; }
 /* the cream mat is printed into every file, 41px wide: 41/1882 of a landscape's width, 41/1282 of a portrait's.
    Padding % follows the width on all four sides, so this ring sits exactly on the mat and turns it blue */
 .shot::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; padding: 2.19%; background: var(--blue);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); opacity: 0; transition: opacity .2s; }
 .shot:has(img[width="1282"])::before { padding: 3.21%; }
-.shot:hover::before, .shot:focus-visible::before, .shot:active::before { opacity: 1; }
+.shot:focus-visible::before, .shot:active::before { opacity: 1; }
 @media (hover: none) { .shot:active::after { opacity: 1; transform: none; } }
 .work { position: relative; z-index: 51; margin: 0; min-width: 0; }
 .label { border-top: 1px solid var(--ink-faint); padding-top: 10px; margin-top: 14px; display: grid; gap: 2px; }
@@ -183,6 +187,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .label .who { justify-self: start; font-family: var(--f-mono); font-size: 13px; }
 .who:hover { color: var(--ink); text-decoration: underline; }
 .who:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+@media (pointer: coarse) { .who { padding-block: 14px; margin-block: -14px; } }  /* 44px tall hit area, same line height */
 .label .meta { font-family: var(--f-mono); font-size: var(--small); letter-spacing: .06em; color: var(--ink-dim); line-height: 1.7; font-variant-numeric: tabular-nums; }
 
 /* ---------- rooms ---------- */
@@ -194,7 +199,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 /* QR tag naming each section (decoration only, not scannable) */
 .qrtag { display: grid; justify-items: center; gap: 6px; color: var(--ink-dim); }
 .qrtag svg { display: block; width: clamp(48px, 5vw, 80px); height: auto; }
-.qrtag span { font-size: calc(var(--small) - 1px); letter-spacing: .14em; white-space: nowrap; }
+.qrtag span { font-size: max(calc(var(--small) - 1px), 11px); letter-spacing: .14em; white-space: nowrap; }
 .room-head { position: relative; --h2: clamp(40px, 6vw, 84px); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "num title qr" ". text qr"; gap: 0 clamp(18px, 2.6vw, 36px); align-items: baseline; border-top: 1.5px solid var(--ink); padding-top: clamp(18px, 2.4vw, 28px); }
 /* numeral caps match the title caps: Anton/Space Mono cap ratio is 1.243, less a little for the 1.5px outline */
 .room-head .num { grid-area: num; font-family: var(--f-mono); font-weight: 700; font-size: calc(var(--h2) * 1.21); line-height: .8; letter-spacing: -.02em; color: transparent; -webkit-text-stroke: 1.5px var(--blue); }
@@ -217,34 +222,37 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .viewer { position: fixed; inset: 0; z-index: 60; background: var(--viewer); display: grid; grid-template-rows: auto auto 1fr;
   padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .viewer[hidden] { display: none; }
-.bar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; color: var(--ink-dim); }
+.bar { transform-origin: 100% 0; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; color: var(--ink-dim); }
 #vcap { margin: 14px 0 0; color: var(--ink-dim); text-transform: none; letter-spacing: .06em; line-height: 1.6; min-width: 0; }
 .bar .ctrls { display: flex; gap: 8px; }
 .bar button { font: inherit; font-size: 12px; min-height: 44px; min-width: 44px; color: var(--ink); background: var(--wall-2); border: 1px solid var(--ink-faint); padding: 8px 14px; cursor: pointer; }
 .bar button { transition: background-color .15s, border-color .15s; }
-.bar button:hover, .bar button:active { background: var(--blue); border-color: var(--blue); color: var(--ink); }
+.bar button:active { background: var(--blue); border-color: var(--blue); color: var(--ink); }
+@media (hover: hover) { .bar button:hover { background: var(--blue); border-color: var(--blue); color: var(--ink); } }
 .bar button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .stage { min-height: 0; display: flex; align-items: center; justify-content: center; padding-top: 8px; }
 /* phones: caption and print sit together in the middle of the screen */
 @media (max-width: 860px) { .viewer { grid-template-rows: auto 1fr auto auto 1fr; } #vcap { grid-row: 3; } .stage { grid-row: 4; }
   .stage img { max-height: calc(100svh - 230px); } }
-.stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
+.stage img { touch-action: pan-y pinch-zoom; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 
 @media (max-width: 860px) {
   .hero { grid-template-columns: minmax(0, 1fr); }
-  .lead { grid-column: 1; grid-row: auto; width: auto; margin-left: 26px; }  /* room for the prologue tag */
+  .lead { grid-column: 1; grid-row: auto; width: auto; margin-left: 26px; max-width: calc((100 * var(--svh) - 80px) / 1.478); }  /* room for the prologue tag; fits a landscape phone */
   .lead .tag { left: -4px; }
   .lead .label { position: static; width: auto; text-align: left; margin-top: 14px; border-top: 1px solid var(--ink-faint); }
   /* the name spans the column on one line: Anton "FACES AND EYES" measures 5.89em wide */
   .name .ln { display: inline; text-box: none; }
   .name .ln + .ln::before { content: " "; }
   .name .ln + .ln { margin-top: 0; }
-  .name .sub { font-size: .14em; margin-top: .14em; }
+  .name .sub { font-size: max(.14em, 12px); margin-top: .14em; }
   .name { grid-column: 1; grid-row: auto; align-self: auto; margin-top: 24px; font-size: calc((100vw - 2 * var(--gutter)) / 5.95); }
   .intro { grid-row: auto; grid-template-columns: minmax(0, 1fr); }
   .route { --pad: 30px; --rail: 7px; }
   .room-head { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "num title qr" "text text text"; column-gap: 14px; --h2: clamp(32px, 10.4vw, 40px); }
   .room-head .qrtag svg { width: 40px; }
+  .room-head .qrtag { grid-template-columns: 40px; justify-items: end; }  /* the column is only as wide as the code, its label runs left under it, so long titles keep clear of the code */
+  @media (max-width: 359px) { .room-head { column-gap: 8px; } }  /* 320px: room for the longest title, Dissolving */
   .room-head p { margin-top: 12px; }
   /* one column, still stepping: the portraits sit left, right, left at phone width */
   .drift { grid-template-columns: minmax(0, 1fr); max-width: none; }
@@ -255,6 +263,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   .outro .globe svg { width: 64px; }
   .foot { grid-template-columns: minmax(0, 1fr); }
 }
+/* touch screens: 44px tap targets (after the base rules, which set 40px) */
+@media (pointer: coarse) { .top a, .theme, .plan a { min-height: 44px; } }
 @media (prefers-reduced-motion: reduce) { .shot, .shot::before, .shot::after { transition: none; } .shot:hover { transform: none; } }
 </style>
 
@@ -470,7 +480,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
     [cur+1,cur-1].forEach(function(k){ new Image().src=shots[(k+n)%n].querySelector('img').src; });
     try{ history.replaceState(null,'','#'+key(cur)); }catch(e){} }
   function open(i,b){ opener=b; show(i); v.hidden=false; main.inert=true;
-    document.documentElement.style.overflow=document.body.style.overflow='hidden'; document.getElementById('vclose').focus(); }
+    document.documentElement.style.overflow=document.body.style.overflow='hidden'; document.getElementById('vclose').focus(); pin(); }
   function close(){ v.hidden=true; main.inert=false; document.documentElement.style.overflow=document.body.style.overflow='';
     try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} if(opener) opener.focus(); }
   shots.forEach(function(b,i){ b.addEventListener('click',function(){ open(i,b); }); });
@@ -482,10 +492,18 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   function alignCap(){ if(v.hidden) return; var z=parseFloat(getComputedStyle(document.documentElement).zoom)||1;   /* rects are in screen px, padding is scaled by the page zoom */
     cap.style.paddingLeft=Math.max(0, (img.getBoundingClientRect().left-cap.getBoundingClientRect().left)/z)+'px'; }
   img.addEventListener('load',alignCap); new ResizeObserver(alignCap).observe(img);
+  /* pinch-zoom belongs to the browser: a second finger or a zoomed-in screen is never a swipe or tap.
+     While zoomed the photo pans freely and the buttons stay pinned, at normal size, to the zoomed view's top right */
+  var vv=window.visualViewport, bar=v.querySelector('.bar');
+  function zoomed(){ return !!vv&&vv.scale>1.01; }
+  function pin(){ var s=zoomed(), z=parseFloat(getComputedStyle(document.documentElement).zoom)||1; img.style.touchAction=s?'auto':'';
+    var cs=getComputedStyle(v), k=s?1-1/vv.scale:0;   /* the viewer's padding is magnified too: pull the buttons back by the difference */
+    bar.style.transform=s?'translate('+((vv.offsetLeft+vv.width-innerWidth)/z+parseFloat(cs.paddingRight)*k)+'px,'+(vv.offsetTop/z-parseFloat(cs.paddingTop)*k)+'px) scale('+1/vv.scale+')':''; }
+  if(vv){ vv.addEventListener('resize',pin); vv.addEventListener('scroll',pin); }
   /* one release handler for tap, click and swipe: browsers drop the click of a tap made right after a swipe,
      so a short press is read on release instead. Swipe > 40px moves one work; a press that barely moved is a tap on a half */
   img.draggable=false;
-  img.addEventListener('pointerdown',function(e){ x0=e.clientX; });
+  img.addEventListener('pointerdown',function(e){ x0=e.isPrimary&&!zoomed()?e.clientX:null; });
   img.addEventListener('pointercancel',function(){ x0=null; });
   img.addEventListener('pointerup',function(e){ if(x0===null) return; var dx=e.clientX-x0, r=img.getBoundingClientRect(); x0=null;
     if(Math.abs(dx)>40) show(cur+(dx<0?1:-1));
