@@ -1,0 +1,96 @@
+# SKIMART Portfolio — Homepage Implementation Brief
+
+## Objective
+Redesign the homepage of my existing portfolio website to position me as a **photographer first, with graphic design as a complementary discipline**. The result should feel like a polished, commercially confident creative studio portfolio, not a generic portfolio template.
+
+## 1. Before coding
+- Inspect the existing project structure, framework, dependencies, and current homepage.
+- Read `CLAUDE.md` or `CLAUDE.md`-equivalent project instructions if present.
+- Inspect available assets and identify my strongest existing photographs and graphic design work.
+- Preserve existing working functionality, routes, and project content.
+- Do not rebuild the entire website or replace the existing stack without a clear technical reason.
+- If important assets are missing, use clearly identified placeholders rather than inventing projects or presenting generated imagery as my photography.
+
+## 2. Creative direction
+**Positioning:** Photographer / Visual Artist  
+**Name:** SKIMART  
+**Location:** Casablanca, Morocco  
+**Primary discipline:** Photography  
+**Secondary discipline:** Graphic design  
+**Tone:** Editorial, premium, cinematic, minimal, confident, professional.
+
+The website should communicate that I document people, live music, places, and culture while bringing a strong graphic-design sensibility to my visual storytelling.
+
+## 3. Homepage hero
+Build a full-width, immersive hero section with:
+
+- Minimal navigation: SKIMART logo/name on the left; Work, About, and Contact on the right.
+- A large, authentic photograph from my existing portfolio as the main visual.
+- A subtle dark overlay wherever necessary to maintain text readability.
+- Small uppercase descriptor: `PHOTOGRAPHER / VISUAL ARTIST`
+- Main headline: `Real moments. Visual stories.`
+- Supporting copy: `I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.`
+- Primary text CTA: `EXPLORE MY WORK →`
+- Small location label: `CASABLANCA, MOROCCO`
+- A restrained scroll indicator.
+
+The photography must remain the hero's main visual focus. Use responsive image positioning and contrast treatments so text stays legible on desktop and mobile.
+
+## 4. Visual design system
+- Palette: near-black, off-white, restrained greys.
+- Typography: contemporary sans-serif with strong hierarchy and carefully spaced uppercase labels.
+- Layout: editorial grid, asymmetrical compositions, deliberate negative space.
+- Images: large, high-quality, correctly cropped, with consistent visual treatment.
+- Motion: subtle transitions and image reveals; respect reduced-motion preferences.
+- Avoid excessive rounded cards, gradients, glassmorphism, generic stock imagery, unnecessary animations, and template-like layouts.
+
+The result should feel professionally art-directed rather than overdesigned.
+
+## 5. Content immediately below the hero
+Create three visual entry points, with Photography given the strongest emphasis.
+
+### A. Photography
+Showcase live music, portraits, street photography, and cultural documentation.
+
+Use my existing projects where available, including:
+- CONNECTION — The Stage and Audience, L'Boulevard, 2025–2026.
+- FACES — L'Boulevard, 2025.
+- EYES — L'Boulevard, 2026.
+
+Do not invent project descriptions, client names, awards, or credits.
+
+### B. Graphic Design
+Show selected posters, visual identities, and editorial compositions. Treat this as a complementary discipline that demonstrates my versatility.
+
+### C. Selected Projects
+Show a curated selection of projects that connect photography, design, and cultural experiences.
+
+Use actual project assets whenever possible. Link each entry to its existing project page or appropriate destination.
+
+## 6. Interaction and responsive behavior
+- The navigation links must work.
+- The main CTA must lead to the portfolio/work section or existing work page.
+- Project images and titles must be clickable when they represent navigable projects.
+- Ensure keyboard accessibility, visible focus states, semantic HTML, and meaningful image alt text.
+- Test desktop, tablet, and mobile layouts.
+- Prevent horizontal overflow, broken images, and layout shifts.
+- Keep loading performance in mind: optimize image sizes, use responsive image sources where supported, and lazy-load below-the-fold imagery.
+
+## 7. Implementation rules
+- First inspect the existing codebase and identify the smallest sensible set of files to modify.
+- Follow the existing framework, conventions, and dependency choices.
+- Keep components reusable and code maintainable.
+- Do not hardcode fake project data or invent external links.
+- Do not remove existing features without explaining why.
+- Do not stop at a visual mockup: implement the functioning homepage in the actual project.
+
+## 8. Verification
+After implementation:
+1. Run the available build, lint, and type-check commands.
+2. Fix errors introduced by your changes.
+3. Run the application and inspect the homepage in a browser if browser tooling is available.
+4. Verify navigation, image loading, responsive behavior, and CTA destinations.
+5. Report the files changed, important design decisions, checks performed, and any remaining issues.
+
+## Definition of done
+The homepage immediately identifies SKIMART as a photographer, leads with compelling authentic photography, presents graphic design as a complementary strength, and gives prospective clients and cultural collaborators a clear path to explore the work and make contact.
