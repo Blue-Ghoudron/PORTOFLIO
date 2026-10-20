@@ -47,7 +47,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .list li:first-child>a{border-top:1px solid var(--line)}
   aside::-webkit-scrollbar{display:none}  /* still scrolls, no bar beside the menu */
   .list a .no{align-self:start;font-size:9px;color:var(--dim)}
-  .list a .th{width:96px;height:60px;object-fit:cover;opacity:.75;transition:opacity .2s}
+  .list a .th{width:96px;height:60px;object-fit:contain;opacity:.75;transition:opacity .2s}  /* whole picture, never cropped */
   .list a .go{align-self:end;font-size:13px;line-height:1;color:var(--dim);transition:transform .2s}
   .list a:hover{color:var(--ink)}
   .list a:hover .th,.list a[aria-current] .th{opacity:1}
