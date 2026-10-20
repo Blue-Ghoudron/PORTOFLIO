@@ -54,3 +54,8 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 
 - [ ] **Titles** (One eye lit, Sign of the horns, Held stare, Over the shoulder, Hand over the eye, Spikes, Veil, White eyes, Tongue, The line), the subtitle and the outro word are proposals. Rename freely.
 - [ ] Check the tags are right: they come from your folder names, not from the Instagram posts (photo tags need a login to read).
+
+## Swaps and stacks (20.10.2026)
+- [x] Hung ↔ gallery swaps (your call): 03 ← IMG_0393 "Hood" · 04 ← IMG_9344 "Chin up" · 09 ← IMG_0357 "Smoke". 9293, 0496 and 0527 moved to the gallery in time order.
+- [x] Two vertical stacks in the gallery, made like the GRID exports (`~/.cache/lbv-faces2/stack.py`): G01 = 2025 Groups 9158 / 9148 / 9315 (your Instagram slide), G19 = 2026 0545 / 0571 (GRID/Portrait P4). All five frames tagged from their `people/` folders. Gallery is now G01–G22.
+- [ ] Room III "Painted" now holds 0357 (sunglasses and smoke, no paint); its line was widened to "dark glasses". 0545 is both F2 in "17 seconds" and in the G19 stack.

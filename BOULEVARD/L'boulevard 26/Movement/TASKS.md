@@ -39,3 +39,6 @@ Status (20.10.2026): filled with 14 photos (10 hung + 4 in motion), hung by shut
 - [ ] **Layout:** every photo is landscape; the "b" slots (03, 06, 09) were drawn for portraits, so those prints now hang small. You said you'll change the layout.
 - [ ] **Titles** (The floor moves, The pit opens, Embrace, Hands up, Into the lens, Shoulder to shoulder, White cap, Spin, Under the screen, Passing through) are proposals. Rename freely.
 - [ ] Left out: IMG_0247-2 (copy of 0247), IMG_9197 (8 s after 9196), IMG_9181 (fourth sharp crowd shot).
+
+## Reorder (20.10.2026)
+- [x] Hung slowest shutter first (your call): I Dissolving 02 9205 (1/13), 03 9196, 04 0167 · II Turning 05 0252 (1/50), 06 0247, 07 0251 · III Gathering 08 9176, 09 9184, 10 9192 (1/250). Statement, route and room lines reworded to read in that order.
