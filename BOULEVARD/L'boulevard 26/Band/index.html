@@ -54,6 +54,12 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .handles a { font-family: var(--f-mono); font-size: 13px; letter-spacing: .02em; text-transform: none; color: var(--blue-text); text-decoration: none;
   border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
 .handles a:hover { border-color: var(--blue-text); color: var(--ink); }
+/* page switch: Movement / Connection, the current page sits in the blue frame */
+.pages { display: flex; gap: 6px; }
+.pages a { color: var(--ink-dim); text-decoration: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
+.pages a:hover { border-color: var(--blue-text); color: var(--ink); }
+.pages a[aria-current="page"] { border-color: var(--blue); color: var(--ink); }
+.pages a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 
 /* ---------- entrance: the V0.1 sheet ---------- */
 .hero { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "name photo" "text photo"; grid-template-rows: auto 1fr; container-type: inline-size;
@@ -77,6 +83,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .plan { display: flex; flex-wrap: wrap; gap: 8px; }
 .plan a { color: var(--ink); text-decoration: none; border: 1px solid var(--ink-faint); padding: 9px 12px; min-height: 40px; display: inline-flex; align-items: center; gap: 8px; }
 .plan a b { color: var(--blue-text); font-weight: 700; }
+.plan a time { color: var(--ink-dim); }
 .plan a:hover { border-color: var(--ink); }
 .credit { margin: 0; padding-top: 12px; border-top: 1px solid var(--ink-faint); color: var(--ink-dim); max-width: 56ch; line-height: 1.7; text-transform: none; letter-spacing: .04em; }
 
@@ -113,6 +120,13 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 /* ---------- rooms ---------- */
 .room { position: relative; margin-top: clamp(64px, 8vw, 120px); }
+
+/* the route: one dashed line runs past the three rooms, each room is a timed stop on it (time of its first print) */
+.route { --pad: clamp(44px, 6vw, 96px); --rail: clamp(12px, 1.8vw, 28px); position: relative; padding-left: var(--pad); }
+.route::before { content: ""; position: absolute; left: var(--rail); top: clamp(64px, 8vw, 120px); bottom: 0; border-left: 1.5px dashed var(--blue); }
+.stop { position: absolute; top: -6px; left: calc(var(--rail) - var(--pad)); transform: translateX(-50%); display: grid; justify-items: center; gap: 10px; padding-bottom: 10px; background: var(--wall); color: var(--blue-text); }
+.stop::before { content: ""; width: 12px; height: 12px; background: var(--blue); box-shadow: 0 0 10px var(--blue); }
+.stop time { writing-mode: vertical-rl; transform: rotate(180deg); }
 
 /* Y2K_078 cubes (SKIMART shapes catalogue) sit just above each section's top rule */
 .cubes { position: absolute; right: 0; bottom: calc(100% + 12px); display: flex; gap: clamp(4px, .5vw, 7px); pointer-events: none; }
@@ -181,6 +195,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .stage img { touch-action: pan-y; cursor: pointer; max-height: 100%; max-width: 100%; width: auto; height: auto; object-fit: contain; }
 
 @media (max-width: 860px) {
+  .route { --pad: 30px; --rail: 7px; }
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "photo" "text"; }
   /* phone heading: numeral, title and QR on one line, the description takes the full width under them */
   .room-head { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "num title qr" "text text text"; column-gap: 14px; --h2: clamp(32px, 10.4vw, 40px); }
@@ -214,6 +229,10 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 <main class="wrap">
   <div class="top micro">
     <span><b>L'Boulevard</b> — 2025-2026</span>
+    <nav class="pages" aria-label="Pages">
+      <a href="../Movement/index.html">Movement</a>
+      <a href="index.html" aria-current="page">Connection</a>
+    </nav>
     <nav class="handles" aria-label="Tagged on Instagram">
       <a href="https://www.instagram.com/sepultura/" target="_blank" rel="noopener">sepultura</a>
       <a href="https://www.instagram.com/lboulevard_festival/" target="_blank" rel="noopener">lboulevard_festival</a>
@@ -234,16 +253,18 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
       <p class="byline"><strong>Photographs by Ghoujlami Mohamed</strong><span>Metal Day, L'Boulevard · Stade R.U.C, Casablanca · <b class="glow">20.09.2025 · 19.09.2026</b></span></p>
       <p class="statement">A stage only works when someone looks back. Thirteen photographs from two Metal Days a year apart, hung by what they show, not by the clock. First the floor, then the stage, then the moment the two meet. <em>— Skimart</em></p>
       <nav class="plan micro" aria-label="Floor plan">
-        <a href="#room-1"><b>I</b> The floor</a>
-        <a href="#room-2"><b>II</b> The stage</a>
-        <a href="#room-3"><b>III</b> The look</a>
+        <a href="#room-1"><b>I</b> The floor <time>20:53</time></a>
+        <a href="#room-2"><b>II</b> The stage <time>22:51</time></a>
+        <a href="#room-3"><b>III</b> The look <time>23:00</time></a>
         <a href="#study"><b>+4</b> Study wall</a>
       </nav>
       <p class="credit micro">2026 works: Sepultura unless noted. 2025 works are credited only where the photograph confirms the act. Canon EOS 70D · EF 50mm f/1.4 USM (2026), EF 50mm f/1.8 STM (2025). Matted in #EEFFE5.</p>
     </div>
   </section>
 
+  <div class="route">
   <section class="room" id="room-1" aria-labelledby="r1">
+    <div class="stop micro"><time datetime="2026-09-19T20:53:57">20:53</time></div>
     <header class="room-head">
       <span class="cubes" aria-hidden="true"><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""></span>
       <div class="num" aria-hidden="true">I</div>
@@ -265,6 +286,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="room" id="room-2" aria-labelledby="r2">
+    <div class="stop micro"><time datetime="2026-09-19T22:51:29">22:51</time></div>
     <header class="room-head">
       <span class="cubes" aria-hidden="true"><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""></span>
       <div class="num" aria-hidden="true">II</div>
@@ -286,6 +308,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   </section>
 
   <section class="room" id="room-3" aria-labelledby="r3">
+    <div class="stop micro"><time datetime="2025-09-20T23:00:05">23:00</time></div>
     <header class="room-head">
       <span class="cubes" aria-hidden="true"><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""></span>
       <div class="num" aria-hidden="true">III</div>
@@ -305,6 +328,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
         <figcaption class="label"><span class="no">13 · Centrepiece</span><h3>The eye watches back</h3><span class="meta">IMG_0565 · 2026 · 22:56:58 · 1/60 s · f/1.8 · ISO 250</span></figcaption></figure>
     </div>
   </section>
+
+  </div>
 
   <section class="study" id="study" aria-labelledby="study-title">
     <span class="cubes" aria-hidden="true"><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""><img src="assets/Y2K_078.svg" alt=""></span>
