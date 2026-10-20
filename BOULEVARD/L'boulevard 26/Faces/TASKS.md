@@ -9,7 +9,7 @@ Status (20.10.2026): built with 34 photos (10 hung, 4 in the 17-second strip, 20
 - [x] **Photos:** `Boulevard_20.09.2025/Lightroom/Portrait` and `Boulevard_20.09.2026/Boulevard_26.jpg/Lightroom/Portrait`, both years.
 - [x] **Branch:** Movement committed on `Movement-Branch` (not pushed), `Faces-and-Eyes-Branch` made from it.
 - [x] **Instagram posts:** read through the public embed. DeSVtD7kUiS is "FACES / YOU CAN HEAR THEM LOUD / L'Boulvard 2025" and DeprHrWDb3P is "EYES / DEATH AND THRASH / L'Boulvard, Casablanca - 2026". They name the gallery's two walls. Photo tags need a login, so I couldn't read them.
-- [ ] **Tagging sitters:** tell me which people to tag (handle per photo). Tags go under the title as an Instagram link.
+- [x] **Tagging sitters (20.10.2026, you said "all"):** 31 photos carry their sitter's Instagram (handle from the `people/` folder name) under the title, next to the number in the strip and gallery, and at the end of the viewer caption. Not tagged: G04, G05 (no handle folder), G10 (folder is a phone number, never on the page).
 
 ## 2. Curation (approved 20.10.2026)
 
@@ -53,4 +53,4 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 ## 5. Open
 
 - [ ] **Titles** (One eye lit, Sign of the horns, Held stare, Over the shoulder, Hand over the eye, Spikes, Veil, White eyes, Tongue, The line), the subtitle and the outro word are proposals. Rename freely.
-- [ ] Sitters stay anonymous: no names or handles on the page.
+- [ ] Check the tags are right: they come from your folder names, not from the Instagram posts (photo tags need a login to read).
