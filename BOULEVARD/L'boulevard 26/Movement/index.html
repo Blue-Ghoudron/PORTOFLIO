@@ -58,7 +58,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .glow-soft { text-shadow: 0 0 .02em color-mix(in srgb, currentColor 45%, transparent), 0 0 .12em color-mix(in srgb, currentColor 18%, transparent); }
 
 /* ---------- top strip ---------- */
-.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
+/* above the giant page name, whose trimmed ascent reaches up over the strip and would swallow clicks */
+.top { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; padding-bottom: 10px; border-bottom: 1.5px solid var(--ink); color: var(--ink-dim); }
 .top b { color: var(--ink); }
 .top .acc { color: var(--blue-text); }
 .handles { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -66,7 +67,7 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
   border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
 .handles a:hover { border-color: var(--blue-text); color: var(--ink); }
 /* page switch: one link per page, the current page sits in the blue frame */
-.pages { display: flex; gap: 6px; }
+.pages { display: flex; flex-wrap: wrap; gap: 6px; }
 .pages a { color: var(--ink-dim); text-decoration: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; display: inline-flex; align-items: center; transition: border-color .2s, color .2s; }
 .pages a:hover { border-color: var(--blue-text); color: var(--ink); }
 .pages a[aria-current="page"] { border-color: var(--blue); color: var(--ink); }
@@ -74,8 +75,6 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 .theme { margin-left: auto; font: inherit; color: var(--ink-dim); background: none; border: 1px solid var(--ink-faint); padding: 9px 13px; min-height: 40px; cursor: pointer; transition: border-color .2s, color .2s; }
 .theme:hover { border-color: var(--blue-text); color: var(--ink); }
 .theme:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
-.top .home { color: inherit; text-decoration: none; }
-.top .home:hover b { color: var(--blue-text); }
 
 /* ---------- entrance: the wide frame on the right, the name fills the wall beside it and sits on the frame's bottom line ---------- */
 .hero { --gap: clamp(20px, 2.4vw, 36px); --lw: min(58cqi, calc((100 * var(--svh) - 200px) * 1.468)); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--gap); container-type: inline-size; padding-top: clamp(24px, 3vw, 40px); }
@@ -245,8 +244,8 @@ body::after { content: ""; position: absolute; inset: 0; z-index: 50; pointer-ev
 
 <main class="wrap">
   <div class="top micro">
-    <span><a class="home" href="../index.html"><b>L'Boulevard</b></a> — 2025-2026</span>
     <nav class="pages" aria-label="Pages">
+      <a href="../index.html">L'Boulevard</a>
       <a href="index.html" aria-current="page">Movement</a>
       <a href="../Band/index.html">Connection</a>
       <a href="../Faces/index.html">Faces and Eyes</a>
