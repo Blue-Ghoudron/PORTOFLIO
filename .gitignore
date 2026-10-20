@@ -11,3 +11,4 @@
 # test output (screenshots, downloads) stays local
 tests/out/
 tests/screens/
+__pycache__/
