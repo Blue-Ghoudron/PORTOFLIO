@@ -1,7 +1,7 @@
 # Faces and Eyes — tasks
 
 Page: `Faces/index.html` on `Faces-and-Eyes-Branch` (local preview: http://localhost:8000/Faces/).
-Status (20.10.2026): built with 59 frames (10 hung, 4 in the 17-second strip, 45 in the gallery), the whole page in the look of the EYES post. Checked with Playwright, committed and pushed, PR open.
+Status (20.10.2026): built with all 57 Portrait frames (10 hung, 4 in the 17-second strip, 43 in the gallery), every print as an EYES-post card. Checked with Playwright, committed and pushed, PR open.
 
 ## 1. From you
 
@@ -43,9 +43,8 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 - [x] **Gallery (20.10.2026, your request):** 20 more portraits in two walls. Faces · 2025: 9169, 9322, 9331, 9343, 9344, 9345, 9346, 9373, 9414. Eyes · 2026: 0357, 0380, 0393, 0409, 0446, 0477, 0488, 0492, 0564, 0590, 0594. Numbered G01–G20, open in the viewer, #G01 links work.
 - [x] **Hero (your note on the empty middle):** the title is now two lines (FACES / AND EYES) and reaches the photo. Byline, statement and route sit under it, beside the photo.
 
-- [x] **Post look, redone (20.10.2026):** the whole page follows the first slide of your EYES post: cream ground, dark text, blue headline. Every photo is the post card: 3:4 crop (4:3 for wide frames) in a thin blue frame, heavy grain, viewfinder with square blue corners, BOULEVARD + year with an arrow and a rule. The viewer still shows your full edit. Only this page; Connection and Movement keep the dark wall.
-- [x] **All pics:** the gallery now holds every Portrait export not in the rooms or the strip: Faces 2025 G01–G18, Eyes 2026 G19–G43 (only the second export of IMG_9279 is skipped).
-- [x] **Small groups added (your request):** from the Groups folders, the frames of a few people posing, not the crowd: IMG_9158 (four friends) and IMG_9315 (three women). Left out: IMG_9148 (about ten people) and the crowd and stage frames. 2026 Groups had no small groups. Gallery is now G01–G45 (Faces 2025: 20, Eyes 2026: 25). It includes the near-twins, group shots and the three Pagan Ulver stage frames also on Connection (credited).
+- [x] **Card layout (20.10.2026, your request):** every print is now drawn like the first picture of your EYES post: cream card, grainy black-and-white photo in a thin blue frame, a viewfinder with square blue corners, big blue number + year with an arrow and a rule. The prologue card reads BOULEVARD 2025. Only this page; Connection and Movement are unchanged.
+- [x] **All pics:** the gallery now holds every Portrait export not in the rooms or the strip: Faces 2025 G01–G18, Eyes 2026 G19–G43 (only the second export of IMG_9279 is skipped). It includes the near-twins, group shots and the three Pagan Ulver stage frames also on Connection (credited).
 
 ## 4. Check and ship
 
@@ -57,5 +56,5 @@ Left out: 9287, 9297, 9298 (already on Connection, and they're stage shots). Cro
 ## 5. Open
 
 - [ ] **Titles** (One eye lit, Sign of the horns, Held stare, Over the shoulder, Hand over the eye, Spikes, Veil, White eyes, Tongue, The line), the subtitle and the outro word are proposals. Rename freely.
-- [ ] **Four new handles waiting for a yes:** doudou_elhadri (IMG_9410), doudapink (IMG_0368), ayven.moonson (IMG_9158), lmryoula_fati5 (IMG_9315). Untagged until you say so.
+- [ ] **Two new handles waiting for a yes:** doudou_elhadri (IMG_9410, three women) and doudapink (IMG_0368, two women). Untagged until you say so.
 - [ ] Check the tags are right: they come from your folder names, not from the Instagram posts (photo tags need a login to read).
