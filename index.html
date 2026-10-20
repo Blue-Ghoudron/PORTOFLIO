@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SKIMART — Photographer / Visual Artist</title>
 <script>/* saved choice, else the system setting; in <head> so the page paints in the right theme */
-try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}</script>
+try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.nav=localStorage.getItem('skm-nav')||''}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +17,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   :focus-visible{outline:1px solid var(--ink);outline-offset:3px}
   .mono{font-family:"IBM Plex Mono",monospace}
 
-  aside{position:fixed;inset:0 auto 0 0;width:260px;padding:40px 28px 32px 40px;overflow-y:auto;border-right:1px solid var(--line)}
+  aside{position:fixed;inset:0 auto 0 0;width:400px;transition:width .3s,padding .3s;scrollbar-width:none;padding:40px 28px 32px 40px;overflow-y:auto;border-right:1px solid var(--line)}
   .logo{display:block;font-weight:500;letter-spacing:.22em;font-size:18px}
   .tagline{display:block;margin-top:6px;color:var(--mute);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
   .meta{margin:26px 0 30px;display:grid;gap:2px}
@@ -27,36 +27,44 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   body.lbv-on #theme{display:none}  /* the exhibition has its own switch */
 
   .sec{border-top:1px solid var(--line)}
-  .sec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 0;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
-  .tog .n{color:var(--dim);font-size:11px;letter-spacing:.05em;margin-left:8px}
+  .sec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px;font-size:30px;line-height:1;letter-spacing:-.02em}
+  .tog .n{color:var(--dim);font:400 11px/1 "IBM Plex Mono",monospace;letter-spacing:.05em;margin-left:8px;vertical-align:super}
   .tog .pm{font-size:16px;line-height:1;transition:transform .25s;color:var(--mute)}
   .tog:hover .pm{color:var(--ink)}
   .open>.tog .pm{transform:rotate(45deg);color:var(--ink)}
-  .gsec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px;color:var(--mute)}
+  .gsec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;font:400 18px/1.1 Archivo,system-ui,sans-serif;text-transform:uppercase;color:var(--mute)}
   .gsec>.tog:hover,.gsec.open>.tog{color:var(--ink)}
   .gsec>.tog .pm{font-size:13px}
-  .gsec .list ul{padding:2px 0 8px 14px}
+  .gsec .list ul{padding:0 0 8px}
   .list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
   .open>.list{grid-template-rows:1fr}
   .list>div{overflow:hidden;visibility:hidden;transition:visibility .3s}
   .open>.list>div{visibility:visible}
   .sec:not(.open) .list>div{visibility:hidden}
-  .list ul{list-style:none;padding:0 0 14px 16px}
-  .list a{position:relative;display:flex;gap:8px;align-items:baseline;padding:3px 0;font-size:13px;color:var(--mute)}
-  .list a .go{opacity:0;transform:translateX(-4px);transition:.2s}
+  .list ul{list-style:none;padding:0 0 14px}
+  /* one row per project: number, name, its cover photo, arrow (after Til Wagner's Selected Works list) */
+  .list a{position:relative;display:grid;grid-template-columns:18px 1fr 96px 14px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.3;color:var(--mute)}
+  .list li:first-child>a{border-top:1px solid var(--line)}
+  aside::-webkit-scrollbar{display:none}  /* still scrolls, no bar beside the menu */
+  .list a .no{align-self:start;font-size:9px;color:var(--dim)}
+  .list a .th{width:96px;height:60px;object-fit:cover;opacity:.75;transition:opacity .2s}
+  .list a .go{align-self:end;font-size:13px;line-height:1;color:var(--dim);transition:transform .2s}
   .list a:hover{color:var(--ink)}
-  .list a:hover .go{opacity:1;transform:none}
+  .list a:hover .th,.list a[aria-current] .th{opacity:1}
+  .list a:hover .go{color:var(--ink);transform:translate(2px,2px)}
   .list a[aria-current]{color:var(--ink)}
-  .list a[aria-current]::before{content:"◆";position:absolute;left:-14px;font-size:8px;top:8px}
-  .list .sub{padding:0 0 0 14px}
+  .list a[aria-current] .no{color:var(--ink)}
+  .list .sub{padding:2px 0 8px 28px}
+  .list .sub a{display:block;padding:3px 0;border:0;font-size:13px}
+  .list .sub a[aria-current]::before{content:"◆";position:absolute;left:-14px;font-size:8px;top:8px}
   .list .grp{color:var(--dim);font-size:11px;letter-spacing:.08em;margin:10px 0 2px -2px}
   .list .grp:first-child{margin-top:0}
   .list .ext{color:var(--dim);font-size:11px}
 
-  main{margin-left:260px;padding:40px clamp(20px,4vw,64px) 80px;min-height:100vh}
+  main{margin-left:400px;transition:margin-left .3s;padding:40px clamp(20px,4vw,64px) 80px;min-height:100vh}
 
-  .home .photo{max-width:760px;aspect-ratio:3/2;overflow:hidden}
-  .home img{width:100%;height:100%;object-fit:cover}
+  .home .photo{max-width:760px}
+  .home img{display:block;width:100%;height:auto}
   .home .lbl{display:block;margin-top:26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
   .home h1{font-weight:400;font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:12px 0 16px}
   .home p{max-width:520px;color:var(--soft)}
@@ -75,21 +83,27 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 
   .proj h2{font-weight:400;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.01em}
   .proj .info{color:var(--mute);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:6px 0 28px}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1100px}
-  .grid figure{overflow:hidden;background:var(--card)}
-  .grid img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/5;transition:transform .5s,opacity .5s;opacity:0}
+  /* every photo keeps its own shape, landscape or portrait; rows read left to right like the viewer */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;max-width:1100px}
+  .grid figure{overflow:hidden;background:var(--card);outline:1px solid transparent;outline-offset:3px;transition:outline-color .2s,opacity .3s}
+  .grid img{display:block;width:100%;height:auto;transition:opacity .5s;opacity:0}
   .grid img.in{opacity:1}
-  .grid figure:hover img{transform:scale(1.025)}
-  .grid .wide{grid-column:1/-1}
-  .grid .wide img{aspect-ratio:16/9}
+  .grid:hover figure:not(:hover){opacity:.55}
+  .grid figure:hover,.grid figure:focus-visible{outline-color:var(--ink)}
+  .cat{font-family:"IBM Plex Mono",monospace;font-weight:400;font-size:clamp(22px,2.4vw,30px);letter-spacing:.04em;margin:64px 0 10px;scroll-margin-top:24px}
+  .hint+.cat{margin-top:8px}
+  .cinfo{max-width:620px;color:var(--mute);font-size:14px;margin-bottom:22px}
+  .cat+.grid{margin-top:22px}
   .poster img{object-fit:contain;background:var(--card)}
+  /* wall label under each photo, like the L'Boulevard prints: number, then file and camera line */
+  .grid figcaption{position:relative;background:var(--bg);display:flex;gap:10px;padding:8px 0 2px;border-top:1px solid var(--line);font:400 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.04em;color:var(--dim);font-variant-numeric:tabular-nums}
+  .grid figcaption .no{color:var(--mute)}
+  .grid figure:has(figcaption){background:none}
+  .grid figure:has(figcaption) img{height:auto;background:var(--card)}
 
   /* L'Boulevard: an exhibition inside the portfolio, framed in its own plum and blue */
   .ex{margin-left:8px;padding:1px 5px;border:1px solid #3d81ff;color:#3d81ff;font-size:9px;letter-spacing:.14em;text-transform:uppercase;vertical-align:1px}
-  .glink{display:flex;align-items:center;padding:5px 0;font-size:13px;color:var(--mute)}
-  .glink:hover,.glink[aria-current]{color:var(--ink)}
-  .glink .go{margin-left:auto;opacity:0;transition:.2s}
-  .glink:hover .go{opacity:1}
+  .glink .ex{margin:4px 0 0;display:table}
   /* the exhibition fills the view, a small margin all round */
   body.lbv-on main{padding:12px}
   .lbv iframe{display:block;width:100%;height:calc(100svh - 24px);border:0;background:var(--bg)}
@@ -121,15 +135,37 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .lb .nav:hover{color:var(--ink)}
   .lb .prev{left:8px}.lb .next{right:8px}
   .lb .x{font-size:22px;color:var(--ink);width:40px;height:40px}
-  .lb footer{padding:12px 20px 18px;text-align:center;font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+  .lb footer{padding:12px 20px 18px;text-align:center;font:400 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.08em;color:var(--dim)}
   @media (max-width:820px){.lb .stage img{max-width:100vw;max-height:calc(100svh - 120px)}.lb .nav{display:none}}
 
   .burger{display:none}
+  /* collapse: the side menu folds to a thin rail holding only its open button */
+  .top{display:flex;justify-content:space-between;align-items:start;gap:12px}
+  .fold{font-size:16px;line-height:1;color:var(--mute);padding:2px 0 0;transition:transform .3s}
+  .fold:hover{color:var(--ink)}
+  /* minimised: a strip of every project's photo, names hidden (still read out, and shown on hover) */
+  @media (min-width:821px){
+    :root[data-nav="fold"] aside{width:120px;padding:40px 12px 32px}
+    :root[data-nav="fold"] .top{justify-content:center;margin-bottom:20px}
+    :root[data-nav="fold"] :is(.top>div,.meta,.tog,.ex,.go){display:none}
+    :root[data-nav="fold"] .list{grid-template-rows:1fr}
+    :root[data-nav="fold"] .sec .list>div{visibility:visible}
+    :root[data-nav="fold"] .sec{border:0}
+    :root[data-nav="fold"] .list ul{padding:0}
+    :root[data-nav="fold"] .list a{grid-template-columns:1fr;gap:2px;padding:6px 0}
+    :root[data-nav="fold"] .list a .nm{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+    :root[data-nav="fold"] .list a .th{width:96px}
+    :root[data-nav="fold"] .list .sub{display:none}
+    :root[data-nav="fold"] .fold{transform:rotate(180deg)}
+    :root[data-nav="fold"] main{margin-left:120px}
+  }
 
   @media (max-width:820px){
     aside{position:sticky;top:0;width:auto;height:auto;max-height:100svh;padding:16px 16px 0;background:var(--bg);border-right:0;border-bottom:1px solid var(--line);z-index:5}
     .top{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px}
     .burger{display:block;font-size:12px;letter-spacing:.22em}
+    .fold{display:none}
+    .top{align-items:center}
     .tagline{display:none}
     .navbody{display:none}
     aside.menu .navbody{display:block;padding-bottom:16px}
@@ -140,7 +176,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
     body.lbv-on main{padding:8px;flex:1;display:flex;flex-direction:column}
     .lbv{flex:1;display:flex;flex-direction:column}
     .lbv iframe{height:auto;flex:1}
-    .grid{grid-template-columns:1fr 1fr}
+    .grid{grid-template-columns:1fr 1fr;gap:10px}
+    .cat{scroll-margin-top:84px}
+    .grid figcaption{font-size:10px;letter-spacing:0;gap:6px}
   }
 </style>
 </head>
@@ -149,6 +187,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 <aside id="side">
   <div class="top">
     <div><a class="logo" href="#">SKIMART</a><span class="tagline">Photographer / Visual Artist</span></div>
+    <button class="fold" id="fold" type="button" aria-controls="navbody">«</button>
     <button class="burger" aria-expanded="false" aria-controls="navbody">MENU</button>
   </div>
   <div class="navbody" id="navbody">
@@ -168,6 +207,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   <footer id="lb-c"></footer>
 </div>
 
+<script src="assets/home/labels.js"></script>
 <script>
 const F = f => 'assets/home/' + f + '.jpg';
 const LBV = "BOULEVARD/L'boulevard%2026/";
@@ -175,7 +215,7 @@ const WORK = [
   {id:'photography', name:'Photography', projects:[
     {id:'technopark', group:'Street', name:'Technopark · Sidi Maarouf', info:'Street · Casablanca', imgs:["x714252_433206", "x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
     {id:'hellboy-mehdi', group:'Clubs', name:'Mehdi Ainak & Hellboy', info:'lapero.marrokii · 27.06.2025', imgs:["x423896_575352", "x426054_884570", "x258727_548040", "x250810_951131", "x123906_781973", "x468228_490555", "x385030_955491"]},
-    {id:'summer-sessions', group:'Clubs', name:'Summer Sessions', info:'liquid.bridge · Seamens Club Casablanca · 22.08.2026', imgs:["x627811_787172", "x212123_298179", "x429051_116215", "x19901_61074", "x598590_156911", "x501188_613690", "x227090_463441", "x316163_761898", "x823059_615258", "x613504_703056", "x609377_644968", "x980983_323513", "x562246_550939", "x996677_378388", "x520530_220013", "x241472_359800", "x738420_540762"]},
+    {id:'summer-sessions', group:'Clubs', name:'Summer Sessions', th:'x19901_61074', info:'liquid.bridge · Seamens Club Casablanca · 22.08.2026', imgs:["x627811_787172", "x212123_298179", "x429051_116215", "x19901_61074", "x598590_156911", "x501188_613690", "x227090_463441", "x316163_761898", "x823059_615258", "x613504_703056", "x609377_644968", "x980983_323513", "x562246_550939", "x996677_378388", "x520530_220013", "x241472_359800", "x738420_540762"]},
     {id:'ayoub-hattab', group:'American Arts Center', name:'Ayoub Hattab', info:'American Arts Center · 13.06.2025', imgs:["x839456_462094", "x395082_452071", "x774752_688224", "x93155_981252", "x296914_894376", "x200018_298173"]},
     {id:'jamila', group:'American Arts Center', name:'Jamila & the Other Heroes', info:'American Arts Center · 22.11.2025', imgs:["x314200_830168", "x659645_176854", "x514453_36871", "x53647_656038", "x669414_780304", "x272404_386440", "x92561_931639"]},
     {id:'jazz', group:'American Arts Center', name:'Jazz', info:'American Arts Center · 16.05.2025', imgs:["x371976_537633", "x75234_425976", "x787638_187070", "x931405_689754", "x212203_272216", "x789557_725989", "x162571_675568", "x419019_144295", "x657435_422153", "x100262_436316", "x157014_598127", "x779934_841075", "x171283_202206", "x924209_35169", "x86830_191438", "x551486_28416", "x765175_585970", "x31099_551549", "x598080_647526"]},
@@ -187,7 +227,11 @@ const WORK = [
   ]},
   {id:'design', name:'Design', projects:[
     {id:'aac', name:'American Art Center', info:'Poster design', poster:true, imgs:['x815196_567852','x190932_899304','x905172_741900','x913199_406854','x276823_230940','x980645_442674','x885431_556498']},
-    {id:'personal', name:'Personal project', info:'Poster design · C-01 – C-04', poster:true, imgs:['x609322_253534','x109724_353827','x270757_649230','x118493_85813','x746891_663120','x631743_861109','x99638_123460','x416801_359515','x920834_698237','x392680_933255','x542415_54580','x498923_828204','x341207_892313','x611198_115804','x706985_590407','x799846_204911','x16309_49896','x345557_230798','x216139_42263','x91009_432688','x73419_897462','x569067_495874','x527500_851389','x637025_367152','x757374_212963','x560715_265379','x627351_372270','x708231_215066','x349515_978978']},
+    {id:'personal', name:'Personal project', info:'Poster design · C-01 – C-04', poster:true, cats:[
+      {name:'C-01', info:'Some of my personal project that explores Medieval, Gothic, Renaissance, and Oriental aesthetics and methodology.', imgs:['x609322_253534','x270757_649230','x746891_663120','x109724_353827','x118493_85813','x631743_861109']},
+      {name:'C-02', info:'', imgs:['x99638_123460','x920834_698237','x392680_933255','x416801_359515']},
+      {name:'C-03', info:'', imgs:['x542415_54580','x611198_115804','x799846_204911','x498923_828204','x706985_590407','x16309_49896','x341207_892313']},
+      {name:'C-04', info:'', imgs:['x345557_230798','x569067_495874','x560715_265379','x216139_42263','x527500_851389','x627351_372270','x91009_432688','x637025_367152','x708231_215066','x73419_897462','x757374_212963','x349515_978978']}]},
     {id:'music', name:'Event & music posters', info:'Bold brutalist typography, Y2K nostalgia', poster:true, imgs:['x568923_892960']},
     {id:'fan', name:'Fan poster', info:"I'm not a human", poster:true, imgs:['x604559_348740','x604084_219457']},
   ]},
@@ -197,14 +241,16 @@ const WORK = [
 ];
 
 const nav = document.getElementById('work'), view = document.getElementById('view');
-const item = (s, p) => `<li><a href="#${s.id}/${p.id}">${p.name.toLowerCase()}<span class="go">→</span></a></li>`;
+let no = 0;
+const row = (name, th, extra = '') => `<span class="no">${String(++no).padStart(2, '0')}</span><span class="nm">${name}${extra}</span><img class="th" src="assets/home/t/${th}.jpg" alt="" loading="lazy"><span class="go" aria-hidden="true">↘</span>`;
+const item = (s, p) => `<li><a href="#${s.id}/${p.id}" title="${p.name}">${row(p.name.toLowerCase(), p.th || (p.imgs || p.cats[0].imgs)[0])}</a>${p.cats ? `<ul class="sub">${p.cats.map(c => `<li><a href="#${s.id}/${p.id}/${c.name.toLowerCase()}">${c.name.toLowerCase()}</a></li>`).join('')}</ul>` : ''}</li>`;
 const toggle = (id, label, n, cls) => `<button class="tog ${cls}" aria-expanded="false" aria-controls="${id}"><span>${label}<span class="n mono">${n}</span></span><span class="pm" aria-hidden="true">+</span></button>`;
 nav.innerHTML = WORK.map(s => {
   const groups = [...new Set(s.projects.map(p => p.group))];
   const body = groups[0] ? groups.map((g, gi) => {
     const ps = s.projects.filter(p => p.group === g), id = `g-${s.id}-${gi}`;
     // the exhibition is one click: no fold-out, its rooms are in its own nav
-    if (ps[0].boulevard) return `<li class="gsec"><a class="glink" href="#${s.id}/${ps[0].id}">${g.toLowerCase()}<span class="ex mono">exhibition</span><span class="go">→</span></a></li>`;
+    if (ps[0].boulevard) return `<li class="gsec"><ul><li><a class="glink" href="#${s.id}/${ps[0].id}" title="${g}">${row(g.toLowerCase(), 'boulevard', '<span class="ex mono">exhibition</span>')}</a></li></ul></li>`;
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
@@ -215,11 +261,15 @@ const setOpen = (el, open) => { el.classList.toggle('open', open); el.querySelec
 nav.addEventListener('click', e => {
   const b = e.target.closest('.tog'); if (b) setOpen(b.parentElement, !b.parentElement.classList.contains('open'));
 });
+const fold = document.getElementById('fold');
+const foldLabel = () => { const f = root.dataset.nav === 'fold'; fold.setAttribute('aria-expanded', !f); fold.setAttribute('aria-label', f ? 'Open menu' : 'Collapse menu'); };
+fold.onclick = () => { root.dataset.nav = root.dataset.nav === 'fold' ? '' : 'fold'; try { localStorage.setItem('skm-nav', root.dataset.nav); } catch (e) {} foldLabel(); };
 document.querySelector('.burger').onclick = e => {
   const m = document.getElementById('side').classList.toggle('menu'); e.target.setAttribute('aria-expanded', m);
 };
 
-function openSec(id){ setOpen(nav.querySelector(`[data-sec="${id}"]`), true); }
+const grid = (p, imgs) => `<div class="grid ${p.poster ? 'poster' : ''}">${imgs.map((f, i) => `<figure data-zoom data-cam="${LABELS[f] || ''}" tabindex="0" role="button" aria-label="Enlarge ${p.poster ? 'poster' : 'photo'} ${i + 1}"><img src="${F(f)}" alt="${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}" loading="lazy">${p.poster ? '' : `<figcaption><span class="no">${String(i + 1).padStart(2, '0')}</span><span class="cam">${(LABELS[f] || '').replace(/^(.+? · .+?) · /, '$1<br>')}</span></figcaption>`}</figure>`).join('')}</div>`;
+function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
 function render(){
   const [sid, pid, room] = location.hash.slice(1).split('/');
@@ -256,11 +306,13 @@ function render(){
     view.innerHTML = p.boulevard
       // the exhibition's own pages run in a frame, so its rooms open here instead of leaving the portfolio
       ? `<section class="lbv"><iframe src="${LBV}${room ? room + '/' : ''}index.html" title="L'Boulevard exhibition"></iframe></section>`
-      : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p><div class="grid ${p.poster ? 'poster' : ''}">${p.imgs.map((f, i) => `<figure data-zoom tabindex="0" role="button" aria-label="Enlarge ${p.poster ? 'poster' : 'photo'} ${i + 1}" class="${!p.poster && i === 3 ? 'wide' : ''}"><img src="${F(f)}" alt="${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}" loading="lazy"></figure>`).join('')}</div></section>`;
+      : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p>${p.cats ? p.cats.map(c => `<h3 class="cat" id="${c.name.toLowerCase()}">${c.name}</h3>${c.info ? `<p class="cinfo">${c.info}</p>` : ''}${grid(p, c.imgs)}`).join('') : grid(p, p.imgs)}</section>`;
     document.getElementById('side').classList.remove('menu');
   }
   view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
-  scrollTo(0, 0);
+  const cat = p && p.cats && room && document.getElementById(room);  // #design/personal/c-02
+  if (cat) nav.querySelector(`a[href="#${sid}/${pid}/${room}"]`).setAttribute('aria-current', 'page');
+  cat ? cat.scrollIntoView() : scrollTo(0, 0);
 }
 // mirror the exhibition's light/dark choice onto the portfolio while it is open (same origin, so the frame is readable)
 view.addEventListener('load', e => {
@@ -275,13 +327,14 @@ view.addEventListener('load', e => {
 const themeBtn = document.getElementById('theme'), root = document.documentElement;
 const themeLabel = () => { const l = root.dataset.theme === 'light'; themeBtn.textContent = l ? 'dark' : 'light'; themeBtn.setAttribute('aria-label', `Switch to ${l ? 'dark' : 'light'} theme`); };
 themeBtn.onclick = () => { root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light'; try { localStorage.setItem('skm-theme', root.dataset.theme); } catch (e) {} themeLabel(); };
-themeLabel();
+themeLabel(); foldLabel();
 
 // lightbox: click a photo → full screen; click again → 2× zoom that follows the pointer
 const lb = document.getElementById('lb'), lbi = document.getElementById('lb-i'), lbs = document.getElementById('lb-s');
 let set = [], at = 0, last = null;
 const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'); lbi.style.transform = '';
-  lbi.src = set[at].src; lbi.alt = set[at].alt; document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}`; };
+  lbi.src = set[at].src; lbi.alt = set[at].alt; const cam = set[at].parentElement.dataset.cam;
+  document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}` + (cam ? ' · ' + cam : ''); };
 const openLb = fig => { last = fig; set = [...view.querySelectorAll('[data-zoom] img')]; document.getElementById('lb-t').textContent = (view.querySelector('h2') || {}).textContent || 'SKIMART';
   document.getElementById('side').inert = view.inert = true;
   lb.classList.add('on'); document.body.style.overflow = 'hidden'; show(set.indexOf(fig.querySelector('img'))); document.getElementById('lb-x').focus(); };
