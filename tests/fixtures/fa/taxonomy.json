@@ -1,0 +1,5 @@
+[
+ {"id": "music", "label": "Music", "children": [{"id": "concert", "label": "Concert"}, {"id": "festival", "label": "Festival"}]},
+ {"id": "street", "label": "Street", "children": [{"id": "street-photography", "label": "Street Photography"}, {"id": "portraits", "label": "Portraits"}]},
+ {"id": "landscape", "label": "Landscape", "children": [{"id": "landscape-leaf", "label": "Landscape"}]}
+]

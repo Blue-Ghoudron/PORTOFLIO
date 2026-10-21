@@ -1,0 +1,7 @@
+{
+ "cities": [{"id": "casablanca", "label": "Casablanca"}, {"id": "rabat", "label": "Rabat"}],
+ "locations": [{"id": "american-arts-center", "label": "American Arts Center", "cityId": "casablanca"}, {"id": "seamens-club", "label": "Seamens Club", "cityId": "casablanca"}, {"id": "test-venue-rabat", "label": "Test Venue Rabat", "cityId": "rabat"}],
+ "events": [{"id": "test-fest-2025", "label": "Test Fest 2025", "year": 2025}, {"id": "test-fest-2026", "label": "Test Fest 2026", "year": 2026}, {"id": "test-night", "label": "Test Night", "year": 2026}],
+ "artists": [{"id": "test-band-a", "label": "Test Band A"}, {"id": "test-band-b", "label": "Test Band B"}],
+ "clients": [{"id": "test-client", "label": "Test Client"}]
+}
