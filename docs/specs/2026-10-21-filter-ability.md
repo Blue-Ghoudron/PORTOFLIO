@@ -1,13 +1,13 @@
 # F.A Filter Ability — photography archive + smart filters — spec
 
-Status: design, waiting for the user's approval. Branch `Filter-Ability` (from `Portoflio-Branch`). Beads epic `pf-coe`. Written 21.10.2026.
+Status: approved by the user 21.10.2026. Plan: `docs/superpowers/plans/2026-10-21-filter-ability.md`. Branch `Filter-Ability` (from `Portoflio-Branch`). Beads epic `pf-coe`. Written 21.10.2026.
 Source brief: `Briefs/skimart-photography-archive-brief.md` (supersedes `Briefs/Photography Archive & Smart Filtering.txt`). Its 12 acceptance criteria (§7) are the definition of done; this spec says how they are met in this repo.
 
 ## Why
-Art directors, cultural organisations, event organisers and potential clients come to judge the work and find relevant photographs quickly. Today photos can only be reached project by project. They should be able to start from a genre (Music → Concert, Street → Portraits), then narrow by place, year, event or artist. It must feel like a curated photography archive, not an image database. 160 photos today, room to grow.
+Art directors, cultural organisations, event organisers and potential clients come to judge the work and find relevant photographs quickly. Today photos can only be reached project by project. They should be able to start from a genre (Music → Concert, Street → Portraits), then narrow by place, year, event or artist. It must feel like a curated photography archive, not an image database. 159 photos today, room to grow.
 
 ## Goals
-- One new **Archive** view holding every photograph: the homepage photo projects (77), the three L'Boulevard rooms (67) and the Poster Making workshop (16): 160 photos. The home hero (Soualem wheat field) is not in any project and stays out (my call).
+- One new **Archive** view holding every photograph: the homepage photo projects (77), the three L'Boulevard rooms (67) and the Poster Making workshop (16): 160 photos, 159 while the misfiled Noches photo is left out (see below). The home hero (Soualem wheat field) is not in any project and stays out (my call).
 - Genre first, then metadata: what a photo is *about* (genre) stays separate from *where / when / for whom* (place, city, year, date, event, artist, client). American Arts Center is a place, never a genre.
 - Filters combine; the current view lives in the address and can be shared, bookmarked and restored.
 - A private **tagging page** where the user edits every field of every photo, because the user tags the genres themselves.
@@ -52,7 +52,7 @@ Art directors, cultural organisations, event organisers and potential clients co
 ### Data (in `data/`, JSON, fetched when the archive opens)
 - `taxonomy.json`: the genre tree from the brief (Music, Street & Documentary, Landscape & Nature, Culture & Performing Arts and their leaves), each with id = slug and label. Photos hold leaf ids only; parents are derived.
 - `refs.json`: reference tables `cities`, `locations` (with `cityId`), `events` (with `year`, optional `date`), `artists`, `clients`. Each entry: `id` (= slug), `label`.
-- `photos.json`: one record per photo, the brief's shape: `id, title, image, thumb, w, h, discipline, genres[], locationId, cityId, year, date, eventIds[], artistIds[], clientId, featured, alt` plus `project` (which homepage project or room it belongs to, used for the caption and the "from …" link). `cityId` only when the location is unknown. Written one record per line so git diffs stay readable.
+- `photos.json`: one record per photo, the brief's shape: `id, title, image, thumb, w, h, discipline, genres[], locationId, cityId, year, date, eventIds[], artistIds[], clientId, featured, alt`. The caption and the "from …" link are derived, not stored: homepage projects from `WORK` (passed in by `index.html`), rooms from `series.json`. `cityId` only when the location is unknown. Written one record per line so git diffs stay readable.
 - `series.json`: the three rooms as curated series (Connection, Movement, Faces and Eyes) with `href` and `photoIds` in room order. Homepage projects stay curated by their order in `WORK`; they are not duplicated here.
 - Validation (`validate(data)`) runs on load: unknown genre / ref id, duplicate photo id, missing image. Problems go to `console.warn` and the bad reference is ignored for filtering; the page never crashes.
 
