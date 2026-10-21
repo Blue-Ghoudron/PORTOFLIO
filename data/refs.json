@@ -1,0 +1,98 @@
+{
+ "cities": [
+  {
+   "id": "casablanca",
+   "label": "Casablanca"
+  }
+ ],
+ "locations": [
+  {
+   "id": "technopark-sidi-maarouf",
+   "label": "Technopark · Sidi Maarouf",
+   "cityId": "casablanca"
+  },
+  {
+   "id": "seamens-club",
+   "label": "Seamens Club",
+   "cityId": "casablanca"
+  },
+  {
+   "id": "american-arts-center",
+   "label": "American Arts Center",
+   "cityId": "casablanca"
+  }
+ ],
+ "events": [
+  {
+   "id": "jazz",
+   "label": "Jazz",
+   "year": 2025,
+   "date": "2025-05-16"
+  },
+  {
+   "id": "summer-sessions",
+   "label": "Summer Sessions",
+   "year": 2026,
+   "date": "2026-08-22"
+  },
+  {
+   "id": "noches-de-ramadan",
+   "label": "Noches de Ramadán",
+   "year": 2026,
+   "date": "2026-02-24"
+  },
+  {
+   "id": "poster-making-workshop",
+   "label": "Poster Making workshop",
+   "year": 2026,
+   "date": "2026-02-13"
+  },
+  {
+   "id": "l-boulevard-2025",
+   "label": "L'Boulevard 2025",
+   "year": 2025,
+   "date": "2025-09-20"
+  },
+  {
+   "id": "l-boulevard-2026",
+   "label": "L'Boulevard 2026",
+   "year": 2026,
+   "date": "2026-09-19"
+  }
+ ],
+ "artists": [
+  {
+   "id": "mehdi-ainak",
+   "label": "Mehdi Ainak"
+  },
+  {
+   "id": "hellboy",
+   "label": "Hellboy"
+  },
+  {
+   "id": "ayoub-hattab",
+   "label": "Ayoub Hattab"
+  },
+  {
+   "id": "jamila-the-other-heroes",
+   "label": "Jamila & the Other Heroes"
+  },
+  {
+   "id": "nanofunk",
+   "label": "Nanofunk"
+  },
+  {
+   "id": "disco-atlas",
+   "label": "Disco Atlas"
+  },
+  {
+   "id": "pagan-ulver",
+   "label": "Pagan Ulver"
+  },
+  {
+   "id": "suicide-machine",
+   "label": "Suicide Machine"
+  }
+ ],
+ "clients": []
+}

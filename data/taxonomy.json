@@ -1,0 +1,6 @@
+[
+ {"id":"music","label":"Music","children":[{"id":"concert","label":"Concert"},{"id":"festival","label":"Festival"},{"id":"live-performance","label":"Live Performance"},{"id":"rehearsal","label":"Rehearsal"},{"id":"artist-portrait","label":"Artist Portrait"}]},
+ {"id":"street-documentary","label":"Street & Documentary","children":[{"id":"street-photography","label":"Street Photography"},{"id":"urban-life","label":"Urban Life"},{"id":"portraits","label":"Portraits"},{"id":"documentary","label":"Documentary"},{"id":"architecture","label":"Architecture"}]},
+ {"id":"landscape-nature","label":"Landscape & Nature","children":[{"id":"landscape","label":"Landscape"},{"id":"urban-landscape","label":"Urban Landscape"},{"id":"nature","label":"Nature"},{"id":"night-photography","label":"Night Photography"}]},
+ {"id":"culture-performing-arts","label":"Culture & Performing Arts","children":[{"id":"dance","label":"Dance"},{"id":"theatre","label":"Theatre"},{"id":"exhibition","label":"Exhibition"},{"id":"cultural-events","label":"Cultural Events"}]}
+]
