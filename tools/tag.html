@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Archive tagging</title>
+<link rel="stylesheet" href="tag.css">
+</head>
+<body>
+<!-- Private tool, linked from nowhere: edit every archive photo's facts, then save data/photos.json + data/refs.json.
+     Open it on the local server (python3 -m http.server … → /tools/tag.html). Chrome/Edge write the files in place. -->
+<header>
+  <h1>Archive tagging</h1>
+  <label><input type="checkbox" id="untagged"> only untagged</label>
+  <input type="search" id="find" placeholder="find id, project, alt" aria-label="Find photos">
+  <span id="status" aria-live="polite"></span>
+  <button id="save">Save</button>
+</header>
+<div id="errors" role="alert"></div>
+<main>
+  <section class="sheet" aria-label="Photos"></section>
+  <form id="form" aria-label="Facts of the selected photos"></form>
+</main>
+<script type="module" src="tag.js"></script>
+</body>
+</html>
