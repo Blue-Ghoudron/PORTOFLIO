@@ -71,7 +71,10 @@ form.addEventListener('click', e => {
   const id = slugify(label);
   if (!id || data.refs[list].some(r => r.id === id)) return alert(`"${id}" already exists`);
   const r = {id, label};
-  if (list === 'locations') { const c = prompt(`City id for ${label} (${data.refs.cities.map(c => c.id).join(', ')})`, 'casablanca'); if (c) r.cityId = c; }
+  if (list === 'locations') {  // a typed city name becomes its id, and a city the data doesn't know yet is added
+    const c = prompt(`City of ${label} (${data.refs.cities.map(c => c.label).join(', ')})`, 'Casablanca')?.trim();
+    if (c) { r.cityId = slugify(c); if (!data.refs.cities.some(x => x.id === r.cityId)) data.refs.cities.push({id: r.cityId, label: c}); }
+  }
   if (list === 'events') { const y = prompt(`Year of ${label}`); if (y) r.year = +y; }
   data.refs[list].push(r);
   // the new entry goes straight onto the selected photos
@@ -95,7 +98,13 @@ $('#save').onclick = async () => {
   if (errors.length) return;
   const files = {'photos.json': photosJson(data.photos), 'refs.json': refsJson(data.refs)};
   if (window.showDirectoryPicker) {
-    dir ||= await showDirectoryPicker({id: 'skimart-data', mode: 'readwrite'});
+    // only write into the archive's data/ folder: it is the one that already holds taxonomy.json
+    try { dir ||= await showDirectoryPicker({id: 'skimart-data', mode: 'readwrite'}); await dir.getFileHandle('taxonomy.json'); }
+    catch (err) {
+      dir = null;
+      if (err.name === 'AbortError') { $('#status').textContent = 'not saved'; return; }
+      $('#errors').innerHTML = '<p>That folder is not the archive data: pick the repo\'s data/ folder (the one with taxonomy.json).</p>'; return;
+    }
     for (const [name, text] of Object.entries(files)) { const w = await (await dir.getFileHandle(name, {create: true})).createWritable(); await w.write(text); await w.close(); }
   } else for (const [name, text] of Object.entries(files)) {
     const a = Object.assign(document.createElement('a'), {href: URL.createObjectURL(new Blob([text], {type: 'application/json'})), download: name});

@@ -98,6 +98,45 @@ with sync_playwright() as p:
     ok(not pg.errs, f'real data errors: {pg.errs}')
     pg.close()
 
+    # pf-coe.12: a new place with a typed city name saves (the city is slugged, and made if missing)
+    pg = page(browser)
+    answers = ['Dar Bellarj', 'Marrakech']
+    pg.on('dialog', lambda d: d.accept(answers.pop(0)) if answers else d.dismiss())
+    pg.click('.sheet figure[data-id=test-01]')
+    pg.click('#form button.new[data-list=locations]')
+    pg.click('#save'); pg.wait_for_timeout(800)
+    ok(not (pg.text_content('#errors') or '').strip(), f'pf-coe.12 save refused: {pg.text_content("#errors")}')
+    if 'refs.json' in pg.files:
+        refs = json.loads(pg.files['refs.json'])
+        ok({'id': 'dar-bellarj', 'label': 'Dar Bellarj', 'cityId': 'marrakech'} in refs['locations'], f'pf-coe.12 place: {refs["locations"][-1]}')
+        ok(any(c['id'] == 'marrakech' for c in refs['cities']), 'pf-coe.12 city made')
+    pg.close()
+
+    # pf-coe.11: Chrome folder save — only into a folder that holds the archive data; cancelling is quiet
+    pg = browser.new_page(viewport={'width': 1440, 'height': 900})
+    pg.errs = []
+    pg.on('pageerror', lambda e: pg.errs.append(str(e)))
+    pg.add_init_script("""
+      window.__writes = [];
+      const folder = files => ({getFileHandle: async (n, o) => {
+        if (!files.includes(n) && !(o && o.create)) throw new DOMException('missing', 'NotFoundError');
+        return {createWritable: async () => ({write: async () => window.__writes.push(n), close: async () => {}})}; }});
+      window.__folders = [async () => { throw new DOMException('cancel', 'AbortError'); },
+                          async () => folder(['index.html']),
+                          async () => folder(['taxonomy.json', 'photos.json', 'refs.json', 'series.json'])];
+      window.showDirectoryPicker = () => window.__folders.shift()();""")
+    pg.route('**/data/*.json', lambda r: r.fulfill(status=200, content_type='application/json',
+             body=open(os.path.join(FX, r.request.url.split('?')[0].rsplit('/', 1)[1]), encoding='utf-8').read()))
+    pg.goto(T); pg.wait_for_selector('.sheet figure')
+    pg.click('#save'); pg.wait_for_timeout(300)
+    ok(not pg.errs, f'pf-coe.11 cancelling the picker throws: {pg.errs}')
+    pg.click('#save'); pg.wait_for_timeout(300)
+    ok(pg.evaluate('window.__writes.length') == 0, 'pf-coe.11 wrote into a folder without the archive data')
+    ok('data' in (pg.text_content('#errors') or ''), f'pf-coe.11 wrong folder not explained: {pg.text_content("#errors")}')
+    pg.click('#save'); pg.wait_for_timeout(300)
+    ok(sorted(pg.evaluate('window.__writes')) == ['photos.json', 'refs.json'], f'pf-coe.11 right folder: {pg.evaluate("window.__writes")}')
+    pg.close()
+
     browser.close()
 
 print('FAILS:', 'none' if not fails else '')
