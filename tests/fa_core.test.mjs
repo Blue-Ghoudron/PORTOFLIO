@@ -1,8 +1,8 @@
-// Unit tests for the archive's pure filter logic (pf-coe.1, pf-coe.2). Run: node --test tests/
+// Unit tests for the archive's pure filter logic (pf-coe.1, pf-coe.2). Run: node --test 'tests/*.test.mjs'
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { emptyState, applyFilters, computeOptions, changeGenre, sortPhotos, slugify } from '../assets/archive/core.js';
+import { emptyState, applyFilters, computeOptions, changeGenre, sortPhotos, slugify, parseQuery, serializeQuery, validate, photosJson } from '../assets/archive/core.js';
 
 const fx = f => JSON.parse(readFileSync(new URL(`fixtures/fa/${f}.json`, import.meta.url)));
 const D = { taxonomy: fx('taxonomy'), refs: fx('refs'), photos: fx('photos'), series: fx('series') }, P = D.photos;
@@ -36,3 +36,19 @@ test('AC4 genre change keeps values that still match', () => assert.deepEqual(
 test('genre change never leaves an empty result', () => { const s = changeGenre({...emptyState(), genre:'concert', year:['2025'], artist:['test-band-b']}, 'festival', P, D);
   assert.ok(applyFilters(P, s, D).length > 0); });
 test('slugify', () => { assert.equal(slugify("L'Boulevard 2025"), 'l-boulevard-2025'); assert.equal(slugify('Jinān Al Andalus'), 'jinan-al-andalus'); });
+
+test('AC7 round trip', () => { const s = {...emptyState(), genre:'concert', location:['american-arts-center','seamens-club'], year:['2026']};
+  const q = serializeQuery(s); assert.equal(q, 'genre=concert&location=american-arts-center,seamens-club&year=2026');
+  assert.deepEqual(parseQuery(q, D), s); });
+test('empty state serialises to nothing', () => assert.equal(serializeQuery(emptyState()), ''));
+test('AC7 invalid params ignored', () => assert.deepEqual(
+  parseQuery('genre=nope&year=abc,2025&location=american-arts-center,ghost&foo=1', D),
+  {...emptyState(), year:['2025'], location:['american-arts-center']}));
+test('garbage query does not throw', () => assert.deepEqual(parseQuery('%%%&&==', D), emptyState()));
+test('fixtures are valid', () => assert.deepEqual(validate(D), []));
+test('validation catches broken references', () => { const bad = structuredClone(D);
+  bad.photos[0].genres = ['jazz']; bad.photos[1].locationId = 'ghost'; bad.photos.push({...bad.photos[2]}); bad.series[0].photoIds.push('test-99');
+  const e = validate(bad).join('\n');
+  for (const s of ['unknown genre "jazz"', 'unknown location "ghost"', 'duplicate id test-03', 'series test-series: unknown photo test-99']) assert.ok(e.includes(s), s); });
+test('photosJson writes one record per line', () => assert.equal(photosJson(P.slice(0, 2)).split('\n').length, 5));
+test('photosJson matches the fixture file byte for byte', () => assert.equal(photosJson(P), readFileSync(new URL('fixtures/fa/photos.json', import.meta.url), 'utf8')));

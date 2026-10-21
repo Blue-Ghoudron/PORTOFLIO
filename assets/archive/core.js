@@ -70,5 +70,48 @@ export function changeGenre(state, genreId, photos, data){
   return next;
 }
 
-export const slugify = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+export const slugify = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const KEYS = ['genre', ...FIELDS];
+const allowed = (field, data) => field === 'year'
+  ? new Set(data.photos.filter(p => p.year != null).map(p => String(p.year)))
+  : new Set((data.refs[REF[field]] || []).map(x => x.id));
+
+// query is the part after "?" in #photography/archive?…; anything unknown is dropped, never thrown
+export function parseQuery(query, data){
+  const s = emptyState();
+  let q; try { q = new URLSearchParams(query); } catch (e) { return s; }
+  const g = q.get('genre');
+  if (g && data.taxonomy.some(t => t.id === g || t.children.some(c => c.id === g))) s.genre = g;
+  for (const f of FIELDS) {
+    const ok = allowed(f, data);
+    s[f] = [...new Set((q.get(f) || '').split(',').filter(v => ok.has(v)))];
+  }
+  return s;
+}
+
+export const serializeQuery = state => KEYS
+  .filter(k => k === 'genre' ? state.genre : state[k].length)
+  .map(k => `${k}=${k === 'genre' ? state.genre : state[k].join(',')}`).join('&');
+
+export function validate(data){
+  const err = [], seen = new Set(), refs = data.refs || {};
+  const has = (list, id) => (refs[list] || []).some(x => x.id === id);
+  const leafIds = new Set(data.taxonomy.flatMap(t => t.children.map(c => c.id)));
+  for (const l of refs.locations || []) if (l.cityId && !has('cities', l.cityId)) err.push(`location ${l.id}: unknown city "${l.cityId}"`);
+  for (const p of data.photos) {
+    if (seen.has(p.id)) err.push(`duplicate id ${p.id}`); seen.add(p.id);
+    for (const g of p.genres || []) if (!leafIds.has(g)) err.push(`photo ${p.id}: unknown genre "${g}"`);
+    const one = (field, list, id) => id != null && !has(list, id) && err.push(`photo ${p.id}: unknown ${field} "${id}"`);
+    one('location', 'locations', p.locationId); one('city', 'cities', p.cityId); one('client', 'clients', p.clientId);
+    for (const e of p.eventIds || []) one('event', 'events', e);
+    for (const a of p.artistIds || []) one('artist', 'artists', a);
+  }
+  for (const s of data.series || []) for (const id of s.photoIds) if (!seen.has(id)) err.push(`series ${s.id}: unknown photo ${id}`);
+  return err;
+}
+
+// the on-disk formats: one photo per line keeps git diffs readable; the migration and the tagging page both write these
+export const photosJson = photos => '[\n' + photos.map(p => JSON.stringify(p)).join(',\n') + '\n]\n';
+export const refsJson = refs => JSON.stringify(refs, null, 1) + '\n';
