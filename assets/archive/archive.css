@@ -1,0 +1,42 @@
+/* Archive (#photography/archive): layout A — genres, then dropdowns, chips + count, then the photos. Site tokens only. */
+.archive .info{margin-bottom:22px}
+.archive button{font:inherit;color:inherit}
+
+.fa-genres{display:flex;flex-wrap:wrap;gap:6px 22px;border-bottom:1px solid var(--line);font-size:13px}
+.fa-genres button{color:var(--mute);padding:4px 0 8px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.fa-genres button:hover{color:var(--ink)}
+.fa-genres button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.fa-sub{display:flex;flex-wrap:wrap;gap:4px 18px;margin:12px 0 0;font-size:12px}
+.fa-sub button{color:var(--mute);padding:2px 0}
+.fa-sub button:hover,.fa-sub button[aria-pressed="true"]{color:var(--ink)}
+.fa-sub button[aria-pressed="true"]{text-decoration:underline;text-underline-offset:4px}
+.fa-sub .n,.fa-dd .n{color:var(--dim)}
+
+.fa-dds{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.fa-dd{position:relative;font-size:12px}
+.fa-dd summary{list-style:none;cursor:pointer;border:1px solid var(--line);padding:7px 11px;color:var(--mute)}
+.fa-dd summary::-webkit-details-marker{display:none}
+.fa-dd summary:hover,.fa-dd[open] summary{border-color:var(--ink);color:var(--ink)}
+.fa-dd summary b{font-weight:500;color:var(--ink)}
+.fa-menu{position:absolute;z-index:5;top:calc(100% + 4px);left:0;min-width:240px;max-height:320px;overflow:auto;background:var(--bg);border:1px solid var(--ink);padding:8px 12px}
+.fa-menu label{display:flex;gap:8px;align-items:baseline;padding:5px 0;cursor:pointer;color:var(--soft)}
+.fa-menu label[hidden]{display:none}
+.fa-menu label .l{flex:1}
+.fa-menu input[type=checkbox]{accent-color:var(--ink);margin:0}
+.fa-menu input[type=search]{width:100%;margin:0 0 6px;padding:6px 0;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit}
+
+.fa-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 22px;font-size:12px;min-height:28px}
+.fa-chip{background:var(--ink);color:var(--bg)!important;padding:5px 10px}
+.fa-clear,.fa-reset{color:var(--mute);text-decoration:underline;text-underline-offset:4px}
+.fa-clear:hover,.fa-reset:hover{color:var(--ink)}
+.fa-count{margin:0 0 0 auto;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+
+.fa-grid figcaption .cam{white-space:normal}
+.fa-empty{padding:60px 0;color:var(--mute)}
+.fa-empty p{margin:0 0 12px;font-size:18px;color:var(--ink)}
+
+/* the menu row above the photography groups */
+.list a.arch{display:flex;grid-template-columns:none;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:9px 12px;margin:4px 0 12px;font-size:13px;color:var(--mute)}
+.list a.arch:hover,.list a.arch[aria-current]{border-color:var(--ink);color:var(--ink)}
+.arch .n{font-size:11px;color:var(--dim)}
+@media (min-width:821px){ :root[data-nav="fold"] .list a.arch{padding:6px 8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase} :root[data-nav="fold"] .arch .n{display:none} }

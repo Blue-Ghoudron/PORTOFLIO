@@ -8,6 +8,7 @@
 try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.nav=localStorage.getItem('skm-nav')||''}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/archive/archive.css">
 <style>
   :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#7d7a75;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
   :root[data-theme="light"]{--bg:#f2efe9;--ink:#151515;--mute:#5f5c57;--dim:#6f6c67;--line:#dbd7cf;--soft:#2c2b29;--card:#e4e0d8;color-scheme:light}
@@ -216,7 +217,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <header><span id="lb-t"></span><button class="x" id="lb-x" aria-label="Close">×</button></header>
   <div class="stage" id="lb-s"><button class="nav prev" id="lb-p" aria-label="Previous photo">←</button><img id="lb-i" alt=""><button class="nav next" id="lb-n" aria-label="Next photo">→</button></div>
-  <footer id="lb-c"></footer>
+  <footer><span id="lb-c"></span> <a id="lb-from" hidden></a></footer>
 </div>
 
 <script src="assets/home/labels.js"></script>
@@ -265,8 +266,10 @@ nav.innerHTML = WORK.map(s => {
     if (ps[0].boulevard) return `<li class="gsec"><ul><li><a class="glink" href="#${s.id}/${ps[0].id}" title="${g}">${row(g.toLowerCase(), 'boulevard', '<span class="ex mono">exhibition</span>')}</a></li></ul></li>`;
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
+  // every photograph in one filterable view (assets/archive/), above the photography groups
+  const arch = s.id === 'photography' ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '';
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
-    <div class="list" id="l-${s.id}"><div><ul class="mono">${body}</ul></div></div></div>`;
+    <div class="list" id="l-${s.id}"><div><ul class="mono">${arch}${body}</ul></div></div></div>`;
 }).join('');
 
 const setOpen = (el, open) => { el.classList.toggle('open', open); el.querySelector(':scope>.tog').setAttribute('aria-expanded', open); };
@@ -285,10 +288,14 @@ const grid = (p, imgs) => `<div class="grid ${p.poster ? 'poster' : ''}">${imgs.
 // a deep link (#design/personal/c-02) is re-scrolled as the photos above it get their height, until the visitor scrolls themselves
 let goTo = null; ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, () => goTo = null, {passive: true}));
 const mason = new ResizeObserver(es => { es.forEach(e => e.target.style.gridRowEnd = 'span ' + Math.ceil(e.contentRect.height + parseFloat(getComputedStyle(e.target).marginBottom))); goTo && goTo.scrollIntoView(); });
+const settle = () => { view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
+  mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f)); };
+const archive = () => import('./assets/archive/archive.js');
+archive().then(m => m.load()).then(d => nav.querySelector('.arch .n').textContent = d.photos.length).catch(() => {});
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
 function render(){
-  const [sid, pid, room] = location.hash.slice(1).split('/');
+  const [path, query = ''] = location.hash.slice(1).split('?'), [sid, pid, room] = path.split('/');
   document.body.classList.remove('lbv-on');
   document.querySelectorAll('aside a[aria-current]').forEach(a => a.removeAttribute('aria-current'));
   const sec = WORK.find(s => s.id === sid), p = sec && sec.projects.find(x => x.id === pid);
@@ -300,6 +307,12 @@ function render(){
       <dl><dt>Photography</dt><dd>Live music, portraits, street photography, cultural documentation</dd>
       <dt>Graphic design</dt><dd>Posters, visual identities, editorial compositions</dd>
       <dt>Contact</dt><dd><a href="mailto:ghoujlamimohamed@gmail.com">ghoujlamimohamed@gmail.com</a><br><a href="https://www.instagram.com/_skimart_/">@_skimart_ on Instagram ↗</a></dd></dl></section>`;
+    document.getElementById('side').classList.remove('menu');
+  } else if (sid === 'photography' && pid === 'archive') {
+    nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
+    nav.querySelector('.arch').setAttribute('aria-current', 'page');
+    if (!view.querySelector('.archive')) view.innerHTML = '<section class="proj archive"><h2>Archive</h2></section>';
+    archive().then(m => m.showArchive(view, query, WORK, settle));
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
     view.innerHTML = `<section class="home">
@@ -326,8 +339,7 @@ function render(){
       : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p>${p.cats ? p.cats.map(c => `<h3 class="cat" id="${c.name.toLowerCase()}">${c.name}</h3>${c.info ? `<p class="cinfo">${c.info}</p>` : ''}${grid(p, c.imgs)}`).join('') : grid(p, p.imgs)}</section>`;
     document.getElementById('side').classList.remove('menu');
   }
-  view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
-  mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f));
+  settle();
   const cat = p && p.cats && room && document.getElementById(room);  // #design/personal/c-02
   goTo = cat; cat ? cat.scrollIntoView() : scrollTo(0, 0);
 }
@@ -350,7 +362,9 @@ themeLabel(); foldLabel();
 const lb = document.getElementById('lb'), lbi = document.getElementById('lb-i'), lbs = document.getElementById('lb-s');
 let set = [], at = 0, last = null;
 const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'); lbi.style.transform = '';
-  lbi.src = set[at].src; lbi.alt = set[at].alt; const cam = set[at].parentElement.dataset.cam;
+  lbi.src = set[at].dataset.full || set[at].src; lbi.alt = set[at].alt; const cam = set[at].parentElement.dataset.cam;
+  const fig = set[at].parentElement, from = document.getElementById('lb-from');  // archive photos link back to their project or room
+  from.hidden = !fig.dataset.fromHref; from.href = fig.dataset.fromHref || ''; from.textContent = `from ${fig.dataset.fromLabel} →`;
   document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}` + (cam ? ' · ' + cam : ''); };
 const openLb = fig => { last = fig; set = [...view.querySelectorAll('[data-zoom] img')]; document.getElementById('lb-t').textContent = (view.querySelector('h2') || {}).textContent || 'SKIMART';
   document.getElementById('side').inert = view.inert = true;
@@ -359,6 +373,7 @@ const closeLb = () => { document.getElementById('side').inert = view.inert = fal
 view.addEventListener('click', e => { const f = e.target.closest('[data-zoom]'); if (f) openLb(f); });
 view.addEventListener('keydown', e => { const f = e.target.closest('[data-zoom]'); if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLb(f); } });
 document.getElementById('lb-x').onclick = closeLb;
+document.getElementById('lb-from').onclick = closeLb;
 document.getElementById('lb-p').onclick = e => { e.stopPropagation(); show(at - 1); };
 document.getElementById('lb-n').onclick = e => { e.stopPropagation(); show(at + 1); };
 const pan = e => { const r = lbi.getBoundingClientRect(), b = lbs.getBoundingClientRect();
@@ -370,7 +385,7 @@ lbs.addEventListener('click', e => { if (e.target.closest('.nav')) return;
 lbs.addEventListener('mousemove', e => lbs.classList.contains('z') && pan(e));
 addEventListener('keydown', e => { if (!lb.classList.contains('on')) return;
   if (e.key === 'Tab') {  // keep Tab cycling inside the viewer instead of leaving the page
-    const f = [...lb.querySelectorAll('button')].filter(b => b.checkVisibility()), i = f.indexOf(document.activeElement);
+    const f = [...lb.querySelectorAll('button, a')].filter(b => b.checkVisibility()), i = f.indexOf(document.activeElement);
     if (e.shiftKey ? i <= 0 : i === f.length - 1) { e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); }
   }
   if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') show(at - 1); if (e.key === 'ArrowRight') show(at + 1); });
