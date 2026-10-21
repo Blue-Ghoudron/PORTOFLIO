@@ -1,0 +1,175 @@
+# SKIMART Portfolio — Photography Archive & Smart Filtering
+
+## 1. Objective
+
+Build a photography portfolio organized as a curated visual archive. Visitors should browse photographs by genre, subject, and photographic project, then refine results using metadata such as location, year, event, and date.
+
+The system must separate **what a photograph is about** from **where, when, and for whom it was created**.
+
+Example: A concert photographed at the American Arts Center belongs to `Music → Concert`. Its location is `American Arts Center`, its city is `Casablanca`, and its year is `2026`. AAC must never become a genre merely because many photographs were taken there.
+
+## 2. Information Architecture
+
+### A. Primary disciplines
+
+- Photography
+- Graphic Design
+
+Graphic Design remains a separate discipline, demonstrating versatility without competing with photography as the portfolio's primary focus.
+
+### B. Photography genres
+
+Organize genres hierarchically, allowing visitors to explore broad subjects and narrower subcategories.
+
+**Music**
+- Concert
+- Festival
+- Live Performance
+- Rehearsal
+- Artist Portrait
+
+**Street & Documentary**
+- Street Photography
+- Urban Life
+- Portraits
+- Documentary
+- Architecture
+
+**Landscape & Nature**
+- Landscape
+- Urban Landscape
+- Nature
+- Night Photography
+
+**Culture & Performing Arts**
+- Dance
+- Theatre
+- Exhibition
+- Cultural Events
+
+Genres should be configurable. These are starting examples, not mandatory categories for every image.
+
+### C. Independent metadata filters
+
+Every photograph may have the following metadata:
+
+- **Location:** American Arts Center, Boultek, Place des Nations Unies, etc.
+- **City:** Casablanca, Rabat, or another city.
+- **Year:** 2025, 2026, etc.
+- **Date:** Exact capture or event date, when known.
+- **Event:** L'Boulevard, Jazzablanca, an exhibition, a concert, etc.
+- **Artist / Subject:** Performer, band, person, or subject photographed.
+- **Client / Organization:** American Arts Center or another commissioning organization.
+- **Project / Series:** CONNECTION, MOVEMENT, FACES, EYES, or another curated series.
+
+These metadata fields must remain independent of genre classification.
+
+## 3. Filtering Experience
+
+Provide a clear filter interface above the photography gallery.
+
+**Example browsing path:**
+
+Photography → Music → Concert
+
+The visitor can then refine the results:
+
+- Location: American Arts Center
+- Year: 2026
+- Event: All events or a specific event
+- Artist: All artists or a specific artist
+
+Another example:
+
+Photography → Music → Festival → L'Boulevard → 2025
+
+Visitors should be able to combine multiple filters simultaneously. Each active filter narrows the results, and the gallery updates without a full page reload.
+
+### Filter UI requirements
+
+- Genre navigation with expandable subcategories.
+- Searchable dropdowns for locations, events, and artists when the dataset grows.
+- Multi-select filters where appropriate.
+- Year selection.
+- Visible active-filter chips.
+- A clear-all-filters action.
+- Result count, such as `24 photographs`.
+- An empty state with a reset option if no photographs match.
+- URL query parameters that preserve the current filter selection, allowing visitors to share or bookmark a specific view.
+- Mobile-friendly filter drawer or collapsible panel.
+
+Only show filter options that are relevant to the selected genre and available in the dataset. Do not display empty or irrelevant filter categories.
+
+## 4. Photograph Data Model
+
+Store metadata separately from gallery presentation. Each photograph should support a structure similar to:
+
+```json
+{
+  "id": "lb-2026-001",
+  "title": "Untitled",
+  "image": "/images/photography/lb-2026-001.jpg",
+  "discipline": "photography",
+  "genre": ["music", "concert"],
+  "location": "Boultek",
+  "city": "Casablanca",
+  "year": 2026,
+  "date": null,
+  "event": "L'Boulevard",
+  "artist": null,
+  "client": null,
+  "series": "CONNECTION",
+  "featured": false,
+  "alt": "Description of the photograph"
+}
+```
+
+Use stable IDs, controlled category values, and reusable metadata. The schema is illustrative; adapt it to the existing project architecture.
+
+Important:
+- A photograph can belong to multiple relevant genres when justified.
+- One photograph can be associated with multiple events or subjects if necessary.
+- Unknown metadata must remain unknown rather than being invented.
+- Multiple photographs from the same shoot should be linkable to a shared series or event.
+- Adding a new location, event, or year must not require creating a new genre.
+- Prefer a structured content file or CMS over hardcoding filters into the UI.
+
+## 5. Curated Projects vs. Filtered Archive
+
+Maintain two complementary browsing experiences:
+
+**Curated Projects:** Editorially selected series with intentional sequencing, covers, titles, and descriptions. Examples include CONNECTION, MOVEMENT, FACES, and EYES.
+
+**Photography Archive:** The full searchable collection, where visitors can filter images by genre, location, year, event, and subject.
+
+A curated series is not necessarily a genre. For example, CONNECTION can contain photographs of stage performances and audience reactions across multiple years.
+
+Preserve the intended sequence and visual rhythm of curated series rather than automatically sorting every project chronologically.
+
+## 6. Technical Requirements
+
+- Inspect the existing repository and framework before implementing.
+- Preserve the current visual identity and responsive layout.
+- Reuse existing components and dependencies where appropriate.
+- Implement filtering as composable, predictable logic rather than separate hardcoded gallery pages.
+- Support combined filters, reset behavior, stable sorting, and direct links to filtered views.
+- Ensure accessible labels, keyboard navigation, and visible focus states.
+- Optimize image loading and thumbnail performance.
+- Keep original image metadata and editorial descriptions separate from filter labels.
+- Do not invent photography, project details, or capture dates to fill missing data.
+- Add representative test data and verify combinations of genre, location, event, and year.
+
+## 7. Acceptance Criteria
+
+1. Selecting `Music → Concert` displays concert photography from all locations.
+2. Selecting `American Arts Center` narrows those results without treating AAC as a genre.
+3. Selecting `2026` further narrows the same results.
+4. Changing the genre does not accidentally retain incompatible filters.
+5. Clearing filters restores the complete relevant archive.
+6. A project such as CONNECTION remains accessible as a curated series and can also appear in appropriate genre-filtered results.
+7. The selected filters can be shared through a URL.
+8. Missing metadata does not cause crashes or misleading filter options.
+9. The system works on desktop and mobile.
+10. Existing portfolio content and design are preserved unless a change is explicitly required.
+
+First inspect the current codebase, identify the existing image and project data structures, and propose the implementation plan. Then implement the feature in the existing architecture rather than rebuilding the website from scratch.

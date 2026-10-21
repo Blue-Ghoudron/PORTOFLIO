@@ -27,7 +27,7 @@ Paths contain an apostrophe and a space (`BOULEVARD/L'boulevard 26`): quote them
 - `render()` runs on `hashchange`. Routes: `#about`; `#<section>/<project>` (photo or poster grid); `#photography/boulevard[/<room>]`, which shows the L'Boulevard exhibition in an `<iframe>` (`BOULEVARD/L'boulevard 26/<room>/index.html`). The project with `boulevard:true` appears in the menu as one link with an "exhibition" tag.
 - Theme: `data-theme` on `<html>`, saved in localStorage `skm-theme`, else the system setting. While the exhibition is open, `body.lbv-on` switches the portfolio to the exhibition palette and follows its switch through a `MutationObserver` on the iframe's `<html data-theme>` (same origin only).
 - Photo viewer: any `[data-zoom]` element opens the full-screen `#lb` viewer (arrows, swipe, click to zoom 2×).
-- The design brief is `Homepage Implementation Brief.txt`: photographer first, editorial, minimal; near-black / off-white. Don't invent project descriptions, clients or credits.
+- The design brief is `Briefs/Homepage Implementation Brief.txt`: photographer first, editorial, minimal; near-black / off-white. Don't invent project descriptions, clients or credits.
 
 ### Exhibition: `BOULEVARD/L'boulevard 26/`
 - Photos from L'Boulevard's Metal Day (20.09.2025 and 19.09.2026). The hub is `index.html` (one door per room). The rooms are `Movement/`, `Band/` (titled **Connection**) and `Faces/` (Faces and Eyes). Each room is a self-contained page with its own CSS, JS and `images/`.

@@ -12,3 +12,4 @@
 tests/out/
 tests/screens/
 __pycache__/
+*:Zone.Identifier
