@@ -94,6 +94,15 @@ with sync_playwright() as p:
     go(pg, A + '?genre=festival&location=seamens-club'); count(pg, 0, 'AC8 empty result')
     ok(pg.locator('.fa-empty').is_visible(), 'AC8 empty state shown')
     pg.click('.fa-reset'); count(pg, 12, 'AC8 reset')
+
+    # pf-coe.9: screen readers hear the new count: one live region, changed in place, never re-created
+    pg.evaluate('window.__live = document.getElementById("fa-live")')
+    pg.click('[data-genre=music]'); count(pg, 8, 'live region update')
+    ok(pg.evaluate('!!window.__live && window.__live.isConnected && window.__live.textContent === "8 photographs"'), 'pf-coe.9 the count announcer survives a change')
+    # pf-coe.10: removing a chip keeps keyboard focus in the filters
+    go(pg, A + '?location=american-arts-center')
+    pg.focus('.fa-chip'); pg.keyboard.press('Enter'); count(pg, 12, 'chip removed')
+    ok(pg.evaluate('document.activeElement !== document.body'), 'pf-coe.10 focus kept after removing a chip')
     ok(not pg.errs, f'desktop errors: {pg.errs}')
     pg.close()
 
@@ -104,6 +113,9 @@ with sync_playwright() as p:
     ok('159' in pg.text_content('a.arch'), 'menu row shows the total')
     ok(pg.get_attribute('a.arch', 'aria-current') == 'page', 'menu row is current')
     ok(not pg.query_selector('.fa-genres'), 'no genre row before tagging')
+    go(pg, A + '?location=american-arts-center')
+    pg.focus('.fa-clear'); pg.keyboard.press('Enter'); count(pg, 159, 'clear all on real data')
+    ok(pg.evaluate('document.activeElement !== document.body'), 'pf-coe.10 focus kept after clear all with no genre row')
     pg.click('.fa-grid figure >> nth=0')
     src = pg.get_attribute('#lb-i', 'src') or ''
     ok('assets/archive/t/' not in src and src.endswith('.jpg'), f'viewer shows the full image, not the thumbnail: {src}')

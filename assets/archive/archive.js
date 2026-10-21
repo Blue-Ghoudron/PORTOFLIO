@@ -52,12 +52,15 @@ function draw(d){
   const chips = [...(state.genre ? [['genre', state.genre, genreLabel(d, state.genre)]] : []),
     ...FIELDS.flatMap(f => state[f].map(v => [f, v, label(d, f, v)]))];
   const n = shown.length;
-  view.innerHTML = `<section class="proj archive"><h2>Archive</h2><p class="info">Every photograph · filter by genre, place, year, event</p>
+  // the visible count is redrawn with everything else; screen readers hear this one region, which stays put
+  const live = document.getElementById('fa-live') || document.body.appendChild(Object.assign(document.createElement('p'), {id: 'fa-live', className: 'fa-sr'}));
+  live.setAttribute('aria-live', 'polite'); live.textContent = `${n} photograph${n === 1 ? '' : 's'}`;
+  view.innerHTML = `<section class="proj archive"><h2 tabindex="-1">Archive</h2><p class="info">Every photograph · filter by genre, place, year, event</p>
     <button class="fa-open mono" aria-expanded="${drawer}" aria-controls="fa-panel">Filter</button>
     <div class="fa-panel${drawer ? ' open' : ''}" id="fa-panel">${genres}${dds ? `<div class="fa-dds mono">${dds}</div>` : ''}
       <button class="fa-done mono">show ${n} photograph${n === 1 ? '' : 's'}</button></div>
     <div class="fa-chips mono">${chips.map(([f, v, l]) => `<button class="fa-chip" data-field="${f}" data-value="${esc(v)}" aria-label="Remove ${esc(l)}">${esc(l)} ×</button>`).join('')}
-      ${chips.length ? '<button class="fa-clear">clear all</button>' : ''}<p class="fa-count" aria-live="polite">${n} photograph${n === 1 ? '' : 's'}</p></div>
+      ${chips.length ? '<button class="fa-clear">clear all</button>' : ''}<p class="fa-count">${n} photograph${n === 1 ? '' : 's'}</p></div>
     ${n ? `<div class="grid fa-grid">${shown.map((p, i) => {
       const src = from.get(p.id), cap = [src?.label, when(p)].filter(Boolean).join(' · ');
       return `<figure data-zoom data-id="${p.id}" data-cam="${esc(cap)}"${src ? ` data-from-href="${src.href}" data-from-label="${esc(src.label)}"` : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}">
@@ -71,7 +74,8 @@ function commit(next, focus){
   const push = next.genre !== state.genre, q = serializeQuery(next);
   state = next;
   history[push ? 'pushState' : 'replaceState'](null, '', '#photography/archive' + (q ? '?' + q : ''));
-  data.then(d => { draw(d); focus && view.querySelector(focus)?.focus(); });
+  // focus goes to the first of the given places that still exists after the redraw, never to <body>
+  data.then(d => { draw(d); (focus + '|.archive h2').split('|').map(f => view.querySelector(f)).find(Boolean).focus(); });
 }
 
 const onArchive = e => e.target.closest('.archive');
@@ -96,9 +100,9 @@ addEventListener('click', e => {
   if (g) data.then(d => commit(changeGenre(state, g.dataset.genre, d.photos, d), `[data-genre="${g.dataset.genre}"]`));
   else if (chip) data.then(d => {
     const {field, value} = chip.dataset;
-    commit(field === 'genre' ? changeGenre(state, null, d.photos, d) : {...state, [field]: state[field].filter(v => v !== value)}, '.fa-count');
+    commit(field === 'genre' ? changeGenre(state, null, d.photos, d) : {...state, [field]: state[field].filter(v => v !== value)}, '.fa-chip|[data-genre=""]|.fa-dd summary');
   });
-  else if (e.target.closest('.fa-clear, .fa-reset')) commit(emptyState(), '[data-genre=""]');
+  else if (e.target.closest('.fa-clear, .fa-reset')) commit(emptyState(), '[data-genre=""]|.fa-dd summary');
   else if (e.target.closest('.fa-open, .fa-done')) setDrawer(!!e.target.closest('.fa-open'));
 });
 addEventListener('change', e => {
