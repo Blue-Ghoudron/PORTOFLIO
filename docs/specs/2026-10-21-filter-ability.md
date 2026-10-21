@@ -1,6 +1,6 @@
 # F.A Filter Ability — photography archive + smart filters — spec
 
-Status: approved by the user 21.10.2026. Plan: `docs/superpowers/plans/2026-10-21-filter-ability.md`. Branch `Filter-Ability` (from `Portoflio-Branch`). Beads epic `pf-coe`. Written 21.10.2026.
+Status: built on `Filter-Ability` 21.10.2026 (approved the same day). Plan: `docs/superpowers/plans/2026-10-21-filter-ability.md`. Branch `Filter-Ability` (from `Portoflio-Branch`). Beads epic `pf-coe`. Written 21.10.2026.
 Source brief: `Briefs/skimart-photography-archive-brief.md` (supersedes `Briefs/Photography Archive & Smart Filtering.txt`). Its 12 acceptance criteria (§7) are the definition of done; this spec says how they are met in this repo.
 
 ## Why

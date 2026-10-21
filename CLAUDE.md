@@ -16,7 +16,7 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 ~/.venvs/playwright/bin/python -I tests/flow.py [base-url]    # default http://localhost:8026/; exit 1 + FAILS list on any break
 ```
 
-`tests/flow.py` clicks every menu link, the CTA, About, logo, burger, theme switch and photo viewer, every room inside the L'Boulevard frame, and every Boulevard page's nav, theme and handles, at 390, 820 and 1440 px. Run it before saying a page change is done. Other checks are `tests/pf-qsm.<n>_*.py` (one per beads task); their reports are in `docs/reports/`. Screenshots go to the gitignored `tests/out/` and `tests/screens/`.
+`tests/flow.py` clicks every menu link, the CTA, About, logo, burger, theme switch and photo viewer, every room inside the L'Boulevard frame, and every Boulevard page's nav, theme and handles, at 390, 820 and 1440 px. Run it before saying a page change is done. Archive (F.A) checks: `node --test 'tests/*.test.mjs'` (filter logic + real data), `tests/fa_archive.py` and `tests/fa_tag.py` (Playwright, on the fake photos in `tests/fixtures/fa/`; same `[base-url]` argument). Other checks are `tests/pf-qsm.<n>_*.py` (one per beads task); their reports are in `docs/reports/`. Screenshots go to the gitignored `tests/out/` and `tests/screens/`.
 
 
 ## Architecture
@@ -27,6 +27,13 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 - Theme: `data-theme` on `<html>`, saved in localStorage `skm-theme`, else the system setting. While the exhibition is open, `body.lbv-on` switches the portfolio to the exhibition palette and follows its switch through a `MutationObserver` on the iframe's `<html data-theme>` (same origin only).
 - Photo viewer: any `[data-zoom]` element opens the full-screen `#lb` viewer (arrows, swipe, click to zoom 2×).
 - The design brief is `Briefs/Homepage Implementation Brief.txt`: photographer first, editorial, minimal; near-black / off-white. Don't invent project descriptions, clients or credits.
+
+### Archive: `#photography/archive` (F.A, spec `docs/specs/2026-10-21-filter-ability.md`)
+- Every photograph (homepage photo projects, Workshops, L'Boulevard rooms) in one view: genre first, then place / city / year / event / artist / client. A place is never a genre.
+- Data in `data/`: `taxonomy.json` (genre tree; photos hold leaf ids only), `refs.json` (places, cities, events, artists, clients), `photos.json` (one record per line), `series.json` (the rooms, in room order). Unknown facts stay `null`; never invent them.
+- Logic in `assets/archive/core.js` (pure, unit-tested), view in `assets/archive/archive.js` + `archive.css`, loaded by `render()` with `import()`. Filters live in the address (`#photography/archive?genre=concert&year=2026`): a genre change is a history step, ticking a box is not.
+- Thumbnails `assets/archive/t/<id>.jpg`. New photos: add them to `WORK` / a room as usual, then `node scripts/fa_migrate.mjs` (only appends missing records) and `~/.cache/orbit-render/v/bin/python -I scripts/fa_thumbs.py`.
+- Tagging: `tools/tag.html` on the local server (not linked from the site) edits every field; Chrome/Edge save straight into `data/`, other browsers download the two files.
 
 ### Exhibition: `BOULEVARD/`
 - Photos from L'Boulevard's Metal Day (20.09.2025 and 19.09.2026). The hub is `index.html` (one door per room). The rooms are `Movement/`, `Band/` (titled **Connection**) and `Faces/` (Faces and Eyes). Each room is a self-contained page with its own CSS, JS and `images/`.
