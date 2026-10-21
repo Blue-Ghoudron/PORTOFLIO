@@ -40,3 +40,15 @@
 .list a.arch:hover,.list a.arch[aria-current]{border-color:var(--ink);color:var(--ink)}
 .arch .n{font-size:11px;color:var(--dim)}
 @media (min-width:821px){ :root[data-nav="fold"] .list a.arch{padding:6px 8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase} :root[data-nav="fold"] .arch .n{display:none} }
+
+/* phones: one "Filter" button; the filters open as a full-screen drawer with a "show N photographs" button */
+.fa-open,.fa-done{display:none}
+@media (max-width:820px){
+  .fa-open{display:block;border:1px solid var(--ink);padding:9px 14px;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+  .fa-panel{display:none}
+  .fa-panel.open{display:block;position:fixed;inset:0;z-index:15;overflow:auto;background:var(--bg);padding:24px 16px 96px}
+  .fa-panel .fa-menu{position:static;min-width:0;max-height:none;margin-top:4px}
+  .fa-panel .fa-dd{width:100%}
+  .fa-done{display:block;position:fixed;left:16px;right:16px;bottom:16px;padding:14px;background:var(--ink);color:var(--bg)!important;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+  .fa-chips{margin-top:14px}
+}

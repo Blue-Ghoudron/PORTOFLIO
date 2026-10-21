@@ -111,6 +111,71 @@ with sync_playwright() as p:
     ok(not pg.errs, f'real data errors: {pg.errs}')
     pg.close()
 
+    # desktop, keyboard only: every filter control is reachable, works with Enter/Space, and shows its focus
+    pg = open_page(browser, 1440, 900)
+    go(pg, A)
+    def focus_shown(msg):
+        ok(pg.evaluate('getComputedStyle(document.activeElement).outlineStyle') != 'none', f'keyboard: no visible focus on {msg}')
+    pg.focus('[data-genre=""]'); focus_shown('All')
+    pg.keyboard.press('Tab'); ok(pg.evaluate('document.activeElement.dataset.genre') == 'music', 'keyboard: Tab to Music')
+    pg.keyboard.press('Enter'); count(pg, 8, 'keyboard: Enter on Music')
+    ok(pg.evaluate('document.activeElement.dataset.genre') == 'music', 'keyboard: focus stays on Music')
+    pg.keyboard.press('Tab'); pg.keyboard.press('Tab')  # Street, then concert in the sub row
+    ok(pg.evaluate('document.activeElement.dataset.genre') == 'concert', f'keyboard: Tab to concert, got {pg.evaluate("document.activeElement.outerHTML.slice(0,60)")}')
+    pg.keyboard.press('Enter'); count(pg, 5, 'keyboard: Enter on concert'); focus_shown('concert')
+    pg.focus('details.fa-dd[data-field=location] summary'); focus_shown('place')
+    pg.keyboard.press('Enter'); pg.keyboard.press('Tab')
+    ok(pg.evaluate('document.activeElement.type') == 'checkbox', 'keyboard: Tab into the place list')
+    focus_shown('a place checkbox')
+    pg.keyboard.press('Space'); count(pg, 4, 'keyboard: Space ticks a place')
+    ok(pg.evaluate('document.activeElement.type') == 'checkbox', 'keyboard: focus stays on the ticked box')
+    pg.keyboard.press('Escape')
+    ok(pg.evaluate('document.activeElement.tagName') == 'SUMMARY' and not pg.query_selector('.fa-dd[open]'), 'keyboard: Escape closes the list')
+    pg.focus('.fa-chip'); focus_shown('a chip')
+    pg.focus('.fa-clear'); pg.keyboard.press('Enter'); count(pg, 12, 'keyboard: clear all')
+
+    # Back / Forward: genre changes are steps, ticking boxes is not
+    go(pg, A)
+    pg.click('[data-genre=music]'); count(pg, 8, 'history music')
+    pg.click('[data-genre=concert]'); count(pg, 5, 'history concert')
+    tick(pg, 'location', 'american-arts-center'); tick(pg, 'year', '2026'); count(pg, 2, 'history ticks')
+    pg.go_back(); count(pg, 8, 'Back returns to Music')
+    ok(pg.url.endswith('#photography/archive?genre=music'), f'Back address {pg.url}')
+    pg.go_forward(); count(pg, 2, 'Forward restores concert + place + year')
+    ok(not pg.errs, f'keyboard/history errors: {pg.errs}')
+
+    # Graphic Design and Workshops are untouched
+    for route, n in [('#design/personal', 29), ('#workshops/poster-making', 16)]:
+        go_to = B + 'index.html' + route
+        pg.goto('about:blank'); pg.goto(go_to); pg.wait_for_selector('main h2')
+        got = pg.locator('main [data-zoom]').count()
+        ok(got == n, f'{route} shows {got} images, want {n}')
+    pg.close()
+
+    # phone: filters live in a drawer
+    pg = open_page(browser, 390, 844)
+    go(pg, A)
+    ok(pg.locator('.fa-open').is_visible(), 'phone: Filter button shown')
+    ok(not pg.locator('#fa-panel').is_visible(), 'phone: drawer starts closed')
+    pg.click('.fa-open')
+    ok(pg.locator('#fa-panel').is_visible(), 'phone: drawer opens')
+    pg.click('[data-genre=music]'); pg.click('[data-genre=concert]')
+    tick(pg, 'location', 'american-arts-center')
+    ok(pg.locator('#fa-panel').is_visible(), 'phone: drawer stays open while filtering')
+    ok((pg.text_content('.fa-done') or '').strip() == 'show 4 photographs', f'phone: done button says {pg.text_content(".fa-done")}')
+    pg.click('.fa-done')
+    ok(not pg.locator('#fa-panel').is_visible(), 'phone: drawer closes')
+    ok(pg.evaluate('document.activeElement.classList.contains("fa-open")'), 'phone: focus back on Filter')
+    count(pg, 4, 'phone: grid filtered')
+    ok(pg.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'phone: no sideways scroll')
+    ok(not pg.errs, f'phone errors: {pg.errs}')
+    pg.close()
+
+    # desktop never shows the drawer button
+    pg = open_page(browser, 1440, 900); go(pg, A)
+    ok(not pg.locator('.fa-open').is_visible(), 'desktop: no Filter button')
+    pg.close()
+
     browser.close()
 
 print('FAILS:', 'none' if not fails else '')

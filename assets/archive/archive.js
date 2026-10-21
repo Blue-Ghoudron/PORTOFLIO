@@ -4,7 +4,7 @@ import { FIELDS, emptyState, applyFilters, computeOptions, changeGenre, parseQue
 
 const NAMES = {location: 'place', city: 'city', year: 'year', event: 'event', artist: 'artist', client: 'client'};
 const REF = {location: 'locations', city: 'cities', event: 'events', artist: 'artists', client: 'clients'};
-let data = null, from = null, state = emptyState(), view = null, settle = () => {}, openDd = null;
+let data = null, from = null, state = emptyState(), view = null, settle = () => {}, openDd = null, drawer = false;
 
 export const load = () => data ||= Promise.all(['taxonomy', 'refs', 'photos', 'series'].map(f => fetch(`data/${f}.json`).then(r => r.json())))
   .then(([taxonomy, refs, photos, series]) => {
@@ -53,7 +53,9 @@ function draw(d){
     ...FIELDS.flatMap(f => state[f].map(v => [f, v, label(d, f, v)]))];
   const n = shown.length;
   view.innerHTML = `<section class="proj archive"><h2>Archive</h2><p class="info">Every photograph · filter by genre, place, year, event</p>
-    ${genres}${dds ? `<div class="fa-dds mono">${dds}</div>` : ''}
+    <button class="fa-open mono" aria-expanded="${drawer}" aria-controls="fa-panel">Filter</button>
+    <div class="fa-panel${drawer ? ' open' : ''}" id="fa-panel">${genres}${dds ? `<div class="fa-dds mono">${dds}</div>` : ''}
+      <button class="fa-done mono">show ${n} photograph${n === 1 ? '' : 's'}</button></div>
     <div class="fa-chips mono">${chips.map(([f, v, l]) => `<button class="fa-chip" data-field="${f}" data-value="${esc(v)}" aria-label="Remove ${esc(l)}">${esc(l)} ×</button>`).join('')}
       ${chips.length ? '<button class="fa-clear">clear all</button>' : ''}<p class="fa-count" aria-live="polite">${n} photograph${n === 1 ? '' : 's'}</p></div>
     ${n ? `<div class="grid fa-grid">${shown.map((p, i) => {
@@ -75,7 +77,18 @@ function commit(next, focus){
 const onArchive = e => e.target.closest('.archive');
 // an open dropdown closes on a click elsewhere or on Escape, like a native select
 const closeDds = keep => document.querySelectorAll('.fa-dd[open]').forEach(d => d.contains(keep) || (d.open = false, openDd = null));
-addEventListener('keydown', e => { const d = e.key === 'Escape' && e.target.closest?.('.fa-dd[open]'); if (d) { d.open = false; d.querySelector('summary').focus(); } });
+addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const d = e.target.closest?.('.fa-dd[open]');
+  if (d) { d.open = false; d.querySelector('summary').focus(); } else if (drawer && e.target.closest?.('#fa-panel')) setDrawer(false);
+});
+// phones: the filters sit in a full-screen drawer; on wider screens the button and the drawer styling are hidden by CSS
+function setDrawer(open){
+  drawer = open;
+  view.querySelector('#fa-panel').classList.toggle('open', open);
+  const b = view.querySelector('.fa-open'); b.setAttribute('aria-expanded', open);
+  (open ? view.querySelector('#fa-panel button, #fa-panel summary') : b)?.focus();
+}
 addEventListener('click', e => {
   closeDds(e.target);
   if (!onArchive(e)) return;
@@ -86,6 +99,7 @@ addEventListener('click', e => {
     commit(field === 'genre' ? changeGenre(state, null, d.photos, d) : {...state, [field]: state[field].filter(v => v !== value)}, '.fa-count');
   });
   else if (e.target.closest('.fa-clear, .fa-reset')) commit(emptyState(), '[data-genre=""]');
+  else if (e.target.closest('.fa-open, .fa-done')) setDrawer(!!e.target.closest('.fa-open'));
 });
 addEventListener('change', e => {
   const box = e.target.closest('.fa-dd input[type=checkbox]');
