@@ -362,6 +362,8 @@ themeLabel(); foldLabel();
 const lb = document.getElementById('lb'), lbi = document.getElementById('lb-i'), lbs = document.getElementById('lb-s');
 let set = [], at = 0, last = null;
 const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'); lbi.style.transform = '';
+  // archive copies of L'Boulevard prints: hide the 41 px cream mat printed into the file (fa_thumbs.py crops the thumbnails the same way)
+  lbi.style.clipPath = ''; lbi.onload = set[at].parentElement.hasAttribute('data-mat') ? () => lbi.style.clipPath = `inset(${44 / lbi.naturalHeight * 100}% ${44 / lbi.naturalWidth * 100}%)` : null;
   lbi.src = set[at].dataset.full || set[at].src; lbi.alt = set[at].alt; const cam = set[at].parentElement.dataset.cam;
   const fig = set[at].parentElement, from = document.getElementById('lb-from');  // archive photos link back to their project or room
   from.hidden = !fig.dataset.fromHref; from.href = fig.dataset.fromHref || ''; from.textContent = `from ${fig.dataset.fromLabel} →`;

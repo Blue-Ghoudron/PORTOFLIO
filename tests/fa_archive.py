@@ -116,6 +116,17 @@ with sync_playwright() as p:
     go(pg, A + '?location=american-arts-center')
     pg.focus('.fa-clear'); pg.keyboard.press('Enter'); count(pg, 159, 'clear all on real data')
     ok(pg.evaluate('document.activeElement !== document.body'), 'pf-coe.10 focus kept after clear all with no genre row')
+    # pf-coe.14: L'Boulevard photos show without the rooms' printed cream mat, in the grid and in the viewer
+    mat = pg.evaluate('''() => { const i = document.querySelector('figure[data-id="lbv-band-frame-03"] img'), c = document.createElement('canvas');
+      c.width = i.naturalWidth; c.height = i.naturalHeight; const x = c.getContext('2d'); x.drawImage(i, 0, 0);
+      const [r, g, b] = x.getImageData(1, c.height >> 1, 1, 1).data; return r > 220 && g > 240 && b > 210; }''')
+    ok(not mat, 'pf-coe.14 thumbnail still has the cream mat')
+    pg.click('figure[data-id="lbv-band-frame-03"]'); pg.wait_for_timeout(600)
+    ok(pg.evaluate('getComputedStyle(document.getElementById("lb-i")).clipPath') != 'none', 'pf-coe.14 viewer still shows the mat')
+    pg.keyboard.press('Escape')
+    pg.click('.fa-grid figure:not([data-mat]) >> nth=0'); pg.wait_for_timeout(300)
+    ok(pg.evaluate('getComputedStyle(document.getElementById("lb-i")).clipPath') == 'none', 'pf-coe.14 a homepage photo is not trimmed')
+    pg.keyboard.press('Escape')
     pg.click('.fa-grid figure >> nth=0')
     src = pg.get_attribute('#lb-i', 'src') or ''
     ok('assets/archive/t/' not in src and src.endswith('.jpg'), f'viewer shows the full image, not the thumbnail: {src}')

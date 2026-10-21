@@ -9,6 +9,7 @@ import os
 
 from PIL import Image, ImageOps
 
+MAT = 44  # 41 px mat + the JPEG's soft edge
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.environ.get('FA_DATA') or os.path.join(ROOT, 'data')
 path = os.path.join(DATA, 'photos.json')
@@ -20,6 +21,8 @@ for p in photos:
     if not os.path.exists(out):
         os.makedirs(os.path.dirname(out), exist_ok=True)
         im = ImageOps.exif_transpose(Image.open(os.path.join(ROOT, p['image']))).convert('RGB')
+        if p['image'].startswith('BOULEVARD/'):  # the rooms print a 41 px cream mat into each file; the archive shows the photo only
+            im = im.crop((MAT, MAT, im.width - MAT, im.height - MAT))
         im.thumbnail((600, 600), Image.LANCZOS)
         im.save(out, 'JPEG', quality=82, optimize=True, progressive=True)
         made += 1
