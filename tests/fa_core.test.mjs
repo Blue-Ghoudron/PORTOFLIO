@@ -52,3 +52,6 @@ test('validation catches broken references', () => { const bad = structuredClone
   for (const s of ['unknown genre "jazz"', 'unknown location "ghost"', 'duplicate id test-03', 'series test-series: unknown photo test-99']) assert.ok(e.includes(s), s); });
 test('photosJson writes one record per line', () => assert.equal(photosJson(P.slice(0, 2)).split('\n').length, 5));
 test('photosJson matches the fixture file byte for byte', () => assert.equal(photosJson(P), readFileSync(new URL('fixtures/fa/photos.json', import.meta.url), 'utf8')));
+test('genre options ignore place/year so any genre can be picked (AC4)', () => {
+  const g = computeOptions(P, {...emptyState(), genre:'concert', location:['seamens-club']}, D).genres;
+  assert.deepEqual(g[0].children.map(x => [x.id, x.count]), [['concert',5],['festival',3]]); });

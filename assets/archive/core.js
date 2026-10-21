@@ -54,8 +54,8 @@ export function computeOptions(photos, state, data){
     // a single choice filters nothing, unless it is already selected
     if (opts.length > 1 || state[f].length) groups[f] = opts;
   }
-  const pool = photos.filter(p => matches(p, state, data, 'genre'));
-  const count = ids => pool.filter(p => (p.genres || []).some(g => ids.includes(g))).length;
+  // genres are the way in, so they count the whole archive; picking one then drops what no longer fits (changeGenre)
+  const count = ids => photos.filter(p => (p.genres || []).some(g => ids.includes(g))).length;
   const genres = data.taxonomy.map(g => ({id: g.id, label: g.label, count: count(g.children.map(c => c.id)),
     children: g.children.map(c => ({id: c.id, label: c.label, count: count([c.id])})).filter(c => c.count)}))
     .filter(g => g.count);
