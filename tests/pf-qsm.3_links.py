@@ -13,7 +13,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "tests/out/pf-qsm.3"
 OUT.mkdir(parents=True, exist_ok=True)
 WIDTHS = {"390": (390, 844), "1440": (1440, 900)}
-LBV = "BOULEVARD/L'boulevard%2026/"
+LBV = "BOULEVARD/"
 STANDALONE = [LBV + p for p in ("index.html", "Movement/index.html", "Band/index.html", "Faces/index.html")]
 FONT_HOSTS = ("fonts.googleapis.com", "fonts.gstatic.com")
 MAILTO = re.compile(r"^mailto:[^@\s]+@[^@\s]+\.[a-z]{2,}$", re.I)

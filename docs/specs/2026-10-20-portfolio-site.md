@@ -29,7 +29,7 @@ One place that shows Ghoujlami Mohamed (SKIMART) as a **photographer first**, wi
 | Branches | Fixes on `Portoflio-Fixes` |
 
 ## How it works
-See `CLAUDE.md` › Architecture. In short: `index.html` is a hash router over the `WORK` array; photos are in `assets/home/`; the exhibition is in `BOULEVARD/L'boulevard 26/`.
+See `CLAUDE.md` › Architecture. In short: `index.html` is a hash router over the `WORK` array; photos are in `assets/home/`; the exhibition is in `BOULEVARD/`.
 
 ## Open
 - About bio: placeholder until the user sends the text.

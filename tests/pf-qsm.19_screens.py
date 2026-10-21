@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 
 WIDTHS = [(390, 844), (820, 1180), (1440, 900)]
 THEMES = ['light', 'dark']
-LBV = "BOULEVARD/L'boulevard%2026/"
+LBV = "BOULEVARD/"
 OUT = Path(__file__).resolve().parent / 'screens'
 
 # no transitions/animations, so colours and fades are final when we shoot

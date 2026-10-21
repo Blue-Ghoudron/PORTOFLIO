@@ -19,7 +19,7 @@
 - Ids are slugs; URL params use slugs. Filter fields and their URL keys, in this fixed order: `genre, location, city, year, event, artist, client`. UI labels: genre, place, city, year, event, artist, client.
 - Site look: existing tokens (`--bg --ink --mute --dim --line --card`), Archivo + IBM Plex Mono, both themes. The only filled element is the active chip. No rounded cards, gradients, badges.
 - Fixtures never load on the real site: Playwright swaps them in with `page.route`.
-- Serve with `python3 -m http.server 8026 --bind 127.0.0.1` from the repo root. Paths with `L'boulevard 26` must be quoted in the shell and `encodeURI`'d in `src`.
+- Serve with `python3 -m http.server 8026 --bind 127.0.0.1` from the repo root. Rooms live in `BOULEVARD/<room>/` (moved from `BOULEVARD/L'boulevard 26/` on 21.10.2026).
 - Comments: one line, only the why, matching `index.html`'s style.
 
 ## Review Focus
@@ -158,7 +158,7 @@ test('photosJson writes one record per line', () => assert.equal(photosJson(P.sl
 - Produces: the real `data/*.json` files with the exact shape the fixtures use, plus `thumb` (`assets/archive/t/<id>.jpg`), `w`, `h` (thumbnail size).
 
 Migration rules (`node scripts/fa_migrate.mjs`):
-- Read `WORK` from `index.html` (slice from `const WORK = ` to the matching `];`, evaluate with `new Function`). Read every `<button class="shot" … data-cap="…" …><img src alt>` from `BOULEVARD/L'boulevard 26/{Band,Movement,Faces}/index.html` in document order.
+- Read `WORK` from `index.html` (slice from `const WORK = ` to the matching `];`, evaluate with `new Function`). Read every `<button class="shot" … data-cap="…" …><img src alt>` from `BOULEVARD/{Band,Movement,Faces}/index.html` in document order.
 - Homepage photo ids = the existing image ids; `image` `assets/home/<id>.jpg`; `alt` `"<project name>, photo <n>"` (the alt the site shows today); `title` null. Room photo ids `lbv-<room lower>-<file stem>`; `image` the room's `images/<file>`; `alt` the room's alt; `title` the caption's title part (e.g. "Looking up"; `null` for F/G/Study codes).
 - Facts per project, exactly (refs created with these ids and labels; locations all city `casablanca`):
 
