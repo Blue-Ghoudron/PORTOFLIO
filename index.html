@@ -301,7 +301,8 @@ nav.innerHTML = WORK.map(s => {
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   // every photograph in one filterable view (assets/archive/), above the photography groups
-  const arch = ARCHIVE_IN_MENU && s.id === 'photography' ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '';
+  const arch = s.id !== 'photography' ? '' : '<li><a class="selw" href="#photography"><span>selected work</span><span class="n"></span></a></li>'
+    + (ARCHIVE_IN_MENU ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '');
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
     <div class="list" id="l-${s.id}"><div><ul class="mono">${arch}${body}</ul></div></div></div>`;
 }).join('');
@@ -336,13 +337,17 @@ const settle = () => { vtSync(); view.querySelectorAll('img').forEach(i => i.com
 const archive = () => import('./assets/archive/archive.js');
 // the selection: photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo.
 // The home page shows the first few (max), #photography all of them.
+const picks = d => {
+  const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
+  const featured = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
+    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? pr.id : 'boulevard', label: pr ? pr.name : "L'Boulevard"}; });
+  const list = featured.length ? featured : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
+    return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: p.id, label: p.name}; });
+  return list;
+};
 const preview = (g, max = Infinity) => archive().then(m => m.load()).then(d => {
   if (!g.isConnected) return;  // left the page while loading
-  const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
-  const picks = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
-    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? pr.id : 'boulevard', label: pr ? pr.name : "L'Boulevard"}; });
-  const list = picks.length ? picks : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
-    return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: p.id, label: p.name}; });
+  const list = picks(d);
   g.innerHTML = list.slice(0, max).map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#photography/${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
   settle();
   if (max === Infinity) return;
@@ -350,7 +355,8 @@ const preview = (g, max = Infinity) => archive().then(m => m.load()).then(d => {
   const into = () => { if (!g.isConnected || g.getBoundingClientRect().top < innerHeight * .6) { g.isConnected && openSec('photography'); removeEventListener('scroll', into); } };
   addEventListener('scroll', into, {passive: true});
 }).catch(() => {});
-archive().then(m => m.load()).then(d => { const n = nav.querySelector('.arch .n'); if (n) n.textContent = d.photos.length; }).catch(() => {});
+archive().then(m => m.load()).then(d => { const n = nav.querySelector('.arch .n'); if (n) n.textContent = d.photos.length;
+  nav.querySelector('.selw .n').textContent = picks(d).length; }).catch(() => {});
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
 function render(){
@@ -376,6 +382,7 @@ function render(){
   } else if (sid === 'photography' && !pid) {
     // the whole selection; the home page shows only its first photos
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
+    nav.querySelector('.selw').setAttribute('aria-current', 'page');
     view.innerHTML = `<section class="proj"><h2>Photography</h2><p class="info">Selected work</p><div class="tools"><p class="hint"><b>⤢</b> click any photo to enlarge</p>${VT}</div><div class="grid"></div></section>`;
     preview(view.querySelector('.grid'));
     document.getElementById('side').classList.remove('menu');
