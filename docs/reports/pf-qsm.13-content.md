@@ -49,16 +49,16 @@ What is already fine:
 <meta name="twitter:card" content="summary_large_image">
 ```
 
-`BOULEVARD/L'boulevard 26/index.html` (hub)
+`assets/boulevard/L'boulevard 26/index.html` (hub)
 ```html
 <meta name="description" content="Two Metal Days, three rooms: the crowd in motion, the stage and the people looking back at it, and the faces between sets.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SKIMART">
 <meta property="og:title" content="L'Boulevard — Metal Day · Casablanca · 2025–2026">
 <meta property="og:description" content="Two Metal Days, three rooms: the crowd in motion, the stage and the people looking back at it, and the faces between sets.">
-<meta property="og:image" content="https://SITE/BOULEVARD/L'boulevard%2026/Band/images/frame-01.jpg">
+<meta property="og:image" content="https://SITE/assets/boulevard/L'boulevard%2026/Band/images/frame-01.jpg">
 <meta property="og:image:alt" content="A giant projected eye on the left screen, the singer raising a fist at centre stage">
-<meta property="og:url" content="https://SITE/BOULEVARD/L'boulevard%2026/">
+<meta property="og:url" content="https://SITE/assets/boulevard/L'boulevard%2026/">
 <meta name="twitter:card" content="summary_large_image">
 ```
 
@@ -67,9 +67,9 @@ What is already fine:
 <meta name="description" content="The pit has its own show, played with its back to the stage. Photographs from two Metal Days at L'Boulevard, hung by shutter speed.">
 <meta property="og:title" content="Movement — L'Boulevard · SKIMART">
 <meta property="og:description" content="Away from the stage. Metal Day, L'Boulevard · Casablanca · 2025–2026">
-<meta property="og:image" content="https://SITE/BOULEVARD/L'boulevard%2026/Movement/images/mov-25-9206.jpg">
+<meta property="og:image" content="https://SITE/assets/boulevard/L'boulevard%2026/Movement/images/mov-25-9206.jpg">
 <meta property="og:image:alt" content="A whole crowd blurred into motion in front of a bright stage">
-<meta property="og:url" content="https://SITE/BOULEVARD/L'boulevard%2026/Movement/">
+<meta property="og:url" content="https://SITE/assets/boulevard/L'boulevard%2026/Movement/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SKIMART"><meta name="twitter:card" content="summary_large_image">
 ```
 
@@ -78,9 +78,9 @@ What is already fine:
 <meta name="description" content="A stage only works when someone looks back. Photographs from two Metal Days at L'Boulevard: the floor, the stage, the look.">
 <meta property="og:title" content="Connection — L'Boulevard · SKIMART">
 <meta property="og:description" content="The stage and audience. Metal Day, L'Boulevard · Casablanca · 2025–2026">
-<meta property="og:image" content="https://SITE/BOULEVARD/L'boulevard%2026/Band/images/frame-07.jpg">
+<meta property="og:image" content="https://SITE/assets/boulevard/L'boulevard%2026/Band/images/frame-07.jpg">
 <meta property="og:image:alt" content="Light beams fanning out over the drum riser, the band small against the glowing backdrop">
-<meta property="og:url" content="https://SITE/BOULEVARD/L'boulevard%2026/Band/">
+<meta property="og:url" content="https://SITE/assets/boulevard/L'boulevard%2026/Band/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SKIMART"><meta name="twitter:card" content="summary_large_image">
 ```
 
@@ -89,9 +89,9 @@ What is already fine:
 <meta name="description" content="Between sets the camera turned around. Faces from two Metal Days at L'Boulevard, Casablanca.">
 <meta property="og:title" content="Faces and Eyes — L'Boulevard · SKIMART">
 <meta property="og:description" content="Close to the lens. Metal Day, L'Boulevard · Casablanca · 2025–2026">
-<meta property="og:image" content="https://SITE/BOULEVARD/L'boulevard%2026/Faces/images/fac-26-0545.jpg">
+<meta property="og:image" content="https://SITE/assets/boulevard/L'boulevard%2026/Faces/images/fac-26-0545.jpg">
 <meta property="og:image:alt" content="The same face in spiked glasses, wider, the crowd around her">
-<meta property="og:url" content="https://SITE/BOULEVARD/L'boulevard%2026/Faces/">
+<meta property="og:url" content="https://SITE/assets/boulevard/L'boulevard%2026/Faces/">
 <meta property="og:type" content="website"><meta property="og:site_name" content="SKIMART"><meta name="twitter:card" content="summary_large_image">
 ```
 (The Faces portraits are tall and 1 MB. `fac-26-0545` is landscape and 309 KB, so it works for previews. It shows a tagged person (@rasha_wt). If you prefer a photo with no tagged person, choose another one.)

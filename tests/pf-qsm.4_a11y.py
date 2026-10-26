@@ -14,7 +14,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / "out" / "pf-qsm.4"
 AXE = HERE / "out" / "axe.min.js"
 AXE_URL = "https://cdn.jsdelivr.net/npm/axe-core@4.10.2/axe.min.js"
-LBV = "BOULEVARD/"
+LBV = "assets/boulevard/"
 HOME_VIEWS = ["", "#about", "#photography/jazz", "#design/personal", "#workshops/poster-making", "#photography/boulevard"]
 EXHIBITS = {"lbv-hub": LBV + "index.html", "lbv-movement": LBV + "Movement/index.html",
             "lbv-band": LBV + "Band/index.html", "lbv-faces": LBV + "Faces/index.html"}

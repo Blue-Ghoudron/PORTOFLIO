@@ -13,7 +13,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "tests/out/pf-qsm.3"
 OUT.mkdir(parents=True, exist_ok=True)
 WIDTHS = {"390": (390, 844), "1440": (1440, 900)}
-LBV = "BOULEVARD/"
+LBV = "assets/boulevard/"
 STANDALONE = [LBV + p for p in ("index.html", "Movement/index.html", "Band/index.html", "Faces/index.html")]
 FONT_HOSTS = ("fonts.googleapis.com", "fonts.gstatic.com")
 MAILTO = re.compile(r"^mailto:[^@\s]+@[^@\s]+\.[a-z]{2,}$", re.I)
@@ -99,7 +99,7 @@ def check_view(ctx, view, w, routes, external):
                 frag = urlsplit(url).fragment
                 if frag and url.split("#")[0] == f.url.split("#")[0]:
                     # same document: on the homepage a hash is a route, elsewhere it must be an element id
-                    if f == page.main_frame and urlsplit(f.url).path.endswith(("/", "index.html")) and "BOULEVARD" not in f.url:
+                    if f == page.main_frame and urlsplit(f.url).path.endswith(("/", "index.html")) and "/boulevard/" not in urlsplit(f.url).path:
                         if frag not in routes: err(view, w, f"link {raw!r} is not a known route")
                     elif unquote(frag) not in d["ids"]: err(view, w, f"link{where} {raw!r}: no element with that id")
             elif url.startswith(("http:", "https:")):

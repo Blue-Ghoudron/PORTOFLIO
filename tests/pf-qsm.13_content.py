@@ -6,7 +6,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 BASE = (sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:8027/').rstrip('/') + '/'
-LBV = "BOULEVARD/"
+LBV = "assets/boulevard/"
 PAGES = ['index.html', LBV + 'index.html', LBV + 'Movement/index.html', LBV + 'Band/index.html', LBV + 'Faces/index.html']
 TAGS = ['meta[name=description]', 'meta[property="og:title"]', 'meta[property="og:description"]', 'meta[property="og:image"]',
         'meta[property="og:url"]', 'meta[name="twitter:card"]', 'link[rel~=icon]', 'link[rel=apple-touch-icon]']

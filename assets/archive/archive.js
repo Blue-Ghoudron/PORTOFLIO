@@ -63,7 +63,7 @@ function draw(d){
       ${chips.length ? '<button class="fa-clear">clear all</button>' : ''}<p class="fa-count">${n} photograph${n === 1 ? '' : 's'}</p></div>
     ${n ? `<div class="grid fa-grid">${shown.map((p, i) => {
       const src = from.get(p.id), cap = [src?.label, when(p)].filter(Boolean).join(' · ');
-      return `<figure data-zoom data-id="${p.id}" data-cam="${esc(cap)}"${src ? ` data-from-href="${src.href}" data-from-label="${esc(src.label)}"` : ''}${p.image.startsWith('BOULEVARD/') ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}">
+      return `<figure data-zoom data-id="${p.id}" data-cam="${esc(cap)}"${src ? ` data-from-href="${src.href}" data-from-label="${esc(src.label)}"` : ''}${p.image.startsWith('assets/boulevard/') ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}">
         <img src="${encodeURI(p.thumb)}" data-full="${encodeURI(p.image)}" width="${p.w}" height="${p.h}" alt="${esc(p.alt)}" loading="lazy"><figcaption><span class="cam">${esc(cap)}</span></figcaption></figure>`;
     }).join('')}</div>` : '<div class="fa-empty"><p>No photographs match.</p><button class="fa-reset">reset filters</button></div>'}</section>`;
   settle();

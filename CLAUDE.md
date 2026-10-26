@@ -23,10 +23,10 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 
 ### Homepage: `index.html` (one file, hash router)
 - All content lives in the `WORK` array: sections → projects → image ids. Image `<id>` is `assets/home/<id>.jpg` (resized to 1600 px). Projects with a `group` are nested under that group in the side menu. To add a project, add an entry and its images; nothing else.
-- `render()` runs on `hashchange`. Routes: `#about`; `#<section>/<project>` (photo or poster grid); `#photography/boulevard[/<room>]`, which shows the L'Boulevard exhibition in an `<iframe>` (`BOULEVARD/<room>/index.html`). The project with `boulevard:true` appears in the menu as one link with an "exhibition" tag.
+- `render()` runs on `hashchange`. Routes: `#about`; `#<section>/<project>` (photo or poster grid); `#photography/boulevard[/<room>]`, which shows the L'Boulevard exhibition in an `<iframe>` (`assets/boulevard/<room>/index.html`). The project with `boulevard:true` appears in the menu as one link with an "exhibition" tag.
 - Theme: `data-theme` on `<html>`, saved in localStorage `skm-theme`, else the system setting. While the exhibition is open, `body.lbv-on` switches the portfolio to the exhibition palette and follows its switch through a `MutationObserver` on the iframe's `<html data-theme>` (same origin only).
 - Photo viewer: any `[data-zoom]` element opens the full-screen `#lb` viewer (arrows, swipe, click to zoom 2×).
-- The design brief is `Briefs/Homepage Implementation Brief.txt`: photographer first, editorial, minimal; near-black / off-white. Don't invent project descriptions, clients or credits.
+- The design brief is `docs/briefs/Homepage Implementation Brief.txt`: photographer first, editorial, minimal; near-black / off-white. Don't invent project descriptions, clients or credits.
 
 ### Archive: `#photography/archive` (F.A, spec `docs/specs/2026-10-21-filter-ability.md`)
 - Every photograph (homepage photo projects, Workshops, L'Boulevard rooms) in one view: genre first, then place / city / year / event / artist / client. A place is never a genre.
@@ -35,7 +35,7 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 - Thumbnails `assets/archive/t/<id>.jpg`. New photos: add them to `WORK` / a room as usual, then `node scripts/fa_migrate.mjs` (only appends missing records) and `~/.cache/orbit-render/v/bin/python -I scripts/fa_thumbs.py`.
 - Tagging: `tools/tag.html` on the local server (not linked from the site) edits every field; Chrome/Edge save straight into `data/`, other browsers download the two files.
 
-### Exhibition: `BOULEVARD/`
+### Exhibition: `assets/boulevard/`
 - Photos from L'Boulevard's Metal Day (20.09.2025 and 19.09.2026). The hub is `index.html` (one door per room). The rooms are `Movement/`, `Band/` (titled **Connection**) and `Faces/` (Faces and Eyes). Each room is a self-contained page with its own CSS, JS and `images/`.
 - Shared files: `theme.js` (light/dark, localStorage `lbv-theme`) and `Band/assets/` (film grain, wireframe SVGs; other rooms use `../Band/assets/...`).
 - Every page's `.pages` nav lists every page. A new room must be added to every nav and get a door on the hub. New rooms are built with the `lboulevard` skill (`~/.claude/skills/lboulevard`, images made from the Lightroom exports with `scripts/lbv.py`).
@@ -52,4 +52,4 @@ Never touch `Band/screenshots/`. The photo sources in `C:\Users\ghouj\SKIMART` (
 - Name every subagent or session after its task, e.g. `pf-qsm.4 Accessibility audit`.
 - Specs go in `docs/specs/YYYY-MM-DD-<topic>.md` and are written before building.
 - Order: plan → the user approves → implement → review → PR. Never merge without asking.
-- Branches: finished work is pushed to `Portoflio-Branch` (homepage and exhibition, PR #2 to `main`). `Test-Fix` (worktree `~/projects/PORTOFLIO-Fixes`, formerly `Portoflio-Fixes`) is only for test runs and fix passes. Feature branches (e.g. `Filter-Ability`) branch off `Portoflio-Branch`. `Portoflio-Branch` has no checkout of its own: commit through a temporary `git worktree add`. Several Claude sessions often work in this folder at once: check `git status` before committing, and don't switch branches under another session's feet.
+- Branches: finished work is pushed to `Portoflio-Branch` (homepage and exhibition, PR #2 to `main`). `Test-Fix` (worktree `~/Projects/Portoflio-Fixes`, formerly `Portoflio-Fixes`) is only for test runs and fix passes. Feature branches (e.g. `Filter-Ability`) branch off `Portoflio-Branch`. `Portoflio-Branch` has no checkout of its own: commit through a temporary `git worktree add`. Several Claude sessions often work in this folder at once: check `git status` before committing, and don't switch branches under another session's feet.

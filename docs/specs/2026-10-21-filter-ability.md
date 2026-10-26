@@ -1,7 +1,7 @@
 # F.A Filter Ability — photography archive + smart filters — spec
 
 Status: built on `Filter-Ability` 21.10.2026 (approved the same day). Plan: `docs/superpowers/plans/2026-10-21-filter-ability.md`. Branch `Filter-Ability` (from `Portoflio-Branch`). Beads epic `pf-coe`. Written 21.10.2026.
-Source brief: `Briefs/skimart-photography-archive-brief.md` (supersedes `Briefs/Photography Archive & Smart Filtering.txt`). Its 12 acceptance criteria (§7) are the definition of done; this spec says how they are met in this repo.
+Source brief: `docs/briefs/skimart-photography-archive-brief.md` (supersedes `docs/briefs/Photography Archive & Smart Filtering.txt`). Its 12 acceptance criteria (§7) are the definition of done; this spec says how they are met in this repo.
 
 ## Why
 Art directors, cultural organisations, event organisers and potential clients come to judge the work and find relevant photographs quickly. Today photos can only be reached project by project. They should be able to start from a genre (Music → Concert, Street → Portraits), then narrow by place, year, event or artist. It must feel like a curated photography archive, not an image database. 159 photos today, room to grow.

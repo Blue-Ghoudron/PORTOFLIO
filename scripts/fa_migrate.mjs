@@ -52,10 +52,10 @@ for (const sec of WORK) for (const p of sec.projects) if (FACTS[p.id])
 
 const decode = s => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const series = ROOMS.map(([dir, id, title]) => {
-  const page = readFileSync(`BOULEVARD/${dir}/index.html`, 'utf8'), photoIds = [];
+  const page = readFileSync(`assets/boulevard/${dir}/index.html`, 'utf8'), photoIds = [];
   for (const [, cap, file, alt] of page.matchAll(/<button class="shot"[^>]*data-cap="([^"]*)"[^>]*><img src="images\/([^"]+)" alt="([^"]*)"/g)) {
     const parts = decode(cap).split(' · '), year = parts.find(x => /^20\d\d$/.test(x)), pid = `lbv-${dir.toLowerCase()}-${file.replace(/\.\w+$/, '')}`;
-    fresh.push(record(pid, /^\d+$/.test(parts[0]) ? parts[1] : null, `BOULEVARD/${dir}/images/${file}`, {
+    fresh.push(record(pid, /^\d+$/.test(parts[0]) ? parts[1] : null, `assets/boulevard/${dir}/images/${file}`, {
       cityId: 'casablanca', date: {2025: '2025-09-20', 2026: '2026-09-19'}[year], eventIds: [`l-boulevard-${year}`],
       artistIds: BANDS.filter(b => cap.includes(b)).map(slugify)}, decode(alt)));
     photoIds.push(pid);

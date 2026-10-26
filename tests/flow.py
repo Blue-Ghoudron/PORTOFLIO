@@ -12,7 +12,7 @@ import sys
 from playwright.sync_api import sync_playwright
 
 B = (sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:8026/').rstrip('/') + '/'
-L = B + "BOULEVARD/"
+L = B + "assets/boulevard/"
 ROOMS = ['index.html', 'Band/index.html', 'Movement/index.html', 'Faces/index.html']
 SIZES = {'mobile': (390, 844), 'tablet': (820, 1180), 'desktop': (1440, 900)}
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out', 'flow')

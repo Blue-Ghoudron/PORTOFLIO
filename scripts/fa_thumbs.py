@@ -21,7 +21,7 @@ for p in photos:
     if not os.path.exists(out):
         os.makedirs(os.path.dirname(out), exist_ok=True)
         im = ImageOps.exif_transpose(Image.open(os.path.join(ROOT, p['image']))).convert('RGB')
-        if p['image'].startswith('BOULEVARD/'):  # the rooms print a 41 px cream mat into each file; the archive shows the photo only
+        if p['image'].startswith('assets/boulevard/'):  # the rooms print a 41 px cream mat into each file; the archive shows the photo only
             im = im.crop((MAT, MAT, im.width - MAT, im.height - MAT))
         im.thumbnail((600, 600), Image.LANCZOS)
         im.save(out, 'JPEG', quality=82, optimize=True, progressive=True)
