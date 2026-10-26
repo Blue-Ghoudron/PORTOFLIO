@@ -97,7 +97,14 @@ $('#save').onclick = async () => {
   $('#errors').innerHTML = errors.map(x => `<p>${esc(x)}</p>`).join('');
   if (errors.length) return;
   const files = {'photos.json': photosJson(data.photos), 'refs.json': refsJson(data.refs)};
-  if (window.showDirectoryPicker) {
+  // scripts/serve.py writes them in place (any browser, and the only way into a WSL folder); else Chrome/Edge's folder picker, else downloads
+  const server = (await fetch('/__can-save', {cache: 'no-store'}).catch(() => ({}))).status === 204;
+  if (server) {
+    for (const [name, text] of Object.entries(files)) {
+      const r = await fetch('/data/' + name, {method: 'PUT', body: text, headers: {'X-Skimart-Save': '1'}});
+      if (!r.ok) { $('#errors').innerHTML = `<p>Not saved: ${esc(name)} ${r.status}</p>`; return; }
+    }
+  } else if (window.showDirectoryPicker) {
     // only write into the archive's data/ folder: it is the one that already holds taxonomy.json
     try { dir ||= await showDirectoryPicker({id: 'skimart-data', mode: 'readwrite'}); await dir.getFileHandle('taxonomy.json'); }
     catch (err) {
@@ -110,6 +117,6 @@ $('#save').onclick = async () => {
     const a = Object.assign(document.createElement('a'), {href: URL.createObjectURL(new Blob([text], {type: 'application/json'})), download: name});
     a.click(); URL.revokeObjectURL(a.href);
   }
-  dirty = false; $('#status').textContent = window.showDirectoryPicker ? 'saved' : 'downloaded: put both files in data/';
+  dirty = false; $('#status').textContent = server || window.showDirectoryPicker ? 'saved' : 'downloaded: put both files in data/';
 };
 addEventListener('beforeunload', e => { if (dirty) e.preventDefault(); });

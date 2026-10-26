@@ -36,6 +36,7 @@ with sync_playwright() as p:
     pg = p.chromium.launch().new_page(viewport={'width': 1440, 'height': 900})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.add_init_script(FAKE_DIR)
+    pg.route('**/__can-save', lambda r: r.fulfill(status=404))  # the fake folder, never scripts/serve.py writing the real site
     pg.goto(B + 'tools/pages.html'); pg.wait_for_selector('.tiles li')
     pg.select_option('#page', 'photography|soualem|'); pg.wait_for_timeout(200)
     tile = lambda i, a: pg.locator(f'.tiles li[data-i="{i}"] [data-a="{a}"]')

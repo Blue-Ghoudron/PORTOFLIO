@@ -35,7 +35,7 @@ def page(browser, photos=None):
         body = photos if photos is not None and name == 'photos.json' else open(os.path.join(FX, name), encoding='utf-8').read()
         route.fulfill(status=200, content_type='application/json', body=body)
     pg.route('**/data/*.json', serve)
-    pg.goto(T)
+    pg.route('**/__can-save', lambda r: r.fulfill(status=404)); pg.goto(T)
     pg.wait_for_selector('.sheet figure[data-id=test-12]')
     return pg
 
@@ -90,7 +90,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: pg.errs.append(str(e)))
     pg.on('download', lambda d: pg.files.__setitem__(d.suggested_filename, open(d.path(), encoding='utf-8').read()))
     pg.add_init_script('delete window.showDirectoryPicker')
-    pg.goto(T); pg.wait_for_selector('.sheet figure')
+    pg.route('**/__can-save', lambda r: r.fulfill(status=404)); pg.goto(T); pg.wait_for_selector('.sheet figure')
     ok(pg.locator('.sheet figure').count() == N, f'real data: {N} photos on the sheet')
     pg.click('#save'); pg.wait_for_timeout(800)
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -128,7 +128,7 @@ with sync_playwright() as p:
       window.showDirectoryPicker = () => window.__folders.shift()();""")
     pg.route('**/data/*.json', lambda r: r.fulfill(status=200, content_type='application/json',
              body=open(os.path.join(FX, r.request.url.split('?')[0].rsplit('/', 1)[1]), encoding='utf-8').read()))
-    pg.goto(T); pg.wait_for_selector('.sheet figure')
+    pg.route('**/__can-save', lambda r: r.fulfill(status=404)); pg.goto(T); pg.wait_for_selector('.sheet figure')
     pg.click('#save'); pg.wait_for_timeout(300)
     ok(not pg.errs, f'pf-coe.11 cancelling the picker throws: {pg.errs}')
     pg.click('#save'); pg.wait_for_timeout(300)

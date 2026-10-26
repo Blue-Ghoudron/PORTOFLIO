@@ -84,16 +84,29 @@ $('#files').addEventListener('change', async ev => {
 });
 
 const fail = msg => { $('#errors').textContent = msg; $('#status').textContent = ''; };
+
+// where saves go: scripts/serve.py writes them (any browser), else a folder picked in Chrome/Edge
+async function store(){
+  if ((await fetch('/__can-save', {cache: 'no-store'}).catch(() => ({}))).status === 204) {
+    const send = (p, method, body) => fetch('/' + p, {method, body, headers: {'X-Skimart-Save': '1'}}).then(r => { if (!r.ok) throw new Error(`${p}: ${r.status} ${r.statusText}`); });
+    return {file: p => fetch('/' + p, {cache: 'no-store'}).then(r => { if (!r.ok) throw new Error(`${p}: ${r.status}`); return r.blob(); }),
+      write: (p, data) => send(p, 'PUT', data), remove: p => send(p, 'DELETE').catch(() => {})};
+  }
+  if (!window.showDirectoryPicker) throw new Error('start the site with python3 scripts/serve.py to save (or use Chrome/Edge)');
+  try { dir ||= await showDirectoryPicker({id: 'skimart-site', mode: 'readwrite'}); await dir.getFileHandle('index.html'); await dir.getDirectoryHandle('data'); }
+  catch (err) { dir = null; throw err.name === 'AbortError' ? err : new Error('pick the site folder: the one that holds index.html'); }
+  const at = async (p, create = false) => { const parts = p.split('/'), name = parts.pop(); let d = dir; for (const s of parts) d = await d.getDirectoryHandle(s, {create}); return [d, name]; };
+  return {file: async p => { const [d, n] = await at(p); return (await d.getFileHandle(n)).getFile(); },
+    write: async (p, data) => { const [d, n] = await at(p, true), w = await (await d.getFileHandle(n, {create: true})).createWritable(); await w.write(data); await w.close(); },
+    remove: async p => { const [d, n] = await at(p).catch(() => []); await d?.removeEntry(n).catch(() => {}); }};
+}
+
 $('#save').addEventListener('click', async () => {
   $('#errors').textContent = '';
-  if (!window.showDirectoryPicker) return fail('Saving needs Chrome or Edge: they write straight into the site folder.');
-  try { dir ||= await showDirectoryPicker({id: 'skimart-site', mode: 'readwrite'}); await dir.getFileHandle('index.html'); await dir.getDirectoryHandle('data'); }
-  catch (err) { dir = null; if (err.name !== 'AbortError') fail('Pick the site folder: the one that holds index.html.'); return; }
+  let st;
+  try { st = await store(); } catch (err) { if (err.name !== 'AbortError') fail('Not saved: ' + err.message); return; }
   $('#status').textContent = 'saving…';
-  const at = async (p, create = false) => { const parts = p.split('/'), name = parts.pop(); let d = dir; for (const s of parts) d = await d.getDirectoryHandle(s, {create}); return [d, name]; };
-  const file = async p => { const [d, n] = await at(p); return (await d.getFileHandle(n)).getFile(); };
-  const write = async (p, data) => { const [d, n] = await at(p, true), w = await (await d.getFileHandle(n, {create: true})).createWritable(); await w.write(data); await w.close(); };
-  const has = p => file(p).then(() => true, () => false);
+  const {file, write} = st, has = p => file(p).then(() => true, () => false);
   try {
     // read the files as they are now on disk, so nothing saved since this page loaded is lost
     let html = await (await file('index.html')).text(), ph = JSON.parse(await (await file('data/photos.json')).text());
@@ -115,7 +128,7 @@ $('#save').addEventListener('click', async () => {
     }
     const labText = writeLabels(labJs, lab);
     await write('assets/home/labels.js', labText); await write('data/photos.json', photosJson(ph)); await write('index.html', bumpLabels(html, labText));
-    for (const id of gone) for (const p of [`assets/home/${id}.jpg`, `assets/home/t/${id}.jpg`, `assets/archive/t/${id}.jpg`]) { const [d, n] = await at(p).catch(() => []); await d?.removeEntry(n).catch(() => {}); }
+    for (const id of gone) for (const p of [`assets/home/${id}.jpg`, `assets/home/t/${id}.jpg`, `assets/archive/t/${id}.jpg`]) await st.remove(p);
     await load(); draw(); $('#status').textContent = 'saved';
   } catch (err) { fail('Not saved: ' + err.message); }
 });
