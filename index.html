@@ -74,8 +74,6 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .home .lbl{display:block;margin-top:26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
   .home h1{font-weight:400;font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:12px 0 16px}
   .home p{max-width:520px;color:var(--soft)}
-  .cta{display:inline-block;margin-top:22px;font-size:12px;letter-spacing:.24em;border-bottom:1px solid var(--ink);padding-bottom:5px}
-  .cta:hover{letter-spacing:.3em}
   .loc{display:block;margin-top:34px;font-size:11px;letter-spacing:.24em;color:var(--dim)}
   .meta a[aria-current]{color:var(--ink)}
 
@@ -212,7 +210,6 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   /* below the hero: a preview of the photography */
   .sel{margin-top:clamp(72px,10vw,140px);padding-top:28px;border-top:1px solid var(--line)}
   .sel-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin-bottom:28px}
-  .sel .lbl{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
   .sel h2{font-weight:400;font-size:clamp(30px,3.4vw,48px);line-height:1;letter-spacing:-.02em;margin:0}
   .sel .all{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .2s,border-color .2s}
   .sel h2 a{transition:color .2s}
@@ -340,21 +337,31 @@ const archive = () => import('./assets/archive/archive.js');
 const picks = d => {
   const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
   const featured = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
-    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? pr.id : 'boulevard', label: pr ? pr.name : "L'Boulevard"}; });
+    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? `photography/${pr.id}` : 'photography/boulevard', label: pr ? pr.name : "L'Boulevard"}; });
   const list = featured.length ? featured : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
-    return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: p.id, label: p.name}; });
+    return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: `photography/${p.id}`, label: p.name}; });
   return list;
 };
-const preview = (g, max = Infinity) => archive().then(m => m.load()).then(d => {
-  if (!g.isConnected) return;  // left the page while loading
-  const list = picks(d);
-  g.innerHTML = list.slice(0, max).map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#photography/${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
+const sectionList = sec => {
+  const ps = sec.projects.filter(p => p.imgs || p.cats).map(p => ({p, imgs: p.imgs || p.cats.flatMap(c => c.imgs)})), out = [];
+  for (let i = 0; ps.some(x => x.imgs[i]); i++) ps.forEach(({p, imgs}) => imgs[i] && out.push({thumb: F(imgs[i]), full: F(imgs[i]),
+    alt: `${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}`, cam: LABELS[imgs[i]] || '', href: `${sec.id}/${p.id}`, label: p.name}));
+  return out;
+};
+const fill = (g, list, max) => {
+  g.innerHTML = list.slice(0, max).map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge ${p.alt}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
   settle();
-  if (max === Infinity) return;
-  // scrolling down into the preview unfolds Photography in the menu (a real scroll, not a short screen that already shows it)
-  const into = () => { if (!g.isConnected || g.getBoundingClientRect().top < innerHeight * .6) { g.isConnected && openSec('photography'); removeEventListener('scroll', into); } };
-  addEventListener('scroll', into, {passive: true});
-}).catch(() => {});
+};
+const preview = (g, sid, max = Infinity) => sid === 'photography'
+  ? archive().then(m => m.load()).then(d => g.isConnected && fill(g, picks(d), max)).catch(() => {})  // isConnected: still on that page
+  : fill(g, sectionList(WORK.find(x => x.id === sid)), max);
+// home: scrolling down into a section's preview unfolds that section in the menu
+let spyAt = null;
+addEventListener('scroll', () => {
+  const at = [...view.querySelectorAll('.sel')].filter(x => x.getBoundingClientRect().top < innerHeight * .6).pop();
+  if (!at || at.dataset.for === spyAt) return;
+  spyAt = at.dataset.for; nav.querySelectorAll('.sec').forEach(el => setOpen(el, el.dataset.sec === spyAt));
+}, {passive: true});
 archive().then(m => m.load()).then(d => { const n = nav.querySelector('.arch .n'); if (n) n.textContent = d.photos.length;
   nav.querySelector('.selw .n').textContent = picks(d).length; }).catch(() => {});
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
@@ -379,12 +386,13 @@ function render(){
     if (!view.querySelector('.archive')) view.innerHTML = '<section class="proj archive"><h2>Archive</h2></section>';
     archive().then(m => m.showArchive(view, query, WORK, settle, VT));
     document.getElementById('side').classList.remove('menu');
-  } else if (sid === 'photography' && !pid) {
-    // the whole selection; the home page shows only its first photos
+  } else if (sec && !pid) {
+    // a whole section: photography's selection, or every design / workshop image; the home page shows the first few
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
-    nav.querySelector('.selw').setAttribute('aria-current', 'page');
-    view.innerHTML = `<section class="proj"><h2>Photography</h2><p class="info">Selected work</p><div class="tools"><p class="hint"><b>⤢</b> click any photo to enlarge</p>${VT}</div><div class="grid"></div></section>`;
-    preview(view.querySelector('.grid'));
+    if (sid === 'photography') nav.querySelector('.selw').setAttribute('aria-current', 'page');
+    const posters = sec.projects.every(q => q.poster);
+    view.innerHTML = `<section class="proj"><h2>${sec.name}</h2><p class="info">${sid === 'photography' ? 'Selected work' : sec.projects.map(q => q.name).join(' · ')}</p><div class="tools"><p class="hint"><b>⤢</b> click any ${posters ? 'poster' : 'photo'} to enlarge</p>${posters ? '' : VT}</div><div class="grid${posters ? ' poster' : ''}"></div></section>`;
+    preview(view.querySelector('.grid'), sid);
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
     view.innerHTML = `<section class="home">
@@ -392,10 +400,9 @@ function render(){
       <span class="lbl">Photographer / Visual Artist</span>
       <h1>Real moments.<br>Visual stories.</h1>
       <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
-      <a class="cta" href="#photography/summer-sessions">EXPLORE MY WORK →</a>
       <span class="loc">CASABLANCA, MOROCCO</span></section>
-      <section class="sel" aria-labelledby="sel-h"><div class="sel-head"><div><span class="lbl">Selected work</span><h2 id="sel-h"><a href="#photography">Photography</a></h2></div><a class="all" href="#photography">all photos →</a></div><div class="grid pre"></div></section>`;
-    preview(view.querySelector('.sel .grid'), 6);
+      ${WORK.map(x => `<section class="sel" data-for="${x.id}" aria-labelledby="sel-${x.id}"><div class="sel-head"><h2 id="sel-${x.id}"><a href="#${x.id}">${x.name}</a></h2><a class="all" href="#${x.id}">see all →</a></div><div class="grid pre${x.projects.every(q => q.poster) ? ' poster' : ''}"></div></section>`).join('')}`;
+    spyAt = null; view.querySelectorAll('.sel').forEach(x => preview(x.querySelector('.grid'), x.dataset.for, 6));
     if (sid) openSec(sid);
   } else {
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false));  // only the open project's section and group stay unfolded
@@ -446,7 +453,8 @@ const show = i => { at = (i + set.length) % set.length; lbs.classList.remove('z'
   const fig = set[at].parentElement, from = document.getElementById('lb-from');  // archive photos link back to their project or room
   from.hidden = !fig.dataset.fromHref; from.href = fig.dataset.fromHref || ''; from.textContent = `from ${fig.dataset.fromLabel} →`;
   document.getElementById('lb-c').textContent = `${at + 1} / ${set.length}` + (cam ? ' · ' + cam : ''); };
-const openLb = fig => { last = fig; set = [...view.querySelectorAll('[data-zoom] img')]; document.getElementById('lb-t').textContent = (view.querySelector('h2') || {}).textContent || 'SKIMART';
+const openLb = fig => { const box = fig.closest('section') || view; last = fig; set = [...box.querySelectorAll('[data-zoom] img')];
+  document.getElementById('lb-t').textContent = (box.querySelector('h2') || view.querySelector('h2') || {}).textContent || 'SKIMART';
   document.getElementById('side').inert = view.inert = true;
   lb.classList.add('on'); document.body.style.overflow = 'hidden'; show(set.indexOf(fig.querySelector('img'))); document.getElementById('lb-x').focus(); };
 const closeLb = () => { document.getElementById('side').inert = view.inert = false; lb.classList.remove('on'); document.body.style.overflow = ''; last && last.focus(); };

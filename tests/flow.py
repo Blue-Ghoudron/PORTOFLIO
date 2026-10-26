@@ -48,8 +48,8 @@ with sync_playwright() as p:
         pg.click('#theme')
         ok(pg.evaluate('document.documentElement.dataset.theme') != t0, f'{vn} home theme switch')
 
-        home(); pg.click('.cta'); pg.wait_for_selector('main h2')
-        ok('#photography/' in pg.url, f'{vn} CTA -> {pg.url}')
+        home(); pg.click('.sel[data-for=photography] .all'); pg.wait_for_selector('main h2')  # the home page's way into the work
+        ok(pg.url.endswith('#photography'), f'{vn} home preview -> {pg.url}')
         home(); menu(); pg.click('.meta a[href="#about"]'); pg.wait_for_selector('.about')
         menu(); pg.click('.logo'); pg.wait_for_selector('.home h1')
 
