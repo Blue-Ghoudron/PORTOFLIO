@@ -45,7 +45,7 @@ function draw(focus){
   tiles.innerHTML = e.imgs.map((id, i) => `<li draggable="true" data-i="${i}" data-id="${esc(id)}"${added[id] ? ' class="new"' : ''}><img src="${esc(src(id))}" alt="" loading="lazy">
     <div class="meta"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(added[id] ? added[id].label || 'new · no camera line' : e.selected ? rec(id)?.alt || owner(id) : labels[id] || (photo ? 'no camera line' : ''))}</span></div>
     <div class="tools"><button data-a="left" aria-label="Move ${i + 1} earlier">←</button><button data-a="right" aria-label="Move ${i + 1} later">→</button>
-    ${e.selected ? '' : `<button data-a="th" aria-pressed="${th === id}">menu</button>`}${e.selected ? '' : `<button data-a="star" aria-pressed="${isFeatured(id, e.sid)}" aria-label="In Selected work">★</button>`}
+    ${e.selected ? '' : `<button data-a="th" aria-pressed="${th === id}">menu</button>`}${e.selected ? '' : `<button data-a="star" aria-pressed="${isFeatured(id, e.sid)}" aria-label="In Selected work">${isFeatured(id, e.sid) ? '★' : '☆'}</button>`}
     <button class="x" data-a="x" aria-label="Remove ${i + 1}">×</button></div></li>`).join('');
   if (focus) tiles.querySelector(`li[data-i="${focus[0]}"] [data-a="${focus[1]}"]`)?.focus();
 }

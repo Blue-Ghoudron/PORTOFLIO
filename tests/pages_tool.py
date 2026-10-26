@@ -61,7 +61,8 @@ with sync_playwright() as p:
     # Design: every poster until chosen; take the first one out
     pg.select_option('#page', 'selected|design'); pg.wait_for_timeout(200)
     des = pg.eval_on_selector_all('.tiles li', 'ls => ls.map(l => l.dataset.id)')
-    ok(len(des) == 39, f'design selection starts with every poster: {len(des)}')
+    saved_des = json.loads(re.search(r'^const SELECTED = (\{.*\});$', html, re.M).group(1)).get('design') or []
+    ok(len(des) == (len(saved_des) or 39), f'design selection starts as the site shows it (its list, else every poster): {len(des)}')
     tile(0, 'x').click()
     pg.click('#save'); pg.wait_for_function("document.getElementById('status').textContent === 'saved' || document.getElementById('errors').textContent")
     ok(pg.text_content('#errors') == '', 'save error: ' + pg.text_content('#errors'))

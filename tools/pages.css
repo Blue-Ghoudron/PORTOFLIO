@@ -17,3 +17,6 @@
 .tiles button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tiles button:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
 .tiles .x{margin-left:auto}
+/* the star: empty until the photo is in Selected work, then a filled gold one (gold #8a6400 is 4.7:1 on the page) */
+.tiles [data-a="star"]{font-size:17px;line-height:1;padding:1px 8px;color:var(--mute)}
+.tiles [data-a="star"][aria-pressed="true"]{background:none;border-color:#8a6400;color:#8a6400}
