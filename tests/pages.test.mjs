@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine } from '../tools/pages-core.js';
+import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine, readSelected, editSelected, selection } from '../tools/pages-core.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const html = readFileSync(join(ROOT, 'index.html'), 'utf8'), labelsJs = readFileSync(join(ROOT, 'assets/home/labels.js'), 'utf8');
@@ -73,4 +73,14 @@ function jpegWithExif(){
 test('camera line from a JPG with camera data, none without', () => {
   assert.deepEqual(cameraLine(jpegWithExif(), 'IMG_9173-2.jpg'), {date: '2026-03-21', label: 'IMG_9173 · 17:44:53 · 1/125 s · f/4.5 · ISO 500'});
   assert.equal(cameraLine(readFileSync(join(ROOT, 'assets/home/soualem-9173.jpg')).buffer, 'x.jpg'), null);  // web copies carry no EXIF
+});
+
+test('Selected work: SELECTED round-trip, then featured, else the menu photos', () => {
+  const w = readWork(html), photos = JSON.parse(readFileSync(join(ROOT, 'data/photos.json'), 'utf8'));
+  const set = editSelected(html, ['soualem-9173', 'x19901_61074']);
+  assert.deepEqual(readSelected(set), ['soualem-9173', 'x19901_61074']);
+  assert.deepEqual(readWork(set), w);  // the page list is untouched
+  assert.deepEqual(selection(w, ['soualem-9173'], photos.map(p => ({...p, featured: p.id === 'x19901_61074'}))), ['soualem-9173', 'x19901_61074']);
+  assert.deepEqual(selection(w, [], photos.map(p => ({...p, featured: false}))), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));
+  assert.deepEqual(selection(w, ['gone-id'], []), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));  // unknown ids drop out
 });

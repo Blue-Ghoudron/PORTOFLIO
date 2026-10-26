@@ -242,13 +242,16 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   <footer><span id="lb-c"></span> <a id="lb-from" hidden></a></footer>
 </div>
 
-<script src="assets/home/labels.js?v=d89229f9"></script>
+<script src="assets/home/labels.js?v=9e72bc6c"></script>
 <script>
 const F = f => 'assets/home/' + f + '.jpg';
 const LBV = "assets/boulevard/";
+// Selected work, in order: the home previews and #photography (tools/pages.html edits it). Photos ticked "featured" in
+// tools/tag.html follow them; with neither, each photography page's menu photo stands in.
+const SELECTED = [];
 const WORK = [
   {id:'photography', name:'Photography', projects:[
-    {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', th:'x411481_68888', info:'Street · Casablanca', imgs:["x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
+    {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', th:'x411481_68888', info:'Street · Casablanca', imgs:["x411481_68888", "x169644_27564", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
     {id:'soualem', group:'Places', name:'Soualem', th:'soualem-0002-2', info:'21–26.03.2026', imgs:["soualem-0045", "soualem-0046", "soualem-0051", "soualem-0092", "soualem-9173", "soualem-9223", "soualem-9258", "soualem-9325-2", "soualem-9330", "soualem-9353", "soualem-9221", "soualem-9262", "soualem-9263", "soualem-9284", "soualem-9288", "soualem-9298", "soualem-9310", "soualem-9325", "soualem-9336", "soualem-9337", "soualem-0002-2", "soualem-0002-3", "soualem-0002-4", "soualem-0002-vrtical", "soualem-9222", "soualem-9347", "soualem-0060", "soualem-0174", "soualem-0049", "soualem-0052", "soualem-0054", "soualem-0055", "soualem-0162", "soualem-0171", "soualem-0192", "soualem-0200", "soualem-0230", "soualem-9327"]},
     {id:'boulevard', group:'Music', name:"L'Boulevard", th:'boulevard', info:'Three rooms · each opens in its own style', boulevard:true,
      doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
@@ -326,10 +329,11 @@ const archive = () => import('./assets/archive/archive.js');
 // the selection: photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo.
 // The home page shows the first few (max), #photography all of them.
 const picks = d => {
-  const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
-  const featured = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
-    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? `photography/${pr.id}` : 'photography/boulevard', label: pr ? pr.name : "L'Boulevard"}; });
-  const list = featured.length ? featured : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
+  const by = new Map(d.photos.map(p => [p.id, p])), ids = [...SELECTED, ...d.photos.filter(p => p.featured && !SELECTED.includes(p.id)).map(p => p.id)];
+  const home = WORK.flatMap(s => s.projects.filter(p => p.imgs).map(p => [s, p])), where = id => home.find(([, p]) => p.imgs.includes(id));
+  const chosen = ids.map(id => by.get(id)).filter(Boolean).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], [s, pr] = (id && where(id)) || [];
+    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? `${s.id}/${pr.id}` : 'photography/boulevard', label: pr ? pr.name : "L'Boulevard"}; });
+  const list = chosen.length ? chosen : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
     return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: `photography/${p.id}`, label: p.name}; });
   return list;
 };

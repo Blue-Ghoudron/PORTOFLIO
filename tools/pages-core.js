@@ -90,3 +90,14 @@ function fromTiff(v, t, fileName){
   return {date: when.slice(0, 10).replace(/:/g, '-'),
     label: `${name} · ${when.slice(11)} · ${sh < 1 ? `1/${Math.round(1 / sh)} s` : `${+sh.toPrecision(6)} s`} · f/${+f.toFixed(2)} · ISO ${iso}`};
 }
+
+// Selected work: the ordered SELECTED list in index.html
+export const readSelected = html => JSON.parse((html.match(/^const SELECTED = (\[.*\]);$/m) || [, '[]'])[1]);
+export const editSelected = (html, ids) => html.replace(/^const SELECTED = \[.*\];$/m, `const SELECTED = ${list(ids)};`);
+/** What the site shows as Selected work (same rule as picks() in index.html): SELECTED, then photos ticked featured,
+    else each photography page's menu photo. */
+export function selection(work, selected, photos){
+  const has = new Set(photos.map(p => p.id));
+  const ids = [...selected, ...photos.filter(p => p.featured && !selected.includes(p.id)).map(p => p.id)].filter(id => has.has(id));
+  return ids.length ? ids : work[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]);
+}
