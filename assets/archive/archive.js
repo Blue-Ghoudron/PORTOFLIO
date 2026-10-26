@@ -4,7 +4,7 @@ import { FIELDS, emptyState, applyFilters, computeOptions, changeGenre, parseQue
 
 const NAMES = {location: 'place', city: 'city', year: 'year', event: 'event', artist: 'artist', client: 'client'};
 const REF = {location: 'locations', city: 'cities', event: 'events', artist: 'artists', client: 'clients'};
-let data = null, from = null, state = emptyState(), view = null, settle = () => {}, openDd = null, drawer = false;
+let data = null, from = null, state = emptyState(), view = null, settle = () => {}, openDd = null, drawer = false, tools = '';
 
 export const load = () => data ||= Promise.all(['taxonomy', 'refs', 'photos', 'series'].map(f => fetch(`data/${f}.json`).then(r => r.json())))
   .then(([taxonomy, refs, photos, series]) => {
@@ -26,8 +26,8 @@ function origins(d, work){
   return m;
 }
 
-export async function showArchive(v, query, work, after){
-  view = v; settle = after || settle;
+export async function showArchive(v, query, work, after, layout = ''){
+  view = v; settle = after || settle; tools = layout;
   const d = await load();
   if (!location.hash.startsWith('#photography/archive')) return;  // the visitor left while the data was loading
   from ||= origins(d, work);
@@ -55,7 +55,7 @@ function draw(d){
   // the visible count is redrawn with everything else; screen readers hear this one region, which stays put
   const live = document.getElementById('fa-live') || document.body.appendChild(Object.assign(document.createElement('p'), {id: 'fa-live', className: 'fa-sr'}));
   live.setAttribute('aria-live', 'polite'); live.textContent = `${n} photograph${n === 1 ? '' : 's'}`;
-  view.innerHTML = `<section class="proj archive"><h2 tabindex="-1">Archive</h2><p class="info">Every photograph · filter by genre, place, year, event</p>
+  view.innerHTML = `<section class="proj archive"><h2 tabindex="-1">Archive</h2><p class="info">Every photograph · filter by genre, place, year, event</p>${tools}
     <button class="fa-open mono" aria-expanded="${drawer}" aria-controls="fa-panel">Filter</button>
     <div class="fa-panel${drawer ? ' open' : ''}" id="fa-panel">${genres}${dds ? `<div class="fa-dds mono">${dds}</div>` : ''}
       <button class="fa-done mono">show ${n} photograph${n === 1 ? '' : 's'}</button></div>

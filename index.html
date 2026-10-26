@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SKIMART — Photographer / Visual Artist</title>
 <script>/* saved choice, else the system setting; in <head> so the page paints in the right theme */
-try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.nav=localStorage.getItem('skm-nav')||''}catch(e){}</script>
+try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.nav=localStorage.getItem('skm-nav')||'';document.documentElement.dataset.view=localStorage.getItem('skm-view')||''}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/archive/archive.css">
@@ -106,6 +106,15 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .grid figcaption{position:relative;background:var(--bg);display:flex;gap:10px;padding:8px 0 2px;border-top:1px solid var(--line);font:400 11px/1.5 "IBM Plex Mono",monospace;letter-spacing:.04em;color:var(--dim);font-variant-numeric:tabular-nums}
   .grid figcaption .no{color:var(--mute)}
   .grid figure:has(figcaption){background:none}
+  .tools{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin:-14px 0 24px}.tools .hint{margin:0}
+  .vt{display:inline-flex;border:1px solid var(--line)}.vt button{padding:6px 12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);transition:color .2s,background-color .2s}
+  .vt button[aria-pressed="true"]{color:var(--bg);background:var(--ink)}
+  @media (hover:hover) and (pointer:fine){.vt button[aria-pressed="false"]:hover{color:var(--ink)}}
+  .archive .vt{margin:0 0 16px}
+  :root[data-view="list"] .grid:not(.poster){display:block}
+  :root[data-view="list"] .grid:not(.poster) figure{display:grid;grid-template-columns:clamp(88px,12vw,160px) 1fr;gap:18px;align-items:center;margin:0;padding:10px 0;border-bottom:1px solid var(--line);outline-offset:0}
+  :root[data-view="list"] .grid:not(.poster) img{aspect-ratio:3/2;object-fit:cover;height:auto}
+  :root[data-view="list"] .grid:not(.poster) figcaption{border:0;padding:0;background:none;font-size:12px;flex-wrap:wrap}
   .grid figure:has(figcaption) img{height:auto;background:var(--card)}
 
   /* L'Boulevard: an exhibition inside the portfolio, framed in its own plum and blue */
@@ -168,7 +177,6 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
     :root[data-nav="fold"] .list ul{padding:0}
     :root[data-nav="fold"] .list a{grid-template-columns:1fr;gap:2px;padding:6px 0}
     :root[data-nav="fold"] .list a .nm{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-    :root[data-nav="fold"] .list a.glink .nm{position:static;width:auto;height:auto;clip-path:none;order:-1;font-size:10px;letter-spacing:.14em;text-transform:uppercase}  /* l'boulevard is a genre of its own */
     :root[data-nav="fold"] .list a .th{width:96px}
     :root[data-nav="fold"] .fold .ch{transform:scaleX(-1)}
     :root[data-nav="fold"] main{margin-left:144px}
@@ -242,6 +250,8 @@ const WORK = [
   {id:'photography', name:'Photography', projects:[
     {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', info:'Street · Casablanca', imgs:["x714252_433206", "x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
     {id:'soualem', group:'Places', name:'Soualem', th:'soualem-0002-2', info:'21–26.03.2026', imgs:["soualem-0045", "soualem-0046", "soualem-0051", "soualem-0092", "soualem-9173", "soualem-9223", "soualem-9258", "soualem-9325-2", "soualem-9330", "soualem-9353", "soualem-9221", "soualem-9262", "soualem-9263", "soualem-9284", "soualem-9288", "soualem-9298", "soualem-9310", "soualem-9325", "soualem-9336", "soualem-9337", "soualem-0002-2", "soualem-0002-3", "soualem-0002-4", "soualem-0002-vrtical", "soualem-9222", "soualem-9347", "soualem-0060", "soualem-0174", "soualem-0049", "soualem-0052", "soualem-0054", "soualem-0055", "soualem-0162", "soualem-0171", "soualem-0192", "soualem-0200", "soualem-0230", "soualem-9327"]},
+    {id:'boulevard', group:'Music', name:"L'Boulevard", th:'boulevard', info:'Three rooms · each opens in its own style', boulevard:true,
+     doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
     {id:'hellboy-mehdi', group:'Music', name:'Mehdi Ainak & Hellboy', info:'lapero.marrokii · 27.06.2025', imgs:["x423896_575352", "x426054_884570", "x258727_548040", "x250810_951131", "x123906_781973", "x468228_490555", "x385030_955491"]},
     {id:'summer-sessions', group:'Music', name:'Summer Sessions', th:'x19901_61074', info:'liquid.bridge · Seamens Club Casablanca · 22.08.2026', imgs:["x627811_787172", "x212123_298179", "x429051_116215", "x19901_61074", "x598590_156911", "x501188_613690", "x227090_463441", "x316163_761898", "x823059_615258", "x613504_703056", "x609377_644968", "x980983_323513", "x562246_550939", "x996677_378388", "x520530_220013", "x241472_359800", "x738420_540762"]},
     {id:'ayoub-hattab', group:'Music', name:'Ayoub Hattab', th:'x200018_298173', info:'American Arts Center · 13.06.2025', imgs:["x839456_462094", "x395082_452071", "x774752_688224", "x93155_981252", "x296914_894376", "x200018_298173"]},
@@ -250,8 +260,6 @@ const WORK = [
     {id:'nanofunk', group:'Music', name:'Nanofunk', info:'American Arts Center · 28.07.2025', imgs:["x369338_339662", "x212033_187187", "x374118_196552", "x310513_96852"]},
     {id:'disco-atlas', group:'Music', name:'Disco Atlas', info:'American Arts Center · 26.06.2025', imgs:["x449771_372156", "x899978_736484", "x883002_833465", "x635699_568221"]},
     {id:'noches', group:'Music', name:'Noches de Ramadán', info:'Jinān Al Andalus · American Arts Center · 24.02.2026', imgs:['x334930_867208','x558783_464613','x833362_974196','x525055_910195']},
-    {id:'boulevard', group:"L'Boulevard", name:'Overview', info:'Three rooms · each opens in its own style', boulevard:true,
-     doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
   ]},
   {id:'design', name:'Design', projects:[
     {id:'aac', th:'design-aac', name:'American Art Center', info:'Poster design', poster:true, imgs:['x815196_567852','x190932_899304','x905172_741900','x913199_406854','x276823_230940','x980645_442674','x885431_556498']},
@@ -271,14 +279,12 @@ const WORK = [
 const nav = document.getElementById('work'), view = document.getElementById('view');
 let no = 0;
 const row = (name, th, extra = '') => `<span class="no">${String(++no).padStart(2, '0')}</span><span class="nm">${name}${extra}</span><img class="th" src="assets/home/t/${th}.jpg" alt="" loading="lazy"><span class="go" aria-hidden="true">↘</span>`;
-const item = (s, p) => `<li><a href="#${s.id}/${p.id}" title="${p.name}"${p.poster ? ' class="pst"' : ''}>${row(p.name.toLowerCase(), p.th || (p.imgs || p.cats[0].imgs)[0])}</a></li>`;
+const item = (s, p) => `<li><a href="#${s.id}/${p.id}" title="${p.name}"${p.poster ? ' class="pst"' : p.boulevard ? ' class="glink"' : ''}>${row(p.name.toLowerCase(), p.th || (p.imgs || p.cats[0].imgs)[0], p.boulevard ? '<span class="ex mono">exhibition</span>' : '')}</a></li>`;
 const toggle = (id, label, n, cls) => `<button class="tog ${cls}" aria-expanded="false" aria-controls="${id}"><span>${label}<span class="n mono">${n}</span></span><span class="pm" aria-hidden="true">+</span></button>`;
 nav.innerHTML = WORK.map(s => {
   const groups = [...new Set(s.projects.map(p => p.group))];
   const body = groups[0] ? groups.map((g, gi) => {
     const ps = s.projects.filter(p => p.group === g), id = `g-${s.id}-${gi}`;
-    // the exhibition is one click: no fold-out, its rooms are in its own nav
-    if (ps[0].boulevard) return `<li class="gsec"><ul><li><a class="glink" href="#${s.id}/${ps[0].id}" title="${g}">${row(g.toLowerCase(), 'boulevard', '<span class="ex mono">exhibition</span>')}</a></li></ul></li>`;
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   // every photograph in one filterable view (assets/archive/), above the photography groups
@@ -304,7 +310,15 @@ const grid = (p, imgs) => `<div class="grid ${p.poster ? 'poster' : ''}">${imgs.
 let goTo = null; ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, () => goTo = null, {passive: true}));
 const mason = new ResizeObserver(es => { es.forEach(e => e.target.style.gridRowEnd = 'span ' + Math.ceil(e.contentRect.height + parseFloat(getComputedStyle(e.target).marginBottom))); goTo && goTo.scrollIntoView(); });
 let shown;  // the route last animated in
-const settle = () => { view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
+// grid or list: one choice for every photo page and the archive, remembered like the theme
+const VT = '<div class="vt mono" role="group" aria-label="Layout"><button type="button" data-v="">grid</button><button type="button" data-v="list">list</button></div>';
+const vtSync = () => view.querySelectorAll('.vt button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === (root.dataset.view || '')));
+view.addEventListener('click', e => {
+  const b = e.target.closest('.vt button'); if (!b || b.dataset.v === (root.dataset.view || '')) return;
+  root.dataset.view = b.dataset.v; try { localStorage.setItem('skm-view', b.dataset.v); } catch (err) {} vtSync();
+  view.querySelectorAll('.grid').forEach(g => g.animate({opacity: [0, 1]}, {duration: 200, easing: 'cubic-bezier(0.23, 1, 0.32, 1)'}));  // the layout swap would jump
+});
+const settle = () => { vtSync(); view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
   mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f)); };
 const archive = () => import('./assets/archive/archive.js');
 archive().then(m => m.load()).then(d => nav.querySelector('.arch .n').textContent = d.photos.length).catch(() => {});
@@ -328,7 +342,7 @@ function render(){
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
     nav.querySelector('.arch').setAttribute('aria-current', 'page');
     if (!view.querySelector('.archive')) view.innerHTML = '<section class="proj archive"><h2>Archive</h2></section>';
-    archive().then(m => m.showArchive(view, query, WORK, settle));
+    archive().then(m => m.showArchive(view, query, WORK, settle, VT));
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
     view.innerHTML = `<section class="home">
@@ -352,7 +366,7 @@ function render(){
     view.innerHTML = p.boulevard
       // the exhibition's own pages run in a frame, so its rooms open here instead of leaving the portfolio
       ? `<section class="lbv"><iframe src="${LBV}${room ? room + '/' : ''}index.html" title="L'Boulevard exhibition"></iframe></section>`
-      : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p>${p.cats ? p.cats.map(c => `<h3 class="cat" id="${c.name.toLowerCase()}">${c.name}</h3>${c.info ? `<p class="cinfo">${c.info}</p>` : ''}${grid(p, c.imgs)}`).join('') : grid(p, p.imgs)}</section>`;
+      : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><div class="tools"><p class="hint"><b>⤢</b> click any photo to enlarge</p>${p.poster ? '' : VT}</div>${p.cats ? p.cats.map(c => `<h3 class="cat" id="${c.name.toLowerCase()}">${c.name}</h3>${c.info ? `<p class="cinfo">${c.info}</p>` : ''}${grid(p, c.imgs)}`).join('') : grid(p, p.imgs)}</section>`;
     document.getElementById('side').classList.remove('menu');
   }
   const now = [sid, pid, room].join('/');  // the route without filters: the archive re-filtering is not a new page
