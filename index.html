@@ -242,18 +242,18 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   <footer><span id="lb-c"></span> <a id="lb-from" hidden></a></footer>
 </div>
 
-<script src="assets/home/labels.js?v=9e72bc6c"></script>
+<script src="assets/home/labels.js?v=dca669ef"></script>
 <script>
 const F = f => 'assets/home/' + f + '.jpg';
 const LBV = "assets/boulevard/";
 // Selected work per section, in order: its home preview and its page (#photography, #design, #workshops); tools/pages.html
 // edits it. Photography: photos ticked "featured" in tools/tag.html follow, else each page's menu photo stands in.
 // Design / Workshops: empty means every image, one per project before a second from any.
-const SELECTED = {"photography": ["x411481_68888", "soualem-0002-2", "x19901_61074", "x371976_537633", "x369338_339662", "x449771_372156", "x334930_867208", "x385030_955491", "x774752_688224", "x514453_36871", "x883002_833465"], "design": ["x815196_567852", "x913199_406854", "x568923_892960", "x604084_219457", "x190932_899304", "x270757_649230", "x905172_741900", "x609322_253534", "x109724_353827", "x276823_230940", "x118493_85813", "x980645_442674", "x885431_556498", "x99638_123460", "x920834_698237", "x392680_933255", "x416801_359515", "x542415_54580", "x611198_115804", "x799846_204911", "x498923_828204", "x706985_590407", "x16309_49896", "x341207_892313", "x569067_495874", "x560715_265379", "x91009_432688"], "workshops": []};
+const SELECTED = {"photography": ["x385030_955491", "x411481_68888", "x19901_61074", "x371976_537633", "soualem-9223", "x369338_339662", "x449771_372156", "x334930_867208", "x774752_688224", "x514453_36871", "x883002_833465", "soualem-9330", "soualem-0046"], "design": ["x815196_567852", "x913199_406854", "x568923_892960", "x604084_219457", "x190932_899304", "x270757_649230", "x905172_741900", "x609322_253534", "x109724_353827", "x276823_230940", "x118493_85813", "x980645_442674", "x885431_556498", "x99638_123460", "x920834_698237", "x392680_933255", "x416801_359515", "x542415_54580", "x611198_115804", "x799846_204911", "x498923_828204", "x706985_590407", "x16309_49896", "x341207_892313", "x569067_495874", "x560715_265379", "x91009_432688"], "workshops": []};
 const WORK = [
   {id:'photography', name:'Photography', projects:[
     {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', th:'x411481_68888', info:'Street · Casablanca', imgs:["x411481_68888", "x169644_27564", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
-    {id:'soualem', group:'Places', name:'Soualem', th:'soualem-0002-2', info:'21–26.03.2026', imgs:["soualem-0045", "soualem-0046", "soualem-0051", "soualem-0092", "soualem-9173", "soualem-9223", "soualem-9258", "soualem-9325-2", "soualem-9330", "soualem-9353", "soualem-9221", "soualem-9262", "soualem-9263", "soualem-9284", "soualem-9288", "soualem-9298", "soualem-9310", "soualem-9325", "soualem-9336", "soualem-9337", "soualem-0002-2", "soualem-0002-3", "soualem-0002-4", "soualem-0002-vrtical", "soualem-9222", "soualem-9347", "soualem-0060", "soualem-0174", "soualem-0049", "soualem-0052", "soualem-0054", "soualem-0055", "soualem-0162", "soualem-0171", "soualem-0192", "soualem-0200", "soualem-0230", "soualem-9327"]},
+    {id:'soualem', group:'Places', name:'Soualem', info:'21–26.03.2026', imgs:["soualem-0045", "soualem-0046", "soualem-0051", "soualem-0092", "soualem-9173", "soualem-9223", "soualem-9258", "soualem-9325-2", "soualem-9330", "soualem-9353", "soualem-9221", "soualem-9262", "soualem-9263", "soualem-9284", "soualem-9288", "soualem-9298", "soualem-9310", "soualem-9325", "soualem-9336", "soualem-9337", "soualem-9222", "soualem-9347", "soualem-0060", "soualem-0174", "soualem-0049", "soualem-0052", "soualem-0054", "soualem-0055", "soualem-0162", "soualem-0171", "soualem-0192", "soualem-0200", "soualem-0230", "soualem-9327"]},
     {id:'boulevard', group:'Music', name:"L'Boulevard", th:'boulevard', info:'Three rooms · each opens in its own style', boulevard:true,
      doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
     {id:'hellboy-mehdi', group:'Music', name:'Mehdi Ainak & Hellboy', info:'lapero.marrokii · 27.06.2025', imgs:["x423896_575352", "x426054_884570", "x258727_548040", "x250810_951131", "x123906_781973", "x468228_490555", "x385030_955491"]},

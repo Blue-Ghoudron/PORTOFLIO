@@ -20,3 +20,13 @@
 /* the star: empty until the photo is in Selected work, then a filled gold one (gold #8a6400 is 4.7:1 on the page) */
 .tiles [data-a="star"]{font-size:17px;line-height:1;padding:1px 8px;color:var(--mute)}
 .tiles [data-a="star"][aria-pressed="true"]{background:none;border-color:#8a6400;color:#8a6400}
+#new{padding:5px 12px;border:1px solid var(--ink);background:none;cursor:pointer}
+#newdlg{border:1px solid var(--ink);background:var(--bg);color:var(--ink);padding:20px 22px;width:min(420px,92vw)}
+#newdlg::backdrop{background:#0006}
+#newdlg h2{margin:0 0 14px;font-size:14px;letter-spacing:.2em;text-transform:uppercase}
+#newdlg label{display:grid;gap:4px;margin-bottom:12px;color:var(--mute)}
+#newdlg :is(input,select){padding:6px 8px;border:1px solid var(--line);background:none;color:var(--ink)}
+#newdlg .row{display:flex;justify-content:flex-end;gap:8px}
+#newdlg .row button{padding:6px 14px;border:1px solid var(--ink);background:none;cursor:pointer}
+#newdlg .row .go{background:var(--ink);color:var(--bg)}
+#nerr{color:#b3261e;margin:0 0 10px}#nerr:empty{display:none}

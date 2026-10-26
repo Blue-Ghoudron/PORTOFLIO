@@ -1,6 +1,6 @@
 // Page editor: arrange a page's photos by hand, then save straight into the site folder (Chrome/Edge).
 // The text edits live in pages-core.js; this file is the page and the file writing.
-import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, photosJson, newId, cameraLine, readSelected, editSelected, selection } from './pages-core.js';
+import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, photosJson, newId, cameraLine, readSelected, editSelected, selection, insertProject, slug } from './pages-core.js';
 
 const $ = s => document.querySelector(s), tiles = $('.tiles');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
@@ -12,11 +12,37 @@ async function load(){
   const [html, lab, ph] = await Promise.all([get('index.html'), get('assets/home/labels.js'), get('data/photos.json')]);
   WORK = readWork(html); labels = readLabels(lab); photos = JSON.parse(ph); const sel = readSelected(html); picked = Object.fromEntries(WORK.map(s => [s.id, selection(WORK, sel, photos, s.id)]));
   edits = new Map(); added = {}; dirty = false;
+  options();
+  if ([...$('#page').options].some(o => o.value === keep)) $('#page').value = keep;  // else the first page
+}
+
+function options(){
   $('#page').innerHTML = `<optgroup label="Home">${WORK.map(s => `<option value="selected|${s.id}">Selected work · ${esc(s.name)}</option>`).join('')}</optgroup>` + WORK.map(s => `<optgroup label="${esc(s.name)}">${s.projects.filter(p => !p.boulevard).flatMap(p => p.cats
     ? p.cats.map(c => `<option value="${s.id}|${p.id}|${esc(c.name)}">${esc(p.name)} · ${esc(c.name)}</option>`)
     : [`<option value="${s.id}|${p.id}|">${esc(p.name)}</option>`]).join('')}</optgroup>`).join('');
-  if (keep) $('#page').value = keep;
 }
+
+// a new page: it exists in this editor until saved, which needs at least one photo
+const grouped = sid => WORK.find(s => s.id === sid).projects.some(p => p.group);
+const groupField = () => { const sid = $('#nsec').value;
+  $('#ngrp').hidden = !grouped(sid); $('#ngroup').required = grouped(sid);
+  $('#groups').innerHTML = [...new Set(WORK.find(s => s.id === sid).projects.map(p => p.group).filter(Boolean))].map(g => `<option value="${esc(g)}">`).join(''); };
+$('#new').addEventListener('click', () => {
+  $('#newform').reset();
+  $('#nsec').innerHTML = WORK.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join(''); $('#nsec').value = page().sid || 'photography';
+  $('#nerr').textContent = ''; groupField(); $('#newdlg').showModal();
+});
+$('#nsec').addEventListener('change', groupField);
+$('#newform').addEventListener('submit', ev => {
+  if (ev.submitter?.value !== 'ok') return;
+  const sec = WORK.find(s => s.id === $('#nsec').value), name = $('#nname').value.trim(), group = grouped(sec.id) ? $('#ngroup').value.trim() : '';
+  const taken = new Set(WORK.flatMap(s => [s.id, ...s.projects.map(p => p.id)]));
+  let id = slug(name) || 'page'; for (let n = 2; taken.has(id); n++) id = `${slug(name) || 'page'}-${n}`;
+  if (!name || (grouped(sec.id) && !group)) { ev.preventDefault(); $('#nerr').textContent = 'a name' + (grouped(sec.id) ? ' and a menu group' : '') + ', please'; return; }
+  sec.projects.push({id, ...(group && {group}), name, info: $('#ninfo').value.trim(), ...(sec.projects.every(p => p.poster) && {poster: true}), imgs: [], fresh: true});
+  options(); $('#page').value = `${sec.id}|${id}|`; change();
+  $('#status').textContent = 'new page: add its photos, then save';
+});
 
 // Selected work: an ordered list of photos from any page; × takes one out of it, nothing is deleted
 const chosen = sid => { const k = 'selected|' + sid;
@@ -119,6 +145,10 @@ $('#save').addEventListener('click', async () => {
     // read the files as they are now on disk, so nothing saved since this page loaded is lost
     let html = await (await file('index.html')).text(), ph = JSON.parse(await (await file('data/photos.json')).text());
     const labJs = await (await file('assets/home/labels.js')).text(), lab = readLabels(labJs), pages = [...edits.values()].filter(e => e.touched && !e.selected);
+    for (const e of pages) if (e.p.fresh) {  // before any file is written: an empty page would break the menu
+      if (!e.imgs.length) throw new Error(`"${e.p.name}" has no photos yet: add some first`);
+      html = insertProject(html, e.sid, e.p);
+    }
     for (const e of pages) for (const id of e.imgs) if (added[id]) {
       await write(`assets/home/${id}.jpg`, added[id].big);
       if (added[id].thumb) await write(`assets/archive/t/${id}.jpg`, added[id].thumb);

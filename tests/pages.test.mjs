@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine, readSelected, editSelected, selection } from '../tools/pages-core.js';
+import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine, readSelected, editSelected, selection, insertProject } from '../tools/pages-core.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const html = readFileSync(join(ROOT, 'index.html'), 'utf8'), labelsJs = readFileSync(join(ROOT, 'assets/home/labels.js'), 'utf8');
@@ -88,4 +88,20 @@ test('Selected work per section: round-trip, then featured, else the defaults', 
   const all = selection(w, {}, none, 'design'), firsts = w.find(s => s.id === 'design').projects.map(p => (p.imgs || p.cats[0].imgs)[0]);
   assert.deepEqual(all.slice(0, firsts.length), firsts);  // one per project first
   assert.equal(all.length, 39);
+});
+
+test('a new page goes after the last page of its group, else at the end of its section', () => {
+  const ids = (h, sid) => readWork(h).find(s => s.id === sid).projects.map(p => p.id);
+  const before = ids(html, 'photography');
+  const places = insertProject(html, 'photography', {id: 'new-one', group: 'Places', name: "Jemaa's Night", info: '01.01.2026'});
+  const after = ids(places, 'photography'), at = after.indexOf('new-one');
+  assert.equal(after.length, before.length + 1);
+  assert.equal(readWork(places)[0].projects[at - 1].group, 'Places'); assert.notEqual(readWork(places)[0].projects[at + 1]?.group, 'Places');
+  assert.equal(readWork(places)[0].projects[at].name, "Jemaa's Night");  // quotes survive
+  assert.deepEqual(readWork(places)[0].projects[at].imgs, []);
+  const music = insertProject(html, 'photography', {id: 'm2', group: 'Music', name: 'M2'}), mi = ids(music, 'photography');
+  assert.equal(mi.at(-1), 'm2');  // Music is the last group: past noches, not inside L'Boulevard's two lines
+  assert.equal(ids(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}), 'design').at(-1), 'p9');
+  assert.equal(readWork(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}))[1].projects.at(-1).poster, true);
+  assert.equal(ids(insertProject(html, 'photography', {id: 'g', group: 'Brand new', name: 'G'}), 'photography').at(-1), 'g');
 });

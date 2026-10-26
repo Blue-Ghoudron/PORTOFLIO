@@ -1,9 +1,6 @@
 // camera line for each homepage photo, read from its original file (made by matching the web copies back to the shoots)
 const LABELS = {
 "soualem-0002-2": "IMG_0002 · 19:31:23 · 1/500 s · f/4.5 · ISO 100",
-"soualem-0002-3": "IMG_0002 · 19:31:23 · 1/500 s · f/4.5 · ISO 100",
-"soualem-0002-4": "IMG_0002 · 19:31:23 · 1/500 s · f/4.5 · ISO 100",
-"soualem-0002-vrtical": "IMG_0002 · 19:31:23 · 1/500 s · f/4.5 · ISO 100",
 "soualem-0045": "IMG_0045 · 19:52:27 · 1/125 s · f/5.6 · ISO 1600",
 "soualem-0046": "IMG_0046 · 19:52:43 · 1/125 s · f/5.6 · ISO 1250",
 "soualem-0049": "IMG_0049 · 19:53:06 · 1/125 s · f/5.6 · ISO 1600",

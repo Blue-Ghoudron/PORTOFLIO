@@ -44,17 +44,18 @@ with sync_playwright() as p:
     tile(0, 'right').click()                        # o1 o0 o2 o3 ...
     ok(pg.evaluate('document.activeElement.dataset.a') == 'right', 'focus follows the moved photo')
     tile(1, 'x').click()                            # o1 o2 o3 ...   (o0 removed)
-    tile(0, 'star').click()                         # o1 featured
+    was = tile(0, 'star').get_attribute('aria-pressed') == 'true'  # your selection may already hold o1
+    tile(0, 'star').click()                         # o1 in or out of Selected work
     tile(2, 'th').click()                           # o3 menu photo
     pg.set_input_files('#files', files=[{'name': 'IMG_7777.jpg', 'mimeType': 'image/jpeg',
                                          'buffer': open(os.path.join(ROOT, 'assets/home/soualem-9173.jpg'), 'rb').read()}])
     pg.wait_for_selector('.tiles li.new')
     ok('no camera line' in pg.locator('.tiles li.new').inner_text(), 'a web copy has no camera line')
-    ok(pg.locator('.tiles li[data-i="0"] [data-a="star"]').get_attribute('aria-pressed') == 'true', 'starred photo shows as selected')
+    ok((tile(0, 'star').get_attribute('aria-pressed') == 'true') != was, 'the star flips')
     # Selected work: starts from what the site shows, gets the starred photo at the end; reorder, take one out
     pg.select_option('#page', 'selected|photography'); pg.wait_for_timeout(200)
     sel = pg.eval_on_selector_all('.tiles li', 'ls => ls.map(l => l.dataset.id)')
-    ok(sel and sel[-1] == orig[1], f'starred photo joins the selection: {sel[-3:]}')
+    ok((orig[1] in sel) != was and (was or sel[-1] == orig[1]), f'starring adds at the end, unstarring takes out: {sel[-3:]}')
     ok(pg.locator('.add').is_hidden() and pg.locator('[data-a=th], [data-a=star]').count() == 0, 'no menu photo, star or add on Selected work')
     tile(0, 'right').click(); tile(1, 'x').click()
     want_sel = [sel[1]] + sel[2:]
@@ -64,6 +65,13 @@ with sync_playwright() as p:
     saved_des = json.loads(re.search(r'^const SELECTED = (\{.*\});$', html, re.M).group(1)).get('design') or []
     ok(len(des) == (len(saved_des) or 39), f'design selection starts as the site shows it (its list, else every poster): {len(des)}')
     tile(0, 'x').click()
+    # a new page in Places, with one photo
+    pg.click('#new'); pg.select_option('#nsec', 'photography'); pg.fill('#nname', 'Test Page'); pg.fill('#ngroup', 'Places')
+    pg.fill('#ninfo', 'Somewhere · 01.01.2026'); pg.click('#newdlg .go')
+    ok(pg.input_value('#page') == 'photography|test-page|' and pg.locator('.tiles li').count() == 0, 'the new page opens, empty')
+    pg.set_input_files('#files', files=[{'name': 'IMG_8888.jpg', 'mimeType': 'image/jpeg',
+                                         'buffer': open(os.path.join(ROOT, 'assets/home/soualem-9173.jpg'), 'rb').read()}])
+    pg.wait_for_selector('.tiles li.new')
     pg.click('#save'); pg.wait_for_function("document.getElementById('status').textContent === 'saved' || document.getElementById('errors').textContent")
     ok(pg.text_content('#errors') == '', 'save error: ' + pg.text_content('#errors'))
 
@@ -77,7 +85,7 @@ with sync_playwright() as p:
     ok(f'"{orig[0]}"' not in w.get('assets/home/labels.js', f'"{orig[0]}"'), 'removed photo loses its caption')
     recs = {r['id']: r for r in json.loads(w.get('data/photos.json', '[]'))}
     ok(orig[0] not in recs, 'removed photo leaves the archive')
-    ok(recs.get(orig[1], {}).get('featured') is True, 'featured saved')
+    ok(recs.get(orig[1], {}).get('featured') is (orig[1] in want_sel), 'featured follows the photography selection')
     ok(recs.get(orig[1], {}).get('alt') == 'Soualem, photo 1', 'alt renumbered')
     new = recs.get('soualem-7777', {})
     ok(new.get('w') and new.get('thumb') == 'assets/archive/t/soualem-7777.jpg', f'new archive record {new}')
@@ -89,7 +97,20 @@ with sync_playwright() as p:
     ok(saved_sel.get('design') == des[1:] and saved_sel.get('workshops') == [], 'design selection saved, workshops left alone')
     ok(all(recs[i]['featured'] for i in want_sel if i in recs) and not recs.get(sel[0], {}).get('featured'), 'featured flags follow the selection')
     ok(f'assets/home/{sel[0]}.jpg' not in removed, 'taking a photo out of the selection deletes nothing')
+    page_line = re.search(r"^    \{id:'test-page'.*$", w.get('index.html', ''), re.M)
+    ok(page_line and page_line.group(0) == "    {id:'test-page', group:'Places', name:'Test Page', info:'Somewhere · 01.01.2026', imgs:[\"test-page-8888\"]},", f'new page line: {page_line and page_line.group(0)}')
+    lines = w.get('index.html', '').split('\n')
+    ok(page_line and lines[lines.index(page_line.group(0)) - 1].startswith("    {id:'soualem'"), 'new page sits after the last Places page')
+    ok(recs.get('test-page-8888', {}).get('alt') == 'Test Page, photo 1', 'new page photo in the archive')
+    ok('assets/home/t/test-page-8888.jpg' in w and 'assets/home/test-page-8888.jpg' in w, 'new page photo and menu thumb written')
     ok(not errs, f'page errors: {errs}')
+
+    # an empty new page is not saved, and nothing is written
+    pg2 = pg.context.browser.new_page(); pg2.add_init_script(FAKE_DIR); pg2.route('**/__can-save', lambda r: r.fulfill(status=404))
+    pg2.goto(B + 'tools/pages.html'); pg2.wait_for_selector('.tiles li')
+    pg2.click('#new'); pg2.select_option('#nsec', 'workshops'); pg2.fill('#nname', 'Empty'); pg2.click('#newdlg .go'); pg2.click('#save')
+    pg2.wait_for_function("document.getElementById('errors').textContent")
+    ok('no photos' in pg2.text_content('#errors') and pg2.evaluate('Object.keys(__fs.writes).length') == 0, 'empty new page refused, nothing written')
 
 print('FAILS:', FAILS or 'none')
 sys.exit(1 if FAILS else 0)

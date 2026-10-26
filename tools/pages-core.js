@@ -50,7 +50,7 @@ export function editPhotos(photos, {name, ids, removed = [], added = {}, feature
   return out;
 }
 
-const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+export const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 /** <page>-<number from the file name>, unique among taken ids. */
 export function newId(page, fileName, taken){
   const base = `${page}-${slug(fileName.replace(/\.[^.]+$/, '').replace(/^[A-Za-z]+_/, '')) || 'photo'}`;
@@ -110,4 +110,16 @@ export function selection(work, selected, photos, sid = 'photography'){
   for (let i = 0; ps.some(l => l[i]); i++) ps.forEach(l => l[i] && all.push(l[i]));
   const ids = mine.filter(id => all.includes(id));
   return ids.length ? ids : all;
+}
+
+/** A new page's WORK line: after the last page of its group, else at the end of its section. */
+export function insertProject(html, sid, {id, group, name, info = '', poster}){
+  const lines = html.split('\n'), sec = lines.findIndex(l => l.startsWith(`  {id:'${sid}',`));
+  if (sec < 0) throw new Error(`no section ${sid}`);
+  const end = lines.findIndex((l, i) => i > sec && /^  \]\},?$/.test(l)), starts = [];
+  for (let i = sec + 1; i < end; i++) if (lines[i].startsWith('    {id:')) starts.push(i);
+  const last = group ? starts.filter(i => lines[i].includes(`group:${q(group)}`)).pop() : undefined;
+  const at = last === undefined ? end : starts.find(i => i > last) ?? end;  // past a page that spans several lines
+  lines.splice(at, 0, `    {id:${q(id)}${group ? `, group:${q(group)}` : ''}, name:${q(name)}, info:${q(info)}${poster ? ', poster:true' : ''}, imgs:[]},`);
+  return lines.join('\n');
 }
