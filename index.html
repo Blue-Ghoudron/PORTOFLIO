@@ -69,15 +69,12 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 
   main{margin-left:400px;transition:margin-left .3s;padding:40px clamp(20px,4vw,64px) 80px;min-height:100vh}
 
-  .home .photo{max-width:760px}
-  .home img{display:block;width:100%;height:auto}
-  .home .lbl{display:block;margin-top:26px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
-  .home h1{font-weight:400;font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:12px 0 16px}
-  .home p{max-width:520px;color:var(--soft)}
-  .loc{display:block;margin-top:34px;font-size:11px;letter-spacing:.24em;color:var(--dim)}
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}  /* for screen readers only */
   .meta a[aria-current]{color:var(--ink)}
 
   .about>p{max-width:560px;color:var(--soft);margin-bottom:16px}
+  .about .photo{max-width:760px;margin:8px 0 28px}.about .photo img{display:block;width:100%;height:auto}
+  .about>.big{font-size:clamp(36px,4.6vw,64px);line-height:1;letter-spacing:-.02em;color:var(--ink);margin:0 0 20px}
   .about .todo{border:1px dashed var(--dim);padding:12px 14px;color:var(--mute);font-size:13px}
   .about dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px;max-width:640px;margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
   .about dt{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-top:3px}
@@ -168,12 +165,10 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   @media (min-width:821px){
     :root[data-nav="fold"] aside{width:144px;padding:40px 16px 32px}
     :root[data-nav="fold"] .top{justify-content:center;margin-bottom:20px}
-    :root[data-nav="fold"] :is(.top>div,.meta,.wh,.tog .n,.tog .pm,.ex,.go){display:none}
+    :root[data-nav="fold"] :is(.top>div,.meta,.wh,.tog .n,.ex,.go){display:none}
     /* the strip is labelled by genre (photography, street, music…), not by project */
-    :root[data-nav="fold"] .tog{display:block;pointer-events:none;padding:14px 0 4px;font:400 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+    :root[data-nav="fold"] .tog{display:flex;justify-content:space-between;align-items:center;padding:14px 0 4px;font:400 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
     :root[data-nav="fold"] .gsec>.tog{padding:10px 0 4px;font-size:10px;color:var(--mute)}
-    :root[data-nav="fold"] .list{grid-template-rows:1fr}
-    :root[data-nav="fold"] .sec .list>div{visibility:visible}
     :root[data-nav="fold"] .sec{border:0}
     :root[data-nav="fold"] .list ul{padding:0}
     :root[data-nav="fold"] .list a{grid-template-columns:1fr;gap:2px;padding:6px 0}
@@ -203,12 +198,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
     .cat{scroll-margin-top:84px}
     .grid figcaption{font-size:10px;letter-spacing:0;gap:6px}
   }
-  /* motion: the home page arrives line by line, the photo uncovered from the bottom (first impression only) */
-  .home>*{animation:rise .6s var(--ease-out) both}
-  .home>:nth-child(2){animation-delay:.08s}.home>:nth-child(3){animation-delay:.14s}.home>:nth-child(4){animation-delay:.2s}.home>:nth-child(5){animation-delay:.26s}.home>:nth-child(6){animation-delay:.32s}
-  .home>.photo{animation:reveal .9s var(--ease-out) backwards}
-  /* below the hero: a preview of the photography */
+  /* home: a preview of each section */
   .sel{margin-top:clamp(72px,10vw,140px);padding-top:28px;border-top:1px solid var(--line)}
+  .home .sel:first-of-type{margin-top:0;padding-top:0;border-top:0}
   .sel-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin-bottom:28px}
   .sel h2{font-weight:400;font-size:clamp(30px,3.4vw,48px);line-height:1;letter-spacing:-.02em;margin:0}
   .sel .all{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .2s,border-color .2s}
@@ -216,10 +208,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   @media (hover:hover) and (pointer:fine){.sel .all:hover{color:var(--ink);border-color:var(--ink)}.sel h2 a:hover{color:var(--mute)}}
   @supports (animation-timeline:view()){.sel figure{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 50%}}
   @keyframes rise{from{opacity:0;transform:translateY(12px)}}
-  @keyframes reveal{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
   @keyframes fade{from{opacity:0}}
   @media (prefers-reduced-motion:reduce){
-    .home>*,.home>.photo,.sel figure{animation-name:fade}
+    .sel figure{animation-name:fade}
     .grid img,.grid figure:hover img.in{transform:none}
     @starting-style{.lb.on .stage img{transform:none}}
   }
@@ -374,6 +365,8 @@ function render(){
   if (sid === 'about') {
     document.querySelector('.meta a[href="#about"]').setAttribute('aria-current', 'page');
     view.innerHTML = `<section class="proj about"><h2>About</h2><p class="info">Photographer / Visual Artist · Casablanca, Morocco</p>
+      <div class="photo" data-zoom tabindex="0" role="button" aria-label="Enlarge photo"><img src="${F('soualem-0002-2')}" alt="Wheat field at dusk in Soualem, a clump of trees on the horizon under a blue sky and a low bank of cloud"></div>
+      <p class="big">Real moments.<br>Visual stories.</p>
       <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
       <p class="todo">Placeholder: your longer story goes here (how you started, what you look for in a picture). Send the text and it replaces this line.</p>
       <dl><dt>Photography</dt><dd>Live music, portraits, street photography, cultural documentation</dd>
@@ -395,13 +388,8 @@ function render(){
     preview(view.querySelector('.grid'), sid);
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
-    view.innerHTML = `<section class="home">
-      <div class="photo" data-zoom tabindex="0" role="button" aria-label="Enlarge photo"><img src="${F('soualem-0002-2')}" alt="Wheat field at dusk in Soualem, a clump of trees on the horizon under a blue sky and a low bank of cloud"></div>
-      <span class="lbl">Photographer / Visual Artist</span>
-      <h1>Real moments.<br>Visual stories.</h1>
-      <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
-      <span class="loc">CASABLANCA, MOROCCO</span></section>
-      ${WORK.map(x => `<section class="sel" data-for="${x.id}" aria-labelledby="sel-${x.id}"><div class="sel-head"><h2 id="sel-${x.id}"><a href="#${x.id}">${x.name}</a></h2><a class="all" href="#${x.id}">see all →</a></div><div class="grid pre${x.projects.every(q => q.poster) ? ' poster' : ''}"></div></section>`).join('')}`;
+    view.innerHTML = `<section class="home"><h1 class="vh">SKIMART · Photographer / Visual Artist</h1>
+      ${WORK.map(x => `<section class="sel" data-for="${x.id}" aria-labelledby="sel-${x.id}"><div class="sel-head"><h2 id="sel-${x.id}"><a href="#${x.id}">${x.name}</a></h2><a class="all" href="#${x.id}">see all →</a></div><div class="grid pre${x.projects.every(q => q.poster) ? ' poster' : ''}"></div></section>`).join('')}</section>`;
     spyAt = null; view.querySelectorAll('.sel').forEach(x => preview(x.querySelector('.grid'), x.dataset.for, 6));
     if (sid) openSec(sid);
   } else {
@@ -421,7 +409,7 @@ function render(){
     document.getElementById('side').classList.remove('menu');
   }
   const now = [sid, pid, room].join('/');  // the route without filters: the archive re-filtering is not a new page
-  if (now !== shown && !view.querySelector('.home')) view.animate(matchMedia('(prefers-reduced-motion: reduce)').matches ? [{opacity: 0}, {opacity: 1}]
+  if (now !== shown) view.animate(matchMedia('(prefers-reduced-motion: reduce)').matches ? [{opacity: 0}, {opacity: 1}]
     : [{opacity: 0, transform: 'translateY(12px)'}, {opacity: 1, transform: 'none'}], {duration: 280, easing: 'cubic-bezier(0.23, 1, 0.32, 1)'});
   shown = now;
   settle();

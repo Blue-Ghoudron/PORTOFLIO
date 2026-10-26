@@ -38,7 +38,7 @@ with sync_playwright() as p:
 
         def home():
             pg.goto(B + 'index.html')
-            pg.wait_for_selector('.home h1')
+            pg.wait_for_selector('.home .sel [data-zoom]')
 
         home()
         pg.screenshot(path=f'{OUT}/home_{vn}.png')
@@ -51,7 +51,7 @@ with sync_playwright() as p:
         home(); pg.click('.sel[data-for=photography] .all'); pg.wait_for_selector('main h2')  # the home page's way into the work
         ok(pg.url.endswith('#photography'), f'{vn} home preview -> {pg.url}')
         home(); menu(); pg.click('.meta a[href="#about"]'); pg.wait_for_selector('.about')
-        menu(); pg.click('.logo'); pg.wait_for_selector('.home h1')
+        menu(); pg.click('.logo'); pg.wait_for_selector('.home .sel [data-zoom]')
 
         pg.click('.home [data-zoom]')
         ok(pg.locator('#lb.on').is_visible(), f'{vn} hero viewer opens')
