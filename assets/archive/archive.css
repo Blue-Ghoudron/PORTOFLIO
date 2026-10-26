@@ -39,7 +39,9 @@
 
 /* the menu row above the photography groups */
 .list a.arch{display:flex;grid-template-columns:none;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:9px 12px;margin:4px 0 12px;font-size:13px;color:var(--mute)}
-.list a.arch:hover,.list a.arch[aria-current]{border-color:var(--ink);color:var(--ink)}
+.list a.arch{transition:color .2s,background-color .2s,border-color .2s}
+.list a.arch[aria-current]{border-color:var(--ink);color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.list a.arch:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}.list a.arch:hover .n{color:var(--bg)}}
 .arch .n{font-size:11px;color:var(--dim)}
 @media (min-width:821px){ :root[data-nav="fold"] .list a.arch{padding:6px 8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase} :root[data-nav="fold"] .arch .n{display:none} }
 

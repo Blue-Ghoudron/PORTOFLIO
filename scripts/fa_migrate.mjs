@@ -9,7 +9,6 @@ import { join } from 'node:path';
 import { slugify, validate, photosJson, refsJson } from '../assets/archive/core.js';
 
 const DATA = process.env.FA_DATA || 'data';
-const SKIP = new Set(['x558783_464613']);  // pf-qsm.35: filed under Noches but an Ayoub Hattab frame; back in once fixed
 
 const ref = (label, extra = {}) => ({id: slugify(label), label, ...extra});
 const AAC = 'american-arts-center';
@@ -48,7 +47,7 @@ const html = readFileSync('index.html', 'utf8'), start = html.indexOf('const WOR
 const WORK = new Function('return ' + html.slice(start, html.indexOf('];\n', start) + 1))();
 const fresh = [];
 for (const sec of WORK) for (const p of sec.projects) if (FACTS[p.id])
-  p.imgs.forEach((img, i) => SKIP.has(img) || fresh.push(record(img, null, `assets/home/${img}.jpg`, FACTS[p.id], `${p.name}, photo ${i + 1}`)));
+  p.imgs.forEach((img, i) => fresh.push(record(img, null, `assets/home/${img}.jpg`, FACTS[p.id], `${p.name}, photo ${i + 1}`)));
 
 const decode = s => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const series = ROOMS.map(([dir, id, title]) => {

@@ -19,7 +19,7 @@ test('no invented genres yet', () => assert.ok(D.photos.every(p => p.genres.leng
 test('misfiled Noches photo left out', () => assert.ok(!D.photos.some(p => p.id === 'x558783_464613')));
 test('facts copied, not invented', () => { const by = Object.fromEntries(D.photos.map(p => [p.id, p]));
   assert.deepEqual([by.x839456_462094.locationId, by.x839456_462094.date, by.x839456_462094.artistIds], ['american-arts-center', '2025-06-13', ['ayoub-hattab']]);
-  assert.equal(by.x714252_433206.date, null);
+  assert.equal(by.x411481_68888.date, null);
   assert.deepEqual(by['lbv-band-frame-02'].artistIds, ['suicide-machine']);
   assert.equal(by['lbv-band-frame-02'].locationId, null); });
 test('room series keep room order', () => assert.equal(D.series.find(s => s.id === 'connection').photoIds[0], 'lbv-band-frame-03'));

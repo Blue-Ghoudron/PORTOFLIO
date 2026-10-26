@@ -70,7 +70,7 @@ with sync_playwright() as p:
         for route in ['', '#photography/boulevard']:
             pg.goto(B + 'index.html' + route); pg.wait_for_timeout(600)
             extra = pg.evaluate('document.documentElement.scrollHeight - innerHeight')
-            if route or w < 1440:
+            if route:  # the home page scrolls on into the photography preview
                 ok(extra <= 0, f'{vn} index.html{route} is {extra}px taller than the screen')
 
         hrefs = pg.eval_on_selector_all('#work a[href^="#"]', 'as => as.map(a => a.getAttribute("href"))')

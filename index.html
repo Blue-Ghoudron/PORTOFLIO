@@ -19,7 +19,10 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .mono{font-family:"IBM Plex Mono",monospace}
 
   aside{position:fixed;inset:0 auto 0 0;width:400px;transition:width .3s,padding .3s;scrollbar-width:none;padding:40px 28px 32px 40px;overflow-y:auto;border-right:1px solid var(--line)}
-  .logo{display:block;font-weight:500;letter-spacing:.22em;font-size:18px}
+  .logo{display:block;width:max-content;position:relative;font-weight:500;letter-spacing:.22em;font-size:18px}
+  .logo::after{content:"";position:absolute;left:0;right:.22em;bottom:-5px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease-out)}
+  .logo:focus-visible::after{transform:none}
+  @media (hover:hover) and (pointer:fine){.logo:hover::after{transform:none}}
   .tagline{display:block;margin-top:6px;color:var(--mute);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
   .meta{margin:26px 0 30px;display:grid;gap:2px}
   .meta a{font-size:13px;color:var(--mute);width:fit-content}
@@ -111,10 +114,10 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .vt button[aria-pressed="true"]{color:var(--bg);background:var(--ink)}
   @media (hover:hover) and (pointer:fine){.vt button[aria-pressed="false"]:hover{color:var(--ink)}}
   .archive .vt{margin:0 0 16px}
-  :root[data-view="list"] .grid:not(.poster){display:block}
-  :root[data-view="list"] .grid:not(.poster) figure{display:grid;grid-template-columns:clamp(88px,12vw,160px) 1fr;gap:18px;align-items:center;margin:0;padding:10px 0;border-bottom:1px solid var(--line);outline-offset:0}
-  :root[data-view="list"] .grid:not(.poster) img{aspect-ratio:3/2;object-fit:cover;height:auto}
-  :root[data-view="list"] .grid:not(.poster) figcaption{border:0;padding:0;background:none;font-size:12px;flex-wrap:wrap}
+  :root[data-view="list"] .grid:not(.poster,.pre){display:block}
+  :root[data-view="list"] .grid:not(.poster,.pre) figure{display:grid;grid-template-columns:clamp(88px,12vw,160px) 1fr;gap:18px;align-items:center;margin:0;padding:10px 0;border-bottom:1px solid var(--line);outline-offset:0}
+  :root[data-view="list"] .grid:not(.poster,.pre) img{height:clamp(64px,9vw,120px);object-fit:contain;object-position:left center;background:none}  /* whole photo: portraits stand narrower, never cropped */
+  :root[data-view="list"] .grid:not(.poster,.pre) figcaption{border:0;padding:0;background:none;font-size:12px;flex-wrap:wrap}
   .grid figure:has(figcaption) img{height:auto;background:var(--card)}
 
   /* L'Boulevard: an exhibition inside the portfolio, framed in its own plum and blue */
@@ -206,11 +209,19 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .home>*{animation:rise .6s var(--ease-out) both}
   .home>:nth-child(2){animation-delay:.08s}.home>:nth-child(3){animation-delay:.14s}.home>:nth-child(4){animation-delay:.2s}.home>:nth-child(5){animation-delay:.26s}.home>:nth-child(6){animation-delay:.32s}
   .home>.photo{animation:reveal .9s var(--ease-out) backwards}
+  /* below the hero: a preview of the photography */
+  .sel{margin-top:clamp(72px,10vw,140px);padding-top:28px;border-top:1px solid var(--line)}
+  .sel-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin-bottom:28px}
+  .sel .lbl{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+  .sel h2{font-weight:400;font-size:clamp(30px,3.4vw,48px);line-height:1;letter-spacing:-.02em;margin:0}
+  .sel .all{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .2s,border-color .2s}
+  @media (hover:hover) and (pointer:fine){.sel .all:hover{color:var(--ink);border-color:var(--ink)}}
+  @supports (animation-timeline:view()){.sel figure{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 50%}}
   @keyframes rise{from{opacity:0;transform:translateY(12px)}}
   @keyframes reveal{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
   @keyframes fade{from{opacity:0}}
   @media (prefers-reduced-motion:reduce){
-    .home>*,.home>.photo{animation-name:fade}
+    .home>*,.home>.photo,.sel figure{animation-name:fade}
     .grid img,.grid figure:hover img.in{transform:none}
     @starting-style{.lb.on .stage img{transform:none}}
   }
@@ -248,7 +259,7 @@ const F = f => 'assets/home/' + f + '.jpg';
 const LBV = "assets/boulevard/";
 const WORK = [
   {id:'photography', name:'Photography', projects:[
-    {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', info:'Street · Casablanca', imgs:["x714252_433206", "x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
+    {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', th:'x411481_68888', info:'Street · Casablanca', imgs:["x169644_27564", "x411481_68888", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
     {id:'soualem', group:'Places', name:'Soualem', th:'soualem-0002-2', info:'21–26.03.2026', imgs:["soualem-0045", "soualem-0046", "soualem-0051", "soualem-0092", "soualem-9173", "soualem-9223", "soualem-9258", "soualem-9325-2", "soualem-9330", "soualem-9353", "soualem-9221", "soualem-9262", "soualem-9263", "soualem-9284", "soualem-9288", "soualem-9298", "soualem-9310", "soualem-9325", "soualem-9336", "soualem-9337", "soualem-0002-2", "soualem-0002-3", "soualem-0002-4", "soualem-0002-vrtical", "soualem-9222", "soualem-9347", "soualem-0060", "soualem-0174", "soualem-0049", "soualem-0052", "soualem-0054", "soualem-0055", "soualem-0162", "soualem-0171", "soualem-0192", "soualem-0200", "soualem-0230", "soualem-9327"]},
     {id:'boulevard', group:'Music', name:"L'Boulevard", th:'boulevard', info:'Three rooms · each opens in its own style', boulevard:true,
      doors:[['Connection','Band'],['Movement','Movement'],['Faces and Eyes','Faces']]},
@@ -259,7 +270,7 @@ const WORK = [
     {id:'jazz', group:'Music', name:'Jazz', info:'American Arts Center · 16.05.2025', imgs:["x371976_537633", "x75234_425976", "x787638_187070", "x931405_689754", "x212203_272216", "x789557_725989", "x162571_675568", "x419019_144295", "x657435_422153", "x100262_436316", "x157014_598127", "x779934_841075", "x171283_202206", "x924209_35169", "x86830_191438", "x551486_28416", "x765175_585970", "x31099_551549", "x598080_647526"]},
     {id:'nanofunk', group:'Music', name:'Nanofunk', info:'American Arts Center · 28.07.2025', imgs:["x369338_339662", "x212033_187187", "x374118_196552", "x310513_96852"]},
     {id:'disco-atlas', group:'Music', name:'Disco Atlas', info:'American Arts Center · 26.06.2025', imgs:["x449771_372156", "x899978_736484", "x883002_833465", "x635699_568221"]},
-    {id:'noches', group:'Music', name:'Noches de Ramadán', info:'Jinān Al Andalus · American Arts Center · 24.02.2026', imgs:['x334930_867208','x558783_464613','x833362_974196','x525055_910195']},
+    {id:'noches', group:'Music', name:'Noches de Ramadán', info:'Jinān Al Andalus · American Arts Center · 24.02.2026', imgs:['x334930_867208','x833362_974196','x525055_910195']},
   ]},
   {id:'design', name:'Design', projects:[
     {id:'aac', th:'design-aac', name:'American Art Center', info:'Poster design', poster:true, imgs:['x815196_567852','x190932_899304','x905172_741900','x913199_406854','x276823_230940','x980645_442674','x885431_556498']},
@@ -321,6 +332,20 @@ view.addEventListener('click', e => {
 const settle = () => { vtSync(); view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
   mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f)); };
 const archive = () => import('./assets/archive/archive.js');
+// home, below the hero: the photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo
+const preview = () => archive().then(m => m.load()).then(d => {
+  const g = view.querySelector('.sel .grid'); if (!g) return;  // left the home page while loading
+  const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
+  const picks = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
+    return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? pr.id : 'boulevard', label: pr ? pr.name : "L'Boulevard"}; });
+  const list = picks.length ? picks : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
+    return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: p.id, label: p.name}; });
+  g.innerHTML = list.map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#photography/${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
+  settle();
+  // scrolling down into the preview unfolds Photography in the menu (a real scroll, not a short screen that already shows it)
+  const into = () => { if (!g.isConnected || g.getBoundingClientRect().top < innerHeight * .6) { g.isConnected && openSec('photography'); removeEventListener('scroll', into); } };
+  addEventListener('scroll', into, {passive: true});
+}).catch(() => {});
 archive().then(m => m.load()).then(d => nav.querySelector('.arch .n').textContent = d.photos.length).catch(() => {});
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
@@ -351,7 +376,9 @@ function render(){
       <h1>Real moments.<br>Visual stories.</h1>
       <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
       <a class="cta" href="#photography/summer-sessions">EXPLORE MY WORK →</a>
-      <span class="loc">CASABLANCA, MOROCCO</span></section>`;
+      <span class="loc">CASABLANCA, MOROCCO</span></section>
+      <section class="sel" aria-labelledby="sel-h"><div class="sel-head"><div><span class="lbl">Selected work</span><h2 id="sel-h">Photography</h2></div><a class="all" href="#photography/archive">all photos →</a></div><div class="grid pre"></div></section>`;
+    preview();
     if (sid) openSec(sid);
   } else {
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false));  // only the open project's section and group stay unfolded

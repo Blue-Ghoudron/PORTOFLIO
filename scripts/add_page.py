@@ -166,7 +166,8 @@ def main():
     # menu thumb
     tt = os.path.join(HOME, 't', th + '.jpg')
     if not os.path.exists(tt) or os.path.getmtime(os.path.join(HOME, th + '.jpg')) > os.path.getmtime(tt):
-        ImageOps.fit(Image.open(os.path.join(HOME, th + '.jpg')).convert('RGB'), (192, 120), Image.LANCZOS).save(tt, quality=82, optimize=True)
+        im = Image.open(os.path.join(HOME, th + '.jpg')).convert('RGB'); im.thumbnail((192, 120), Image.LANCZOS)  # whole picture: the menu never crops
+        im.save(tt, quality=82, optimize=True)
 
     # archive: one record per photo; tags people set are kept, dates/alt/city filled from the files
     dp = os.path.join(ROOT, 'data'); recs = json.load(open(os.path.join(dp, 'photos.json'), encoding='utf-8'))
