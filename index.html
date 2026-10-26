@@ -246,9 +246,10 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 <script>
 const F = f => 'assets/home/' + f + '.jpg';
 const LBV = "assets/boulevard/";
-// Selected work, in order: the home previews and #photography (tools/pages.html edits it). Photos ticked "featured" in
-// tools/tag.html follow them; with neither, each photography page's menu photo stands in.
-const SELECTED = [];
+// Selected work per section, in order: its home preview and its page (#photography, #design, #workshops); tools/pages.html
+// edits it. Photography: photos ticked "featured" in tools/tag.html follow, else each page's menu photo stands in.
+// Design / Workshops: empty means every image, one per project before a second from any.
+const SELECTED = {"photography": [], "design": [], "workshops": []};
 const WORK = [
   {id:'photography', name:'Photography', projects:[
     {id:'technopark', group:'Places', name:'Technopark · Sidi Maarouf', th:'x411481_68888', info:'Street · Casablanca', imgs:["x411481_68888", "x169644_27564", "x14623_427216", "x834196_468265", "x85059_293734", "x332736_294398", "x462034_691835", "x900148_507081"]},
@@ -292,8 +293,9 @@ nav.innerHTML = WORK.map(s => {
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   // every photograph in one filterable view (assets/archive/), above the photography groups
-  const arch = s.id !== 'photography' ? '' : '<li><a class="selw" href="#photography"><span>selected work</span><span class="n"></span></a></li>'
-    + (ARCHIVE_IN_MENU ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '');
+  // every section opens on its selected work; the archive row (photography) is off for now
+  const arch = `<li><a class="selw" href="#${s.id}"><span>selected work</span><span class="n"></span></a></li>`
+    + (ARCHIVE_IN_MENU && s.id === 'photography' ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '');
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
     <div class="list" id="l-${s.id}"><div><ul class="mono">${arch}${body}</ul></div></div></div>`;
 }).join('');
@@ -329,7 +331,7 @@ const archive = () => import('./assets/archive/archive.js');
 // the selection: photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo.
 // The home page shows the first few (max), #photography all of them.
 const picks = d => {
-  const by = new Map(d.photos.map(p => [p.id, p])), ids = [...SELECTED, ...d.photos.filter(p => p.featured && !SELECTED.includes(p.id)).map(p => p.id)];
+  const by = new Map(d.photos.map(p => [p.id, p])), ids = [...SELECTED.photography, ...d.photos.filter(p => p.featured && !SELECTED.photography.includes(p.id)).map(p => p.id)];
   const home = WORK.flatMap(s => s.projects.filter(p => p.imgs).map(p => [s, p])), where = id => home.find(([, p]) => p.imgs.includes(id));
   const chosen = ids.map(id => by.get(id)).filter(Boolean).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], [s, pr] = (id && where(id)) || [];
     return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? `${s.id}/${pr.id}` : 'photography/boulevard', label: pr ? pr.name : "L'Boulevard"}; });
@@ -340,8 +342,9 @@ const picks = d => {
 const sectionList = sec => {
   const ps = sec.projects.filter(p => p.imgs || p.cats).map(p => ({p, imgs: p.imgs || p.cats.flatMap(c => c.imgs)})), out = [];
   for (let i = 0; ps.some(x => x.imgs[i]); i++) ps.forEach(({p, imgs}) => imgs[i] && out.push({thumb: F(imgs[i]), full: F(imgs[i]),
-    alt: `${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}`, cam: LABELS[imgs[i]] || '', href: `${sec.id}/${p.id}`, label: p.name}));
-  return out;
+    id: imgs[i], alt: `${p.name}, ${p.poster ? 'poster' : 'photo'} ${i + 1}`, cam: LABELS[imgs[i]] || '', href: `${sec.id}/${p.id}`, label: p.name}));
+  const by = new Map(out.map(x => [x.id, x])), chosen = (SELECTED[sec.id] || []).map(id => by.get(id)).filter(Boolean);
+  return chosen.length ? chosen : out;
 };
 const fill = (g, list, max) => {
   g.innerHTML = list.slice(0, max).map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge ${p.alt}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
@@ -358,7 +361,8 @@ addEventListener('scroll', () => {
   spyAt = at.dataset.for; nav.querySelectorAll('.sec').forEach(el => setOpen(el, el.dataset.sec === spyAt));
 }, {passive: true});
 archive().then(m => m.load()).then(d => { const n = nav.querySelector('.arch .n'); if (n) n.textContent = d.photos.length;
-  nav.querySelector('.selw .n').textContent = picks(d).length; }).catch(() => {});
+  nav.querySelector('[data-sec="photography"] .selw .n').textContent = picks(d).length; }).catch(() => {});
+WORK.forEach(s => { if (s.id !== 'photography') nav.querySelector(`[data-sec="${s.id}"] .selw .n`).textContent = sectionList(s).length; });
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
 function render(){
@@ -386,7 +390,7 @@ function render(){
   } else if (sec && !pid) {
     // a whole section: photography's selection, or every design / workshop image; the home page shows the first few
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
-    if (sid === 'photography') nav.querySelector('.selw').setAttribute('aria-current', 'page');
+    nav.querySelector(`[data-sec="${sid}"] .selw`).setAttribute('aria-current', 'page');
     const posters = sec.projects.every(q => q.poster);
     view.innerHTML = `<section class="proj"><h2>${sec.name}</h2><p class="info">${sid === 'photography' ? 'Selected work' : sec.projects.map(q => q.name).join(' · ')}</p><div class="tools"><p class="hint"><b>⤢</b> click any ${posters ? 'poster' : 'photo'} to enlarge</p>${posters ? '' : VT}</div><div class="grid${posters ? ' poster' : ''}"></div></section>`;
     preview(view.querySelector('.grid'), sid);

@@ -4,45 +4,48 @@ import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, p
 
 const $ = s => document.querySelector(s), tiles = $('.tiles');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
-// edits: page key -> working copy {p, cat, imgs, th, orig, touched}, 'selected' -> Selected work; added: new id -> its pictures and camera line
+// edits: page key -> working copy {sid, p, cat, imgs, th, orig, touched}, 'selected|<section>' -> its Selected work; added: new id -> its pictures and camera line
 let WORK, labels, photos, picked, edits = new Map(), added = {}, dir = null, dirty = false;
 
 async function load(){
   const get = f => fetch('../' + f, {cache: 'no-store'}).then(r => r.text()), keep = $('#page').value;
   const [html, lab, ph] = await Promise.all([get('index.html'), get('assets/home/labels.js'), get('data/photos.json')]);
-  WORK = readWork(html); labels = readLabels(lab); photos = JSON.parse(ph); picked = selection(WORK, readSelected(html), photos);
+  WORK = readWork(html); labels = readLabels(lab); photos = JSON.parse(ph); const sel = readSelected(html); picked = Object.fromEntries(WORK.map(s => [s.id, selection(WORK, sel, photos, s.id)]));
   edits = new Map(); added = {}; dirty = false;
-  $('#page').innerHTML = '<optgroup label="Home"><option value="selected">Selected work</option></optgroup>' + WORK.map(s => `<optgroup label="${esc(s.name)}">${s.projects.filter(p => !p.boulevard).flatMap(p => p.cats
+  $('#page').innerHTML = `<optgroup label="Home">${WORK.map(s => `<option value="selected|${s.id}">Selected work · ${esc(s.name)}</option>`).join('')}</optgroup>` + WORK.map(s => `<optgroup label="${esc(s.name)}">${s.projects.filter(p => !p.boulevard).flatMap(p => p.cats
     ? p.cats.map(c => `<option value="${s.id}|${p.id}|${esc(c.name)}">${esc(p.name)} · ${esc(c.name)}</option>`)
     : [`<option value="${s.id}|${p.id}|">${esc(p.name)}</option>`]).join('')}</optgroup>`).join('');
   if (keep) $('#page').value = keep;
 }
 
 // Selected work: an ordered list of photos from any page; × takes one out of it, nothing is deleted
-const chosen = () => { if (!edits.has('selected')) edits.set('selected', {selected: true, p: {name: 'Selected work'}, imgs: [...picked], orig: [...picked], touched: false}); return edits.get('selected'); };
+const chosen = sid => { const k = 'selected|' + sid;
+  if (!edits.has(k)) edits.set(k, {selected: true, sid, p: {name: 'Selected work'}, imgs: [...picked[sid]], orig: [...picked[sid]], touched: false});
+  return edits.get(k); };
+const owner = id => WORK.flatMap(s => s.projects).find(p => (p.imgs || (p.cats || []).flatMap(c => c.imgs)).includes(id))?.name;
 
 function page(){
   const k = $('#page').value;
-  if (k === 'selected') return chosen();
+  if (k.startsWith('selected|')) return chosen(k.slice(9));
   if (!edits.has(k)) {
     const [sid, pid, cat] = k.split('|'), p = WORK.find(s => s.id === sid).projects.find(x => x.id === pid);
     const imgs = cat ? p.cats.find(c => c.name === cat).imgs : p.imgs;
-    edits.set(k, {p, cat: cat || undefined, imgs: [...imgs], th: p.th, orig: [...imgs], touched: false});
+    edits.set(k, {sid, p, cat: cat || undefined, imgs: [...imgs], th: p.th, orig: [...imgs], touched: false});
   }
   return edits.get(k);
 }
 
 const rec = id => photos.find(r => r.id === id);
-const isFeatured = id => chosen().imgs.includes(id);
+const isFeatured = (id, sid) => chosen(sid).imgs.includes(id);
 const src = id => added[id] ? added[id].url : rec(id) ? '../' + rec(id).thumb : `../assets/home/${id}.jpg`;
 
 function draw(focus){
   const e = page(), photo = !e.p.poster && !e.selected, th = e.th || e.imgs[0];
   $('.add').hidden = !!e.selected;
   tiles.innerHTML = e.imgs.map((id, i) => `<li draggable="true" data-i="${i}" data-id="${esc(id)}"${added[id] ? ' class="new"' : ''}><img src="${esc(src(id))}" alt="" loading="lazy">
-    <div class="meta"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(added[id] ? added[id].label || 'new · no camera line' : e.selected ? rec(id)?.alt : labels[id] || (photo ? 'no camera line' : ''))}</span></div>
+    <div class="meta"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(added[id] ? added[id].label || 'new · no camera line' : e.selected ? rec(id)?.alt || owner(id) : labels[id] || (photo ? 'no camera line' : ''))}</span></div>
     <div class="tools"><button data-a="left" aria-label="Move ${i + 1} earlier">←</button><button data-a="right" aria-label="Move ${i + 1} later">→</button>
-    ${e.selected ? '' : `<button data-a="th" aria-pressed="${th === id}">menu</button>`}${photo && (rec(id) || added[id]) ? `<button data-a="star" aria-pressed="${isFeatured(id)}" aria-label="Featured">★</button>` : ''}
+    ${e.selected ? '' : `<button data-a="th" aria-pressed="${th === id}">menu</button>`}${e.selected ? '' : `<button data-a="star" aria-pressed="${isFeatured(id, e.sid)}" aria-label="In Selected work">★</button>`}
     <button class="x" data-a="x" aria-label="Remove ${i + 1}">×</button></div></li>`).join('');
   if (focus) tiles.querySelector(`li[data-i="${focus[0]}"] [data-a="${focus[1]}"]`)?.focus();
 }
@@ -55,7 +58,7 @@ tiles.addEventListener('click', ev => {
   const i = +b.closest('li').dataset.i, e = page(), id = e.imgs[i];
   if (b.dataset.a === 'left' || b.dataset.a === 'right') return move(i, i + (b.dataset.a === 'left' ? -1 : 1), b.dataset.a);
   if (b.dataset.a === 'th') e.th = id;
-  if (b.dataset.a === 'star') { const c = chosen(); c.imgs = c.imgs.includes(id) ? c.imgs.filter(x => x !== id) : [...c.imgs, id]; c.touched = true; }
+  if (b.dataset.a === 'star') { const c = chosen(e.sid); c.imgs = c.imgs.includes(id) ? c.imgs.filter(x => x !== id) : [...c.imgs, id]; c.touched = true; }
   if (b.dataset.a === 'x') { e.imgs.splice(i, 1); if (e.th === id) e.th = undefined; }  // no menu photo: the menu shows the first one
   change([Math.min(i, e.imgs.length - 1), b.dataset.a === 'x' ? 'x' : b.dataset.a]);
 });
@@ -131,11 +134,13 @@ $('#save').addEventListener('click', async () => {
       const th = e.th || e.imgs[0];
       if (th && !(await has(`assets/home/t/${th}.jpg`))) await write(`assets/home/t/${th}.jpg`, await jpeg(await createImageBitmap(added[th]?.big || await file(`assets/home/${th}.jpg`)), 192, 120));
     }
-    const c = chosen();
-    if (gone.some(id => c.imgs.includes(id))) { c.imgs = c.imgs.filter(id => !gone.includes(id)); c.touched = true; }
-    if (c.touched) {  // the order lives in index.html; the archive's featured flags follow it
-      html = editSelected(html, c.imgs); const on = new Set(c.imgs); ph.forEach(r => { r.featured = on.has(r.id); });
-    }
+    // Selected work lives in index.html, one list per section; removed photos leave every list
+    const cur = readSelected(html), lists = [...edits.values()].filter(e => e.selected && e.touched);
+    lists.forEach(c => { cur[c.sid] = c.imgs; });
+    for (const k in cur) cur[k] = cur[k].filter(id => !gone.includes(id));
+    html = editSelected(html, cur);
+    const photo = lists.find(c => c.sid === 'photography');  // photography's list is what the archive calls featured
+    if (photo) { const on = new Set(cur.photography); ph.forEach(r => { r.featured = on.has(r.id); }); }
     const labText = writeLabels(labJs, lab);
     await write('assets/home/labels.js', labText); await write('data/photos.json', photosJson(ph)); await write('index.html', bumpLabels(html, labText));
     for (const id of gone) for (const p of [`assets/home/${id}.jpg`, `assets/home/t/${id}.jpg`, `assets/archive/t/${id}.jpg`]) await st.remove(p);

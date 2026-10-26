@@ -75,12 +75,17 @@ test('camera line from a JPG with camera data, none without', () => {
   assert.equal(cameraLine(readFileSync(join(ROOT, 'assets/home/soualem-9173.jpg')).buffer, 'x.jpg'), null);  // web copies carry no EXIF
 });
 
-test('Selected work: SELECTED round-trip, then featured, else the menu photos', () => {
-  const w = readWork(html), photos = JSON.parse(readFileSync(join(ROOT, 'data/photos.json'), 'utf8'));
-  const set = editSelected(html, ['soualem-9173', 'x19901_61074']);
-  assert.deepEqual(readSelected(set), ['soualem-9173', 'x19901_61074']);
+test('Selected work per section: round-trip, then featured, else the defaults', () => {
+  const w = readWork(html), photos = JSON.parse(readFileSync(join(ROOT, 'data/photos.json'), 'utf8')), none = photos.map(p => ({...p, featured: false}));
+  const sel = {photography: ['soualem-9173', 'x19901_61074'], design: ['x190932_899304'], workshops: []};
+  const set = editSelected(html, sel);
+  assert.deepEqual(readSelected(set), sel);
   assert.deepEqual(readWork(set), w);  // the page list is untouched
-  assert.deepEqual(selection(w, ['soualem-9173'], photos.map(p => ({...p, featured: p.id === 'x19901_61074'}))), ['soualem-9173', 'x19901_61074']);
-  assert.deepEqual(selection(w, [], photos.map(p => ({...p, featured: false}))), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));
-  assert.deepEqual(selection(w, ['gone-id'], []), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));  // unknown ids drop out
+  assert.deepEqual(selection(w, {photography: ['soualem-9173']}, photos.map(p => ({...p, featured: p.id === 'x19901_61074'}))), ['soualem-9173', 'x19901_61074']);
+  assert.deepEqual(selection(w, {}, none), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));
+  assert.deepEqual(selection(w, {photography: ['gone-id']}, []), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));  // unknown ids drop out
+  assert.deepEqual(selection(w, sel, none, 'design'), ['x190932_899304']);
+  const all = selection(w, {}, none, 'design'), firsts = w.find(s => s.id === 'design').projects.map(p => (p.imgs || p.cats[0].imgs)[0]);
+  assert.deepEqual(all.slice(0, firsts.length), firsts);  // one per project first
+  assert.equal(all.length, 39);
 });

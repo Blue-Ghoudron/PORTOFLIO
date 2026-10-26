@@ -91,13 +91,23 @@ function fromTiff(v, t, fileName){
     label: `${name} · ${when.slice(11)} · ${sh < 1 ? `1/${Math.round(1 / sh)} s` : `${+sh.toPrecision(6)} s`} · f/${+f.toFixed(2)} · ISO ${iso}`};
 }
 
-// Selected work: the ordered SELECTED list in index.html
-export const readSelected = html => JSON.parse((html.match(/^const SELECTED = (\[.*\]);$/m) || [, '[]'])[1]);
-export const editSelected = (html, ids) => html.replace(/^const SELECTED = \[.*\];$/m, `const SELECTED = ${list(ids)};`);
-/** What the site shows as Selected work (same rule as picks() in index.html): SELECTED, then photos ticked featured,
-    else each photography page's menu photo. */
-export function selection(work, selected, photos){
-  const has = new Set(photos.map(p => p.id));
-  const ids = [...selected, ...photos.filter(p => p.featured && !selected.includes(p.id)).map(p => p.id)].filter(id => has.has(id));
-  return ids.length ? ids : work[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]);
+// Selected work: one ordered list per section, SELECTED in index.html
+export const readSelected = html => JSON.parse((html.match(/^const SELECTED = (\{.*\});$/m) || [, '{}'])[1]);
+export const editSelected = (html, sel) => html.replace(/^const SELECTED = \{.*\};$/m,
+  'const SELECTED = {' + Object.entries(sel).map(([k, ids]) => `${JSON.stringify(k)}: ${list(ids)}`).join(', ') + '};');
+const images = p => p.imgs || (p.cats || []).flatMap(c => c.imgs);
+/** What the site shows as a section's Selected work (same rules as picks() and sectionList() in index.html).
+    Photography: its list, then photos ticked featured, else each page's menu photo.
+    Other sections: its list, else every image, one per project before a second from any. */
+export function selection(work, selected, photos, sid = 'photography'){
+  const sec = work.find(s => s.id === sid), mine = selected[sid] || [];
+  if (sid === 'photography') {
+    const has = new Set(photos.map(p => p.id));
+    const ids = [...mine, ...photos.filter(p => p.featured && !mine.includes(p.id)).map(p => p.id)].filter(id => has.has(id));
+    return ids.length ? ids : sec.projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]);
+  }
+  const ps = sec.projects.map(images).filter(l => l.length), all = [];
+  for (let i = 0; ps.some(l => l[i]); i++) ps.forEach(l => l[i] && all.push(l[i]));
+  const ids = mine.filter(id => all.includes(id));
+  return ids.length ? ids : all;
 }

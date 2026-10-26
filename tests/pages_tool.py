@@ -52,12 +52,17 @@ with sync_playwright() as p:
     ok('no camera line' in pg.locator('.tiles li.new').inner_text(), 'a web copy has no camera line')
     ok(pg.locator('.tiles li[data-i="0"] [data-a="star"]').get_attribute('aria-pressed') == 'true', 'starred photo shows as selected')
     # Selected work: starts from what the site shows, gets the starred photo at the end; reorder, take one out
-    pg.select_option('#page', 'selected'); pg.wait_for_timeout(200)
+    pg.select_option('#page', 'selected|photography'); pg.wait_for_timeout(200)
     sel = pg.eval_on_selector_all('.tiles li', 'ls => ls.map(l => l.dataset.id)')
     ok(sel and sel[-1] == orig[1], f'starred photo joins the selection: {sel[-3:]}')
     ok(pg.locator('.add').is_hidden() and pg.locator('[data-a=th], [data-a=star]').count() == 0, 'no menu photo, star or add on Selected work')
     tile(0, 'right').click(); tile(1, 'x').click()
     want_sel = [sel[1]] + sel[2:]
+    # Design: every poster until chosen; take the first one out
+    pg.select_option('#page', 'selected|design'); pg.wait_for_timeout(200)
+    des = pg.eval_on_selector_all('.tiles li', 'ls => ls.map(l => l.dataset.id)')
+    ok(len(des) == 39, f'design selection starts with every poster: {len(des)}')
+    tile(0, 'x').click()
     pg.click('#save'); pg.wait_for_function("document.getElementById('status').textContent === 'saved' || document.getElementById('errors').textContent")
     ok(pg.text_content('#errors') == '', 'save error: ' + pg.text_content('#errors'))
 
@@ -77,8 +82,10 @@ with sync_playwright() as p:
     ok(new.get('w') and new.get('thumb') == 'assets/archive/t/soualem-7777.jpg', f'new archive record {new}')
     ok(str(w.get('assets/home/soualem-7777.jpg', '')).startswith('blob:') and 'assets/archive/t/soualem-7777.jpg' in w, 'new pictures written')
     ok(f'assets/home/{orig[0]}.jpg' in removed, f'removed photo file deleted: {removed}')
-    m = re.search(r'^const SELECTED = (\[.*\]);$', w.get('index.html', ''), re.M)
-    ok(m and json.loads(m.group(1)) == want_sel, f'Selected work order saved: {m and m.group(1)[:120]}')
+    m = re.search(r'^const SELECTED = (\{.*\});$', w.get('index.html', ''), re.M)
+    saved_sel = json.loads(m.group(1)) if m else {}
+    ok(saved_sel.get('photography') == want_sel, f'photography selection saved: {str(saved_sel)[:120]}')
+    ok(saved_sel.get('design') == des[1:] and saved_sel.get('workshops') == [], 'design selection saved, workshops left alone')
     ok(all(recs[i]['featured'] for i in want_sel if i in recs) and not recs.get(sel[0], {}).get('featured'), 'featured flags follow the selection')
     ok(f'assets/home/{sel[0]}.jpg' not in removed, 'taking a photo out of the selection deletes nothing')
     ok(not errs, f'page errors: {errs}')
