@@ -23,6 +23,7 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 
 ### Homepage: `index.html` (one file, hash router)
 - All content lives in the `WORK` array: sections → projects → image ids. Image `<id>` is `assets/home/<id>.jpg` (resized to 1600 px). Projects with a `group` are nested under that group in the side menu. To add a project, add an entry and its images; nothing else.
+- New or updated photo page from a Lightroom folder: `scripts/add_page.py` (one run: web copies, captions in `labels.js`, `WORK` entry, archive records; `Picks/` first). Its docstring has the arguments; the `portfolio-page` skill drives it.
 - `render()` runs on `hashchange`. Routes: `#about`; `#<section>/<project>` (photo or poster grid); `#photography/boulevard[/<room>]`, which shows the L'Boulevard exhibition in an `<iframe>` (`assets/boulevard/<room>/index.html`). The project with `boulevard:true` appears in the menu as one link with an "exhibition" tag.
 - Theme: `data-theme` on `<html>`, saved in localStorage `skm-theme`, else the system setting. While the exhibition is open, `body.lbv-on` switches the portfolio to the exhibition palette and follows its switch through a `MutationObserver` on the iframe's `<html data-theme>` (same origin only).
 - Photo viewer: any `[data-zoom]` element opens the full-screen `#lb` viewer (arrows, swipe, click to zoom 2×).

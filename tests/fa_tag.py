@@ -12,6 +12,7 @@ import sys
 
 from playwright.sync_api import sync_playwright
 
+N = len(json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'photos.json'), encoding='utf-8')))  # real total
 B = (sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:8031/').rstrip('/') + '/'
 T = B + 'tools/tag.html'
 FX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures', 'fa')
@@ -83,14 +84,14 @@ with sync_playwright() as p:
     ok(not pg.files, f'nothing saved when data is broken: {list(pg.files)}')
     pg.close()
 
-    # real data: loads all 159, and saving without edits gives back the same bytes (no noise in git diff)
+    # real data: loads every photo, and saving without edits gives back the same bytes (no noise in git diff)
     pg = browser.new_page(viewport={'width': 1440, 'height': 900}, accept_downloads=True)
     pg.files, pg.errs = {}, []
     pg.on('pageerror', lambda e: pg.errs.append(str(e)))
     pg.on('download', lambda d: pg.files.__setitem__(d.suggested_filename, open(d.path(), encoding='utf-8').read()))
     pg.add_init_script('delete window.showDirectoryPicker')
     pg.goto(T); pg.wait_for_selector('.sheet figure')
-    ok(pg.locator('.sheet figure').count() == 159, 'real data: 159 photos on the sheet')
+    ok(pg.locator('.sheet figure').count() == N, f'real data: {N} photos on the sheet')
     pg.click('#save'); pg.wait_for_timeout(800)
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for name in ['photos.json', 'refs.json']:

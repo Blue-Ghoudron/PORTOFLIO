@@ -6,11 +6,13 @@ served in place of data/*.json with page.route, plus a pass over the real data.
 
 Prints FAILS: none and exits 0 when everything works.
 """
+import json
 import os
 import sys
 
 from playwright.sync_api import sync_playwright
 
+N = len(json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'photos.json'), encoding='utf-8')))  # real total
 B = (sys.argv[1] if len(sys.argv) > 1 else 'http://localhost:8031/').rstrip('/') + '/'
 A = B + 'index.html#photography/archive'
 FX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures', 'fa')
@@ -109,12 +111,12 @@ with sync_playwright() as p:
     # desktop, real photos
     pg = open_page(browser, 1440, 900, fake=False)
     go(pg, A)
-    count(pg, 159, 'real archive')
-    ok('159' in pg.text_content('a.arch'), 'menu row shows the total')
+    count(pg, N, 'real archive')
+    ok(str(N) in pg.text_content('a.arch'), 'menu row shows the total')
     ok(pg.get_attribute('a.arch', 'aria-current') == 'page', 'menu row is current')
     ok(not pg.query_selector('.fa-genres'), 'no genre row before tagging')
     go(pg, A + '?location=american-arts-center')
-    pg.focus('.fa-clear'); pg.keyboard.press('Enter'); count(pg, 159, 'clear all on real data')
+    pg.focus('.fa-clear'); pg.keyboard.press('Enter'); count(pg, N, 'clear all on real data')
     ok(pg.evaluate('document.activeElement !== document.body'), 'pf-coe.10 focus kept after clear all with no genre row')
     # pf-coe.14: L'Boulevard photos show without the rooms' printed cream mat, in the grid and in the viewer
     mat = pg.evaluate('''() => { const i = document.querySelector('figure[data-id="lbv-band-frame-03"] img'), c = document.createElement('canvas');

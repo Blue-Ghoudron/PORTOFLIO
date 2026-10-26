@@ -12,7 +12,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const load = dir => Object.fromEntries(['taxonomy', 'refs', 'photos', 'series'].map(f => [f, JSON.parse(readFileSync(join(dir, `${f}.json`)))]));
 const D = load(join(ROOT, 'data'));
 
-test('159 photos, all valid', () => { assert.equal(D.photos.length, 159); assert.deepEqual(validate(D), []); });
+test('every photo valid', () => { assert.ok(D.photos.length > 0); assert.deepEqual(validate(D), []); });
 test('every image and thumb exists, with size', () => { for (const p of D.photos) {
   assert.ok(existsSync(join(ROOT, p.image)), p.image); assert.ok(existsSync(join(ROOT, p.thumb)), p.thumb); assert.ok(p.w > 0 && p.h > 0, p.id); } });
 test('no invented genres yet', () => assert.ok(D.photos.every(p => p.genres.length === 0)));
@@ -31,5 +31,5 @@ test('re-running migration keeps edited records', () => {
   writeFileSync(join(tmp, 'photos.json'), photosJson(photos));
   execFileSync('node', ['scripts/fa_migrate.mjs'], {cwd: ROOT, env: {...process.env, FA_DATA: tmp}, stdio: 'pipe'});
   const after = JSON.parse(readFileSync(join(tmp, 'photos.json')));
-  assert.equal(after.length, 159); assert.deepEqual(after[0], photos[0]);
+  assert.equal(after.length, photos.length); assert.deepEqual(after[0], photos[0]);
 });
