@@ -1,0 +1,19 @@
+/* Page editor: on top of tag.css (same plain tool look) */
+#page{padding:5px 8px;border:1px solid var(--line);background:none;max-width:340px}
+.add{padding:5px 12px;border:1px solid var(--ink);cursor:pointer}
+.add input{position:absolute;width:1px;height:1px;opacity:0}
+.add:focus-within{outline:2px solid var(--sel);outline-offset:2px}
+.how{margin:14px 20px 0;color:var(--mute)}
+.tiles{list-style:none;margin:0;padding:16px 20px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.tiles li{border:1px solid var(--line);padding:6px;background:#fff8;display:grid;gap:6px;cursor:grab}
+.tiles li.drag{opacity:.4}
+.tiles li.over{outline:2px solid var(--sel)}
+.tiles li.new{border-color:var(--sel)}
+.tiles img{display:block;width:100%;height:150px;object-fit:contain;background:#0001;pointer-events:none}
+.tiles .meta{display:flex;gap:6px;align-items:baseline;font-size:11px;color:var(--mute);min-height:2.8em}
+.tiles .meta b{color:var(--ink)}
+.tiles .tools{display:flex;gap:4px;flex-wrap:wrap}
+.tiles button{padding:3px 8px;border:1px solid var(--line);background:none;cursor:pointer}
+.tiles button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tiles button:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.tiles .x{margin-left:auto}

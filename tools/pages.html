@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page editor</title>
+<link rel="stylesheet" href="tag.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<!-- Private tool, linked from nowhere: arrange a page's photos by hand (order, remove, menu photo, featured, add from files).
+     Open it on the local server (python3 -m http.server … → /tools/pages.html). Chrome/Edge save into the site folder. -->
+<header>
+  <h1>Page editor</h1>
+  <select id="page" aria-label="Page"></select>
+  <label class="add">add photos<input type="file" id="files" accept="image/jpeg" multiple></label>
+  <span id="status" aria-live="polite"></span>
+  <button id="save">Save</button>
+</header>
+<div id="errors" role="alert"></div>
+<p class="how">Drag a photo (or use ← →) to move it · × removes it · <b>menu</b> makes it the page's menu photo · ★ puts it in the home preview and the Photography page.</p>
+<ol class="tiles" aria-label="Photos of this page, in order"></ol>
+<script type="module" src="pages.js"></script>
+</body>
+</html>
