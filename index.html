@@ -215,7 +215,8 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .sel .lbl{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
   .sel h2{font-weight:400;font-size:clamp(30px,3.4vw,48px);line-height:1;letter-spacing:-.02em;margin:0}
   .sel .all{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .2s,border-color .2s}
-  @media (hover:hover) and (pointer:fine){.sel .all:hover{color:var(--ink);border-color:var(--ink)}}
+  .sel h2 a{transition:color .2s}
+  @media (hover:hover) and (pointer:fine){.sel .all:hover{color:var(--ink);border-color:var(--ink)}.sel h2 a:hover{color:var(--mute)}}
   @supports (animation-timeline:view()){.sel figure{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 50%}}
   @keyframes rise{from{opacity:0;transform:translateY(12px)}}
   @keyframes reveal{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
@@ -292,6 +293,7 @@ let no = 0;
 const row = (name, th, extra = '') => `<span class="no">${String(++no).padStart(2, '0')}</span><span class="nm">${name}${extra}</span><img class="th" src="assets/home/t/${th}.jpg" alt="" loading="lazy"><span class="go" aria-hidden="true">↘</span>`;
 const item = (s, p) => `<li><a href="#${s.id}/${p.id}" title="${p.name}"${p.poster ? ' class="pst"' : p.boulevard ? ' class="glink"' : ''}>${row(p.name.toLowerCase(), p.th || (p.imgs || p.cats[0].imgs)[0], p.boulevard ? '<span class="ex mono">exhibition</span>' : '')}</a></li>`;
 const toggle = (id, label, n, cls) => `<button class="tog ${cls}" aria-expanded="false" aria-controls="${id}"><span>${label}<span class="n mono">${n}</span></span><span class="pm" aria-hidden="true">+</span></button>`;
+const ARCHIVE_IN_MENU = false;  // the archive still works at #photography/archive; true puts its row back in the menu
 nav.innerHTML = WORK.map(s => {
   const groups = [...new Set(s.projects.map(p => p.group))];
   const body = groups[0] ? groups.map((g, gi) => {
@@ -299,7 +301,7 @@ nav.innerHTML = WORK.map(s => {
     return `<li class="gsec">${toggle(id, g.toLowerCase(), ps.length, 'gbtn')}<div class="list" id="${id}"><div><ul>${ps.map(p => item(s, p)).join('')}</ul></div></div></li>`;
   }).join('') : s.projects.map(p => item(s, p)).join('');
   // every photograph in one filterable view (assets/archive/), above the photography groups
-  const arch = s.id === 'photography' ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '';
+  const arch = ARCHIVE_IN_MENU && s.id === 'photography' ? '<li><a class="arch" href="#photography/archive"><span>archive · all photos</span><span class="n"></span></a></li>' : '';
   return `<div class="sec" data-sec="${s.id}">${toggle('l-' + s.id, s.name, groups[0] ? groups.length : s.projects.length, 'sbtn')}
     <div class="list" id="l-${s.id}"><div><ul class="mono">${arch}${body}</ul></div></div></div>`;
 }).join('');
@@ -332,21 +334,23 @@ view.addEventListener('click', e => {
 const settle = () => { vtSync(); view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
   mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f)); };
 const archive = () => import('./assets/archive/archive.js');
-// home, below the hero: the photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo
-const preview = () => archive().then(m => m.load()).then(d => {
-  const g = view.querySelector('.sel .grid'); if (!g) return;  // left the home page while loading
+// the selection: photos ticked "featured" in tools/tag.html; until some are, each photography page's menu photo.
+// The home page shows the first few (max), #photography all of them.
+const preview = (g, max = Infinity) => archive().then(m => m.load()).then(d => {
+  if (!g.isConnected) return;  // left the page while loading
   const proj = id => WORK[0].projects.find(p => p.imgs && p.imgs.includes(id));
   const picks = d.photos.filter(p => p.featured).map(p => { const id = (p.image.match(/^assets\/home\/(.+)\.jpg$/) || [])[1], pr = id && proj(id);
     return {thumb: p.thumb, full: p.image, alt: p.alt, cam: LABELS[id] || '', mat: p.image.startsWith('assets/boulevard/'), href: pr ? pr.id : 'boulevard', label: pr ? pr.name : "L'Boulevard"}; });
   const list = picks.length ? picks : WORK[0].projects.filter(p => p.imgs).map(p => { const id = p.th || p.imgs[0];
     return {thumb: `assets/archive/t/${id}.jpg`, full: F(id), alt: `${p.name}, photo ${p.imgs.indexOf(id) + 1}`, cam: LABELS[id] || '', href: p.id, label: p.name}; });
-  g.innerHTML = list.map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#photography/${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
+  g.innerHTML = list.slice(0, max).map((p, i) => `<figure data-zoom data-cam="${p.cam}" data-from-href="#photography/${p.href}" data-from-label="${p.label}"${p.mat ? ' data-mat' : ''} tabindex="0" role="button" aria-label="Enlarge photo ${i + 1}"><img src="${p.thumb}" data-full="${p.full}" alt="${p.alt}" loading="lazy"></figure>`).join('');
   settle();
+  if (max === Infinity) return;
   // scrolling down into the preview unfolds Photography in the menu (a real scroll, not a short screen that already shows it)
   const into = () => { if (!g.isConnected || g.getBoundingClientRect().top < innerHeight * .6) { g.isConnected && openSec('photography'); removeEventListener('scroll', into); } };
   addEventListener('scroll', into, {passive: true});
 }).catch(() => {});
-archive().then(m => m.load()).then(d => nav.querySelector('.arch .n').textContent = d.photos.length).catch(() => {});
+archive().then(m => m.load()).then(d => { const n = nav.querySelector('.arch .n'); if (n) n.textContent = d.photos.length; }).catch(() => {});
 function openSec(id){ const s = nav.querySelector(`[data-sec="${id}"]`); if (s) setOpen(s, true); }
 
 function render(){
@@ -365,9 +369,15 @@ function render(){
     document.getElementById('side').classList.remove('menu');
   } else if (sid === 'photography' && pid === 'archive') {
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
-    nav.querySelector('.arch').setAttribute('aria-current', 'page');
+    nav.querySelector('.arch')?.setAttribute('aria-current', 'page');
     if (!view.querySelector('.archive')) view.innerHTML = '<section class="proj archive"><h2>Archive</h2></section>';
     archive().then(m => m.showArchive(view, query, WORK, settle, VT));
+    document.getElementById('side').classList.remove('menu');
+  } else if (sid === 'photography' && !pid) {
+    // the whole selection; the home page shows only its first photos
+    nav.querySelectorAll('.open').forEach(el => setOpen(el, false)); openSec(sid);
+    view.innerHTML = `<section class="proj"><h2>Photography</h2><p class="info">Selected work</p><div class="tools"><p class="hint"><b>⤢</b> click any photo to enlarge</p>${VT}</div><div class="grid"></div></section>`;
+    preview(view.querySelector('.grid'));
     document.getElementById('side').classList.remove('menu');
   } else if (!p) {
     view.innerHTML = `<section class="home">
@@ -377,8 +387,8 @@ function render(){
       <p>I'm Mohamed Ghoujlami, aka SKIMART. I capture people, places and culture through photography, design and visual storytelling.</p>
       <a class="cta" href="#photography/summer-sessions">EXPLORE MY WORK →</a>
       <span class="loc">CASABLANCA, MOROCCO</span></section>
-      <section class="sel" aria-labelledby="sel-h"><div class="sel-head"><div><span class="lbl">Selected work</span><h2 id="sel-h">Photography</h2></div><a class="all" href="#photography/archive">all photos →</a></div><div class="grid pre"></div></section>`;
-    preview();
+      <section class="sel" aria-labelledby="sel-h"><div class="sel-head"><div><span class="lbl">Selected work</span><h2 id="sel-h"><a href="#photography">Photography</a></h2></div><a class="all" href="#photography">all photos →</a></div><div class="grid pre"></div></section>`;
+    preview(view.querySelector('.sel .grid'), 6);
     if (sid) openSec(sid);
   } else {
     nav.querySelectorAll('.open').forEach(el => setOpen(el, false));  // only the open project's section and group stay unfolded
