@@ -100,7 +100,8 @@ test('a new page goes after the last page of its group, else at the end of its s
   assert.equal(readWork(places)[0].projects[at].name, "Jemaa's Night");  // quotes survive
   assert.deepEqual(readWork(places)[0].projects[at].imgs, []);
   const music = insertProject(html, 'photography', {id: 'm2', group: 'Music', name: 'M2'}), mi = ids(music, 'photography');
-  assert.equal(mi.at(-1), 'm2');  // Music is the last group: past noches, not inside L'Boulevard's two lines
+  const mp = readWork(music)[0].projects, k = mi.indexOf('m2');  // after the last Music page, not inside L'Boulevard's two lines
+  assert.equal(mp[k - 1].group, 'Music'); assert.notEqual(mp[k + 1]?.group, 'Music'); assert.ok(mp.every(p => p.id !== 'boulevard' || p.doors));
   assert.equal(ids(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}), 'design').at(-1), 'p9');
   assert.equal(readWork(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}))[1].projects.at(-1).poster, true);
   assert.equal(ids(insertProject(html, 'photography', {id: 'g', group: 'Brand new', name: 'G'}), 'photography').at(-1), 'g');
