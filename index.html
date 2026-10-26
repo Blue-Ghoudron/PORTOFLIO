@@ -10,7 +10,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/archive/archive.css">
 <style>
-  :root{--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#7d7a75;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
+  :root{--ease-out:cubic-bezier(0.23,1,0.32,1);--bg:#0a0a0a;--ink:#efece6;--mute:#8d8a85;--dim:#7d7a75;--line:#262626;--soft:#cfcbc4;--card:#111;color-scheme:dark}
   :root[data-theme="light"]{--bg:#f2efe9;--ink:#151515;--mute:#5f5c57;--dim:#6f6c67;--line:#dbd7cf;--soft:#2c2b29;--card:#e4e0d8;color-scheme:light}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--ink);font:400 15px/1.55 Archivo,system-ui,sans-serif}
@@ -33,14 +33,14 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .sec{border-top:1px solid var(--line)}
   .sec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 0 12px;font-size:30px;line-height:1;letter-spacing:-.02em}
   .tog .n{color:var(--dim);font:400 11px/1 "IBM Plex Mono",monospace;letter-spacing:.05em;margin-left:8px;vertical-align:super}
-  .tog .pm{font-size:16px;line-height:1;transition:transform .25s;color:var(--mute)}
+  .tog .pm{font-size:16px;line-height:1;transition:transform .25s var(--ease-out);color:var(--mute)}
   .tog:hover .pm{color:var(--ink)}
   .open>.tog .pm{transform:rotate(45deg);color:var(--ink)}
   .gsec>.tog{width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;font:400 18px/1.1 Archivo,system-ui,sans-serif;text-transform:uppercase;color:var(--mute)}
   .gsec>.tog:hover,.gsec.open>.tog{color:var(--ink)}
   .gsec>.tog .pm{font-size:13px}
   .gsec .list ul{padding:0 0 8px}
-  .list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+  .list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease-out)}
   .open>.list{grid-template-rows:1fr}
   .list>div{overflow:hidden;visibility:hidden;transition:visibility .3s}
   .open>.list>div{visibility:visible}
@@ -92,8 +92,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .proj{container-type:inline-size}
   @container (min-width:1500px){.grid{grid-template-columns:repeat(4,1fr)}}
   .grid figure{margin-bottom:var(--g);overflow:hidden;background:var(--card);outline:1px solid transparent;outline-offset:3px;transition:outline-color .2s,opacity .3s}
-  .grid img{display:block;width:100%;height:auto;transition:opacity .5s;opacity:0}
-  .grid img.in{opacity:1}
+  .grid img{display:block;width:100%;height:auto;transition:opacity .5s var(--ease-out),transform .8s var(--ease-out);opacity:0;transform:scale(1.03)}
+  .grid img.in{opacity:1;transform:none}
+  @media (hover:hover) and (pointer:fine){.grid figure:hover img.in{transform:scale(1.02)}}
   .grid:hover figure:not(:hover){opacity:.55}
   .grid figure:hover,.grid figure:focus-visible{outline-color:var(--ink)}
   .cat{font-family:"IBM Plex Mono",monospace;font-weight:400;font-size:clamp(22px,2.4vw,30px);letter-spacing:.04em;margin:64px 0 10px;scroll-margin-top:24px}
@@ -130,12 +131,13 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
   .hint{display:inline-flex;gap:8px;align-items:center;color:var(--dim);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:-14px 0 24px}
   .hint b{font-weight:400;color:var(--mute);font-size:14px;letter-spacing:0}
 
-  .lb{--ink:#efece6;--mute:#8d8a85;--dim:#878480;color:var(--ink);position:fixed;inset:0;z-index:20;background:rgba(6,6,6,.96);display:none;grid-template-rows:auto 1fr auto}
-  .lb.on{display:grid}
+  .lb{--ink:#efece6;--mute:#8d8a85;--dim:#878480;color:var(--ink);position:fixed;inset:0;z-index:20;background:rgba(6,6,6,.96);display:none;grid-template-rows:auto 1fr auto;opacity:0;transition:opacity .15s var(--ease-out),display .15s allow-discrete}
+  .lb.on{display:grid;opacity:1;transition-duration:.2s}
+  @starting-style{.lb.on{opacity:0}.lb.on .stage img{transform:scale(.97)}}
   .lb header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
   .lb .stage{position:relative;overflow:hidden;display:grid;place-items:center;cursor:zoom-in}
   .lb .stage.z{cursor:zoom-out}
-  .lb .stage img{max-width:calc(100vw - 140px);max-height:calc(100svh - 130px);object-fit:contain;transition:transform .3s ease;user-select:none;-webkit-user-drag:none}
+  .lb .stage img{max-width:calc(100vw - 140px);max-height:calc(100svh - 130px);object-fit:contain;transition:transform .3s var(--ease-out);user-select:none;-webkit-user-drag:none}
   .lb .stage.z img{transition:none}
   .lb .nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:72px;font-size:26px;color:var(--mute);z-index:2}
   .lb .nav:hover{color:var(--ink)}
@@ -191,6 +193,18 @@ try{document.documentElement.dataset.theme=localStorage.getItem('skm-theme')||(m
     .grid{grid-template-columns:1fr 1fr;--g:10px}
     .cat{scroll-margin-top:84px}
     .grid figcaption{font-size:10px;letter-spacing:0;gap:6px}
+  }
+  /* motion: the home page arrives line by line, the photo uncovered from the bottom (first impression only) */
+  .home>*{animation:rise .6s var(--ease-out) both}
+  .home>:nth-child(2){animation-delay:.08s}.home>:nth-child(3){animation-delay:.14s}.home>:nth-child(4){animation-delay:.2s}.home>:nth-child(5){animation-delay:.26s}.home>:nth-child(6){animation-delay:.32s}
+  .home>.photo{animation:reveal .9s var(--ease-out) both}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}}
+  @keyframes reveal{from{clip-path:inset(100% 0 0 0)}}
+  @keyframes fade{from{opacity:0}}
+  @media (prefers-reduced-motion:reduce){
+    .home>*,.home>.photo{animation-name:fade}
+    .grid img,.grid figure:hover img.in{transform:none}
+    @starting-style{.lb.on .stage img{transform:none}}
   }
 </style>
 </head>
@@ -289,6 +303,7 @@ const grid = (p, imgs) => `<div class="grid ${p.poster ? 'poster' : ''}">${imgs.
 // a deep link (#design/personal/c-02) is re-scrolled as the photos above it get their height, until the visitor scrolls themselves
 let goTo = null; ['wheel', 'touchstart', 'keydown'].forEach(t => addEventListener(t, () => goTo = null, {passive: true}));
 const mason = new ResizeObserver(es => { es.forEach(e => e.target.style.gridRowEnd = 'span ' + Math.ceil(e.contentRect.height + parseFloat(getComputedStyle(e.target).marginBottom))); goTo && goTo.scrollIntoView(); });
+let shown;  // the route last animated in
 const settle = () => { view.querySelectorAll('img').forEach(i => i.complete ? i.classList.add('in') : i.onload = () => i.classList.add('in'));
   mason.disconnect(); view.querySelectorAll('.grid figure').forEach(f => mason.observe(f)); };
 const archive = () => import('./assets/archive/archive.js');
@@ -340,6 +355,10 @@ function render(){
       : `<section class="proj"><h2>${p.name}</h2><p class="info">${p.info}</p><p class="hint"><b>⤢</b> click any photo to enlarge</p>${p.cats ? p.cats.map(c => `<h3 class="cat" id="${c.name.toLowerCase()}">${c.name}</h3>${c.info ? `<p class="cinfo">${c.info}</p>` : ''}${grid(p, c.imgs)}`).join('') : grid(p, p.imgs)}</section>`;
     document.getElementById('side').classList.remove('menu');
   }
+  const now = [sid, pid, room].join('/');  // the route without filters: the archive re-filtering is not a new page
+  if (now !== shown && !view.querySelector('.home')) view.animate(matchMedia('(prefers-reduced-motion: reduce)').matches ? [{opacity: 0}, {opacity: 1}]
+    : [{opacity: 0, transform: 'translateY(12px)'}, {opacity: 1, transform: 'none'}], {duration: 280, easing: 'cubic-bezier(0.23, 1, 0.32, 1)'});
+  shown = now;
   settle();
   const cat = p && p.cats && room && document.getElementById(room);  // #design/personal/c-02
   goTo = cat; cat ? cat.scrollIntoView() : scrollTo(0, 0);
