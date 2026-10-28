@@ -137,7 +137,8 @@ def main():
         old_ids = []
     name = a.name or old.get('name') or a.id.capitalize()
     group = a.group or old.get('group')
-    th = a.th or (old.get('th') if old.get('th') in ids else None) or ids[0]
+    # a menu photo that was never on the page (tools/pages.html: menu photo from a file) stays; a photo taken off the page does not
+    th = a.th or (old.get('th') if old.get('th') in ids or (old.get('th') and old.get('th') not in old_ids) else None) or ids[0]
     dates = [p['date'] for p in photos if p['date']]
     info = a.info or old.get('info') or (date_range(dates) if dates else '')
     entry = '    {' + ', '.join([f'id:{q(a.id)}'] + ([f'group:{q(group)}'] if group else []) + [f'name:{q(name)}', f'th:{q(th)}', f'info:{q(info)}']) + ', imgs:' + json.dumps(ids, ensure_ascii=False).replace('","', '", "') + '},\n'

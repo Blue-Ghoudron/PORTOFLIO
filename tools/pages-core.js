@@ -104,7 +104,7 @@ export function selection(work, selected, photos, sid = 'photography'){
   if (sid === 'photography') {
     const has = new Set(photos.map(p => p.id));
     const ids = [...mine, ...photos.filter(p => p.featured && !mine.includes(p.id)).map(p => p.id)].filter(id => has.has(id));
-    return ids.length ? ids : sec.projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]);
+    return ids.length ? ids : sec.projects.filter(p => p.imgs).map(p => p.imgs.includes(p.th) ? p.th : p.imgs[0]);  // a menu-only photo is not a page photo
   }
   const ps = sec.projects.map(images).filter(l => l.length), all = [];
   for (let i = 0; ps.some(l => l[i]); i++) ps.forEach(l => l[i] && all.push(l[i]));
@@ -121,5 +121,19 @@ export function insertProject(html, sid, {id, group, name, info = '', poster}){
   const last = group ? starts.filter(i => lines[i].includes(`group:${q(group)}`)).pop() : undefined;
   const at = last === undefined ? end : starts.find(i => i > last) ?? end;  // past a page that spans several lines
   lines.splice(at, 0, `    {id:${q(id)}${group ? `, group:${q(group)}` : ''}, name:${q(name)}, info:${q(info)}${poster ? ', poster:true' : ''}, imgs:[]},`);
+  return lines.join('\n');
+}
+
+/** A section's pages in the menu order asked for: the given ids first, any it leaves out after them as they were.
+    A page may span several lines (L'Boulevard's doors, Personal project's categories); the menu groups by first appearance. */
+export function orderProjects(html, sid, ids){
+  const lines = html.split('\n'), sec = lines.findIndex(l => l.startsWith(`  {id:'${sid}',`));
+  if (sec < 0) throw new Error(`no section ${sid}`);
+  const end = lines.findIndex((l, i) => i > sec && /^  \]\},?$/.test(l)), starts = [];
+  for (let i = sec + 1; i < end; i++) if (lines[i].startsWith('    {id:')) starts.push(i);
+  if (!starts.length) return html;
+  const rank = b => { const r = ids.indexOf(b[0].match(/^    \{id:'([^']+)'/)[1]); return r < 0 ? ids.length : r; };
+  const pages = starts.map((s, k) => lines.slice(s, starts[k + 1] ?? end)).sort((a, b) => rank(a) - rank(b));
+  lines.splice(starts[0], end - starts[0], ...pages.flat());
   return lines.join('\n');
 }

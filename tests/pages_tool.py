@@ -56,7 +56,7 @@ with sync_playwright() as p:
     pg.select_option('#page', 'selected|photography'); pg.wait_for_timeout(200)
     sel = pg.eval_on_selector_all('.tiles li', 'ls => ls.map(l => l.dataset.id)')
     ok((orig[1] in sel) != was and (was or sel[-1] == orig[1]), f'starring adds at the end, unstarring takes out: {sel[-3:]}')
-    ok(pg.locator('.add').is_hidden() and pg.locator('[data-a=th], [data-a=star]').count() == 0, 'no menu photo, star or add on Selected work')
+    ok(pg.locator('.add:not([hidden])').count() == 0 and pg.locator('[data-a=th], [data-a=star]').count() == 0, 'no menu photo, star or add on Selected work')
     tile(0, 'right').click(); tile(1, 'x').click()
     want_sel = [sel[1]] + sel[2:]
     # Design: every poster until chosen; take the first one out
@@ -65,6 +65,19 @@ with sync_playwright() as p:
     saved_des = json.loads(re.search(r'^const SELECTED = (\{.*\});$', html, re.M).group(1)).get('design') or []
     ok(len(des) == (len(saved_des) or 39), f'design selection starts as the site shows it (its list, else every poster): {len(des)}')
     tile(0, 'x').click()
+    # page order: Music above Places, its first two pages swapped; the new page below joins Places, last
+    pg.select_option('#page', 'order|photography'); pg.wait_for_timeout(200)
+    heads = pg.eval_on_selector_all('.tiles li.ghead b', 'bs => bs.map(b => b.textContent)')
+    ok(heads[:2] == ['Places', 'Music'], f'groups in menu order: {heads}')
+    pg.click('.tiles li[data-i="g1"] [data-a="up"]')
+    ok(pg.evaluate('document.activeElement.dataset.a') == 'up' and pg.eval_on_selector_all('.tiles li.ghead b', 'bs => bs.map(b => b.textContent)')[:2] == ['Music', 'Places'], 'a group moves up, focus follows')
+    pg.click('.tiles li[data-i="0.0"] [data-a="right"]')
+    ok(pg.locator('.add:not([hidden])').count() == 0, 'no add on page order')
+    sec = re.search(r"^  \{id:'photography'.*?^  \]\},", html, re.M | re.S).group(0)
+    projs = re.findall(r"^    \{id:'([^']+)'(?:, group:'([^']+)')?", sec, re.M)
+    grp = lambda g: [i for i, gg in projs if gg == g]
+    music = grp('Music'); music[0], music[1] = music[1], music[0]
+    want_order = music + grp('Places') + ['test-page'] + [i for i, g in projs if g not in ('Music', 'Places')]
     # a new page in Places, with one photo
     pg.click('#new'); pg.select_option('#nsec', 'photography'); pg.fill('#nname', 'Test Page'); pg.fill('#ngroup', 'Places')
     pg.fill('#ninfo', 'Somewhere · 01.01.2026'); pg.click('#newdlg .go')
@@ -103,6 +116,10 @@ with sync_playwright() as p:
     ok(page_line and lines[lines.index(page_line.group(0)) - 1].startswith("    {id:'soualem'"), 'new page sits after the last Places page')
     ok(recs.get('test-page-8888', {}).get('alt') == 'Test Page, photo 1', 'new page photo in the archive')
     ok('assets/home/t/test-page-8888.jpg' in w and 'assets/home/test-page-8888.jpg' in w, 'new page photo and menu thumb written')
+    saved_sec = re.search(r"^  \{id:'photography'.*?^  \]\},", w.get('index.html', ''), re.M | re.S)
+    got = re.findall(r"^    \{id:'([^']+)'", saved_sec.group(0), re.M) if saved_sec else []
+    ok(got == want_order, f'page order saved: {got}')
+    ok(re.search(r"^  \{id:'design'.*?^  \]\},", w.get('index.html', ''), re.M | re.S).group(0) == re.search(r"^  \{id:'design'.*?^  \]\},", html, re.M | re.S).group(0), 'design order untouched')
     ok(not errs, f'page errors: {errs}')
 
     # an empty new page is not saved, and nothing is written
@@ -111,6 +128,22 @@ with sync_playwright() as p:
     pg2.click('#new'); pg2.select_option('#nsec', 'workshops'); pg2.fill('#nname', 'Empty'); pg2.click('#newdlg .go'); pg2.click('#save')
     pg2.wait_for_function("document.getElementById('errors').textContent")
     ok('no photos' in pg2.text_content('#errors') and pg2.evaluate('Object.keys(__fs.writes).length') == 0, 'empty new page refused, nothing written')
+
+    # a menu photo from a file: only its small menu copy is written; the page, its captions and the archive stay as they were
+    pg3 = pg.context.browser.new_page(); pg3.add_init_script(FAKE_DIR); pg3.route('**/__can-save', lambda r: r.fulfill(status=404))
+    pg3.goto(B + 'tools/pages.html'); pg3.wait_for_selector('.tiles li'); pg3.select_option('#page', 'photography|jazz|'); pg3.wait_for_timeout(200)
+    jazz = json.loads('[' + re.search(r"\{id:'jazz'.*?imgs:\[(.*?)\]", html).group(1) + ']')
+    pg3.set_input_files('#thfile', files=[{'name': 'IMG_5555.jpg', 'mimeType': 'image/jpeg',
+                                           'buffer': open(os.path.join(ROOT, 'assets/home/soualem-9173.jpg'), 'rb').read()}])
+    pg3.wait_for_selector('#thnow:not([hidden])')
+    ok(pg3.locator('.tiles li').count() == len(jazz) and pg3.locator('.tiles [data-a=th][aria-pressed=true]').count() == 0, 'menu-only photo is not a tile')
+    pg3.click('#save'); pg3.wait_for_function("document.getElementById('status').textContent === 'saved' || document.getElementById('errors').textContent")
+    ok(pg3.text_content('#errors') == '', 'menu-only save error: ' + pg3.text_content('#errors'))
+    w3 = pg3.evaluate("Object.fromEntries(Object.entries(__fs.writes).map(([k, v]) => [k, typeof v === 'string' ? v : 'blob:' + v.size]))")
+    jl = re.search(r"^    \{id:'jazz'.*$", w3.get('index.html', ''), re.M)
+    ok(jl and "th:'jazz-5555'" in jl.group(0) and json.loads('[' + re.search(r'imgs:\[(.*?)\]', jl.group(0)).group(1) + ']') == jazz, f'menu-only th saved, photos unchanged: {jl and jl.group(0)[:90]}')
+    ok('assets/home/t/jazz-5555.jpg' in w3 and 'assets/home/jazz-5555.jpg' not in w3 and 'assets/archive/t/jazz-5555.jpg' not in w3, f'only the menu copy written: {sorted(w3)}')
+    ok('jazz-5555' not in w3.get('data/photos.json', '') and 'jazz-5555' not in w3.get('assets/home/labels.js', ''), 'no archive record or caption')
 
 print('FAILS:', FAILS or 'none')
 sys.exit(1 if FAILS else 0)

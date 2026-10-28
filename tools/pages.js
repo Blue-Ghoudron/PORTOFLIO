@@ -1,10 +1,10 @@
 // Page editor: arrange a page's photos by hand, then save straight into the site folder (Chrome/Edge).
 // The text edits live in pages-core.js; this file is the page and the file writing.
-import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, photosJson, newId, cameraLine, readSelected, editSelected, selection, insertProject, slug } from './pages-core.js';
+import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, photosJson, newId, cameraLine, readSelected, editSelected, selection, insertProject, orderProjects, slug } from './pages-core.js';
 
 const $ = s => document.querySelector(s), tiles = $('.tiles');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
-// edits: page key -> working copy {sid, p, cat, imgs, th, orig, touched}, 'selected|<section>' -> its Selected work; added: new id -> its pictures and camera line
+// edits: page key -> working copy {sid, p, cat, imgs, th, orig, touched}, 'selected|<section>' -> its Selected work, 'order|<section>' -> its page order; added: new id -> its pictures and camera line
 let WORK, labels, photos, picked, edits = new Map(), added = {}, dir = null, dirty = false;
 
 async function load(){
@@ -17,9 +17,12 @@ async function load(){
 }
 
 function options(){
-  $('#page').innerHTML = `<optgroup label="Home">${WORK.map(s => `<option value="selected|${s.id}">Selected work · ${esc(s.name)}</option>`).join('')}</optgroup>` + WORK.map(s => `<optgroup label="${esc(s.name)}">${s.projects.filter(p => !p.boulevard).flatMap(p => p.cats
+  $('#page').innerHTML = `<optgroup label="Home">${WORK.map(s => `<option value="selected|${s.id}">Selected work · ${esc(s.name)}</option>`).join('')}</optgroup>`
+    + `<optgroup label="Menu">${WORK.map(s => `<option value="order|${s.id}">Page order · ${esc(s.name)}</option>`).join('')}</optgroup>`
+    // one list per menu group (Photography · Places, Photography · Music …), in menu order
+    + WORK.flatMap(s => [...new Set(s.projects.map(p => p.group))].map(g => `<optgroup label="${esc(s.name)}${g ? ' · ' + esc(g) : ''}">${s.projects.filter(p => p.group === g && !p.boulevard).flatMap(p => p.cats
     ? p.cats.map(c => `<option value="${s.id}|${p.id}|${esc(c.name)}">${esc(p.name)} · ${esc(c.name)}</option>`)
-    : [`<option value="${s.id}|${p.id}|">${esc(p.name)}</option>`]).join('')}</optgroup>`).join('');
+    : [`<option value="${s.id}|${p.id}|">${esc(p.name)}</option>`]).join('')}</optgroup>`)).join('');
 }
 
 // a new page: it exists in this editor until saved, which needs at least one photo
@@ -40,6 +43,8 @@ $('#newform').addEventListener('submit', ev => {
   let id = slug(name) || 'page'; for (let n = 2; taken.has(id); n++) id = `${slug(name) || 'page'}-${n}`;
   if (!name || (grouped(sec.id) && !group)) { ev.preventDefault(); $('#nerr').textContent = 'a name' + (grouped(sec.id) ? ' and a menu group' : '') + ', please'; return; }
   sec.projects.push({id, ...(group && {group}), name, info: $('#ninfo').value.trim(), ...(sec.projects.every(p => p.poster) && {poster: true}), imgs: [], fresh: true});
+  const o = edits.get('order|' + sec.id), g = group || undefined;  // a page order already open: the new page joins its group, last
+  if (o) (o.groups.find(x => x.name === g) || o.groups[o.groups.push({name: g, ids: []}) - 1]).ids.push(id);
   options(); $('#page').value = `${sec.id}|${id}|`; change();
   $('#status').textContent = 'new page: add its photos, then save';
 });
@@ -50,9 +55,15 @@ const chosen = sid => { const k = 'selected|' + sid;
   return edits.get(k); };
 const owner = id => WORK.flatMap(s => s.projects).find(p => (p.imgs || (p.cats || []).flatMap(c => c.imgs)).includes(id))?.name;
 
+// page order: a section's pages in their menu groups, as the menu shows them; ← → moves a page inside its group, ↑ ↓ a whole group
+const ordering = sid => { const k = 'order|' + sid, ps = WORK.find(s => s.id === sid).projects;
+  if (!edits.has(k)) edits.set(k, {order: true, sid, p: {}, groups: [...new Set(ps.map(p => p.group))].map(g => ({name: g, ids: ps.filter(p => p.group === g).map(p => p.id)})), touched: false});
+  return edits.get(k); };
+
 function page(){
   const k = $('#page').value;
   if (k.startsWith('selected|')) return chosen(k.slice(9));
+  if (k.startsWith('order|')) return ordering(k.slice(6));
   if (!edits.has(k)) {
     const [sid, pid, cat] = k.split('|'), p = WORK.find(s => s.id === sid).projects.find(x => x.id === pid);
     const imgs = cat ? p.cats.find(c => c.name === cat).imgs : p.imgs;
@@ -66,9 +77,17 @@ const isFeatured = (id, sid) => chosen(sid).imgs.includes(id);
 const src = id => added[id] ? added[id].url : rec(id) ? '../' + rec(id).thumb : `../assets/home/${id}.jpg`;
 
 function draw(focus){
-  const e = page(), photo = !e.p.poster && !e.selected, th = e.th || e.imgs[0];
-  $('.add').hidden = !!e.selected;
-  tiles.innerHTML = e.imgs.map((id, i) => `<li draggable="true" data-i="${i}" data-id="${esc(id)}"${added[id] ? ' class="new"' : ''}><img src="${esc(src(id))}" alt="" loading="lazy">
+  const e = page(), photo = !e.p.poster && !e.selected, th = e.th || e.imgs?.[0];
+  $('.add').hidden = $('#thadd').hidden = !!(e.selected || e.order);
+  const only = e.th && !e.imgs?.includes(e.th);  // a menu photo that is not on the page
+  $('#thnow').hidden = !only; if (only) $('#thnow img').src = added[e.th]?.url || `../assets/home/t/${e.th}.jpg`;
+  if (e.order) {  // tiles keyed "<group>.<page>", group headings "g<group>"
+    const proj = id => WORK.find(s => s.id === e.sid).projects.find(p => p.id === id); let n = 0;
+    tiles.innerHTML = e.groups.map((g, gi) => (g.name ? `<li class="ghead" data-i="g${gi}"><b>${esc(g.name)}</b><button data-a="up" aria-label="Move ${esc(g.name)} up">↑</button><button data-a="down" aria-label="Move ${esc(g.name)} down">↓</button></li>` : '')
+      + g.ids.map((id, i) => { const p = proj(id); return `<li draggable="true" data-i="${gi}.${i}"><img src="../assets/home/t/${esc(p.th || (p.imgs || p.cats[0].imgs)[0])}.jpg" alt="" loading="lazy">
+      <div class="meta"><b>${String(++n).padStart(2, '0')}</b><span>${esc(p.name)}</span></div>
+      <div class="tools"><button data-a="left" aria-label="Move ${esc(p.name)} earlier">←</button><button data-a="right" aria-label="Move ${esc(p.name)} later">→</button></div></li>`; }).join('')).join('');
+  } else tiles.innerHTML = e.imgs.map((id, i) => `<li draggable="true" data-i="${i}" data-id="${esc(id)}"${added[id] ? ' class="new"' : ''}><img src="${esc(src(id))}" alt="" loading="lazy">
     <div class="meta"><b>${String(i + 1).padStart(2, '0')}</b><span>${esc(added[id] ? added[id].label || 'new · no camera line' : e.selected ? rec(id)?.alt || owner(id) : labels[id] || (photo ? 'no camera line' : ''))}</span></div>
     <div class="tools"><button data-a="left" aria-label="Move ${i + 1} earlier">←</button><button data-a="right" aria-label="Move ${i + 1} later">→</button>
     ${e.selected ? '' : `<button data-a="th" aria-pressed="${th === id}">menu</button>`}${e.selected ? '' : `<button data-a="star" aria-pressed="${isFeatured(id, e.sid)}" aria-label="In Selected work">${isFeatured(id, e.sid) ? '★' : '☆'}</button>`}
@@ -77,10 +96,14 @@ function draw(focus){
 }
 
 const change = focus => { page().touched = true; dirty = true; $('#status').textContent = 'unsaved changes'; draw(focus); };
-const move = (from, to, a) => { const l = page().imgs; if (to < 0 || to >= l.length || from === to) return; l.splice(to, 0, l.splice(from, 1)[0]); change(a && [to, a]); };
+const move = (from, to, a, l = page().imgs, g) => { if (to < 0 || to >= l.length || from === to) return; l.splice(to, 0, l.splice(from, 1)[0]); change(a && [g === undefined ? to : `${g}.${to}`, a]); };
 
 tiles.addEventListener('click', ev => {
   const b = ev.target.closest('button'); if (!b) return;
+  if (page().order) { const e = page(), a = b.dataset.a, [g, i] = b.closest('li').dataset.i.replace('g', '').split('.').map(Number);
+    if (a === 'left' || a === 'right') return move(i, i + (a === 'left' ? -1 : 1), a, e.groups[g].ids, g);
+    const t = g + (a === 'up' ? -1 : 1); if (t < 0 || t >= e.groups.length) return;
+    e.groups.splice(t, 0, e.groups.splice(g, 1)[0]); return change([`g${t}`, a]); }
   const i = +b.closest('li').dataset.i, e = page(), id = e.imgs[i];
   if (b.dataset.a === 'left' || b.dataset.a === 'right') return move(i, i + (b.dataset.a === 'left' ? -1 : 1), b.dataset.a);
   if (b.dataset.a === 'th') e.th = id;
@@ -90,12 +113,15 @@ tiles.addEventListener('click', ev => {
 });
 
 let dragFrom = null;
-tiles.addEventListener('dragstart', ev => { const li = ev.target.closest('li'); dragFrom = +li.dataset.i; li.classList.add('drag'); ev.dataTransfer.effectAllowed = 'move'; });
+tiles.addEventListener('dragstart', ev => { const li = ev.target.closest('li'); dragFrom = li.dataset.i; li.classList.add('drag'); ev.dataTransfer.effectAllowed = 'move'; });
 tiles.addEventListener('dragover', ev => {
   const li = ev.target.closest('li'); if (!li || dragFrom === null) return;
   ev.preventDefault(); tiles.querySelectorAll('.over').forEach(x => x.classList.remove('over')); li.classList.add('over');
 });
-tiles.addEventListener('drop', ev => { ev.preventDefault(); const li = ev.target.closest('li'); if (li && dragFrom !== null) move(dragFrom, +li.dataset.i); dragFrom = null; });
+tiles.addEventListener('drop', ev => { ev.preventDefault(); const li = ev.target.closest('li'); if (li && dragFrom !== null) {
+  const e = page(), [g, i] = dragFrom.split('.').map(Number), [tg, ti] = li.dataset.i.split('.').map(Number);
+  if (!e.order) move(g, tg); else if (g === tg) move(i, ti, undefined, e.groups[g].ids, g);  // a page stays in its group
+} dragFrom = null; });
 tiles.addEventListener('dragend', () => { dragFrom = null; draw(); });
 
 // fits the picture inside w x h (never cropped) as a JPEG blob that knows its size
@@ -105,8 +131,9 @@ const jpeg = async (bmp, w, h = w) => {
   return Object.assign(await c.convertToBlob({type: 'image/jpeg', quality: .82}), {w: c.width, h: c.height});
 };
 
+const takenIds = () => new Set([...WORK.flatMap(s => s.projects.flatMap(p => [p.th, ...(p.imgs || (p.cats || []).flatMap(c => c.imgs))])), ...Object.keys(labels), ...photos.map(r => r.id), ...Object.keys(added)]);
 $('#files').addEventListener('change', async ev => {
-  const e = page(), taken = new Set([...WORK.flatMap(s => s.projects.flatMap(p => p.imgs || (p.cats || []).flatMap(c => c.imgs))), ...Object.keys(labels), ...photos.map(r => r.id), ...Object.keys(added)]);
+  const e = page(), taken = takenIds();
   $('#status').textContent = 'reading photos…';
   for (const f of ev.target.files) {
     const id = newId(e.p.id, f.name, taken), bmp = await createImageBitmap(f, {imageOrientation: 'from-image'}); taken.add(id);
@@ -114,6 +141,13 @@ $('#files').addEventListener('change', async ev => {
     added[id] = {big, thumb: e.p.poster ? null : await jpeg(bmp, 600), url: URL.createObjectURL(big), label: cam?.label, date: cam?.date};
     e.imgs.push(id);
   }
+  ev.target.value = ''; change();
+});
+// a menu photo from a file: only its small menu copy is saved, the page, the archive and Selected work never see it
+$('#thfile').addEventListener('change', async ev => {
+  const e = page(), f = ev.target.files[0]; if (!f) return;
+  const id = newId(e.p.id, f.name, takenIds()), small = await jpeg(await createImageBitmap(f, {imageOrientation: 'from-image'}), 192, 120);
+  added[id] = {menu: small, url: URL.createObjectURL(small)}; e.th = id;
   ev.target.value = ''; change();
 });
 
@@ -144,7 +178,7 @@ $('#save').addEventListener('click', async () => {
   try {
     // read the files as they are now on disk, so nothing saved since this page loaded is lost
     let html = await (await file('index.html')).text(), ph = JSON.parse(await (await file('data/photos.json')).text());
-    const labJs = await (await file('assets/home/labels.js')).text(), lab = readLabels(labJs), pages = [...edits.values()].filter(e => e.touched && !e.selected);
+    const labJs = await (await file('assets/home/labels.js')).text(), lab = readLabels(labJs), pages = [...edits.values()].filter(e => e.touched && !e.selected && !e.order);
     for (const e of pages) if (e.p.fresh) {  // before any file is written: an empty page would break the menu
       if (!e.imgs.length) throw new Error(`"${e.p.name}" has no photos yet: add some first`);
       html = insertProject(html, e.sid, e.p);
@@ -162,13 +196,14 @@ $('#save').addEventListener('click', async () => {
       added: Object.fromEntries(e.imgs.filter(id => added[id]?.thumb).map(id => [id, {w: added[id].thumb.w, h: added[id].thumb.h, date: added[id].date}]))});
     for (const e of pages) {  // the menu shows th, or the first photo: its small copy must exist
       const th = e.th || e.imgs[0];
-      if (th && !(await has(`assets/home/t/${th}.jpg`))) await write(`assets/home/t/${th}.jpg`, await jpeg(await createImageBitmap(added[th]?.big || await file(`assets/home/${th}.jpg`)), 192, 120));
+      if (th && !(await has(`assets/home/t/${th}.jpg`))) await write(`assets/home/t/${th}.jpg`, added[th]?.menu || await jpeg(await createImageBitmap(added[th]?.big || await file(`assets/home/${th}.jpg`)), 192, 120));
     }
     // Selected work lives in index.html, one list per section; removed photos leave every list
     const cur = readSelected(html), lists = [...edits.values()].filter(e => e.selected && e.touched);
     lists.forEach(c => { cur[c.sid] = c.imgs; });
     for (const k in cur) cur[k] = cur[k].filter(id => !gone.includes(id));
     html = editSelected(html, cur);
+    for (const o of edits.values()) if (o.order && o.touched) html = orderProjects(html, o.sid, o.groups.flatMap(g => g.ids));
     const photo = lists.find(c => c.sid === 'photography');  // photography's list is what the archive calls featured
     if (photo) { const on = new Set(cur.photography); ph.forEach(r => { r.featured = on.has(r.id); }); }
     const labText = writeLabels(labJs, lab);

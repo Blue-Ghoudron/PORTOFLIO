@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine, readSelected, editSelected, selection, insertProject } from '../tools/pages-core.js';
+import { readWork, readLabels, writeLabels, editIndex, bumpLabels, editPhotos, newId, cameraLine, readSelected, editSelected, selection, insertProject, orderProjects } from '../tools/pages-core.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const html = readFileSync(join(ROOT, 'index.html'), 'utf8'), labelsJs = readFileSync(join(ROOT, 'assets/home/labels.js'), 'utf8');
@@ -18,9 +18,8 @@ test('reorder and menu photo round-trip through index.html', () => {
 });
 
 test('menu photo added to a page that had none', () => {
-  const j = proj(readWork(html), 'jazz');
-  assert.equal(j.th, undefined);
-  assert.equal(proj(readWork(editIndex(html, {proj: 'jazz', imgs: j.imgs, th: j.imgs[2]})), 'jazz').th, j.imgs[2]);
+  const j = readWork(html)[0].projects.find(p => p.imgs?.length > 2 && !p.th);  // any page still without one
+  assert.equal(proj(readWork(editIndex(html, {proj: j.id, imgs: j.imgs, th: j.imgs[2]})), j.id).th, j.imgs[2]);
 });
 
 test('dropping the menu photo falls back to the first photo', () => {
@@ -82,8 +81,8 @@ test('Selected work per section: round-trip, then featured, else the defaults', 
   assert.deepEqual(readSelected(set), sel);
   assert.deepEqual(readWork(set), w);  // the page list is untouched
   assert.deepEqual(selection(w, {photography: ['soualem-9173']}, photos.map(p => ({...p, featured: p.id === 'x19901_61074'}))), ['soualem-9173', 'x19901_61074']);
-  assert.deepEqual(selection(w, {}, none), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));
-  assert.deepEqual(selection(w, {photography: ['gone-id']}, []), w[0].projects.filter(p => p.imgs).map(p => p.th || p.imgs[0]));  // unknown ids drop out
+  assert.deepEqual(selection(w, {}, none), w[0].projects.filter(p => p.imgs).map(p => p.imgs.includes(p.th) ? p.th : p.imgs[0]));
+  assert.deepEqual(selection(w, {photography: ['gone-id']}, []), w[0].projects.filter(p => p.imgs).map(p => p.imgs.includes(p.th) ? p.th : p.imgs[0]));  // unknown ids drop out
   assert.deepEqual(selection(w, sel, none, 'design'), ['x190932_899304']);
   const all = selection(w, {}, none, 'design'), firsts = w.find(s => s.id === 'design').projects.map(p => (p.imgs || p.cats[0].imgs)[0]);
   assert.deepEqual(all.slice(0, firsts.length), firsts);  // one per project first
@@ -105,4 +104,18 @@ test('a new page goes after the last page of its group, else at the end of its s
   assert.equal(ids(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}), 'design').at(-1), 'p9');
   assert.equal(readWork(insertProject(html, 'design', {id: 'p9', name: 'P9', poster: true}))[1].projects.at(-1).poster, true);
   assert.equal(ids(insertProject(html, 'photography', {id: 'g', group: 'Brand new', name: 'G'}), 'photography').at(-1), 'g');
+});
+
+test('page order: whole pages move, groups follow their first page, other sections untouched', () => {
+  const ids = (h, sid) => readWork(h).find(s => s.id === sid).projects.map(p => p.id), ph = ids(html, 'photography');
+  const want = [...ph.filter(id => readWork(html)[0].projects.find(p => p.id === id).group === 'Music').reverse(), ...ph.filter(id => readWork(html)[0].projects.find(p => p.id === id).group !== 'Music')];
+  const out = orderProjects(html, 'photography', want), w = readWork(out);
+  assert.deepEqual(ids(out, 'photography'), want);
+  assert.ok(w[0].projects.find(p => p.id === 'boulevard').doors);  // a two-line page stays whole
+  assert.equal(w[0].projects[0].group, 'Music');
+  assert.deepEqual(readWork(out).slice(1), readWork(html).slice(1));
+  const d = ids(html, 'design'), dout = orderProjects(html, 'design', [d.at(-1)]);  // ids left out keep their order after
+  assert.deepEqual(ids(dout, 'design'), [d.at(-1), ...d.slice(0, -1)]);
+  assert.deepEqual(readWork(dout)[1].projects.find(p => p.id === 'personal').cats, readWork(html)[1].projects.find(p => p.id === 'personal').cats);
+  assert.equal(orderProjects(html, 'photography', ph), html);
 });

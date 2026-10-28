@@ -16,11 +16,13 @@
   <select id="page" aria-label="Page"></select>
   <button id="new" type="button">new page</button>
   <label class="add">add photos<input type="file" id="files" accept="image/jpeg" multiple></label>
+  <label class="add" id="thadd">menu photo from a file<input type="file" id="thfile" accept="image/jpeg"></label>
+  <span id="thnow" hidden>menu: <img alt="Menu photo, not shown on the page"></span>
   <span id="status" aria-live="polite"></span>
   <button id="save">Save</button>
 </header>
 <div id="errors" role="alert"></div>
-<p class="how">Drag a photo (or use ← →) to move it · × removes it · <b>menu</b> makes it the page's menu photo · ★ puts it in the home preview and the Photography page.</p>
+<p class="how">Drag a photo (or use ← →) to move it · × removes it · <b>menu</b> makes it the page's menu photo (or pick one from a file: only the menu shows it) · ★ puts it in the home preview and the Photography page. Page order: drag a page (or ← →) inside its group, ↑ ↓ moves a whole group.</p>
 <ol class="tiles" aria-label="Photos of this page, in order"></ol>
 <dialog id="newdlg" aria-labelledby="newh"><form method="dialog" id="newform">
   <h2 id="newh">New page</h2>

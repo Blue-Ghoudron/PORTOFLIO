@@ -1,4 +1,4 @@
-# CLAUDE.md
+/# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -35,7 +35,7 @@ Always serve over http, not `file://`: the homepage reads the L'Boulevard iframe
 - Logic in `assets/archive/core.js` (pure, unit-tested), view in `assets/archive/archive.js` + `archive.css`, loaded by `render()` with `import()`. Filters live in the address (`#photography/archive?genre=concert&year=2026`): a genre change is a history step, ticking a box is not.
 - Thumbnails `assets/archive/t/<id>.jpg`. New photos: add them to `WORK` / a room as usual, then `node scripts/fa_migrate.mjs` (only appends missing records) and `~/.cache/orbit-render/v/bin/python -I scripts/fa_thumbs.py`.
 - Tagging: `tools/tag.html` on the local server (not linked from the site) edits every field; Chrome/Edge save straight into `data/`, other browsers download the two files.
-- Page editor: `tools/pages.html` on the local server (not linked) arranges a page's photos by hand: order, remove, menu photo, featured (home preview), add from files. Saves go through `scripts/serve.py` (any browser; Chrome cannot pick a WSL folder), else a folder picked in Chrome/Edge. `tests/serve_test.py` checks what the server refuses, on a copy of the site. Text edits in `tools/pages-core.js` (`tests/pages.test.mjs`); `tests/pages_tool.py` saves into a fake folder. Spec `docs/specs/2026-10-26-page-editor.md`.
+- Page editor: `tools/pages.html` on the local server (not linked) arranges a page's photos by hand: order, remove, menu photo, featured (home preview), add from files; "Page order" sets which page comes first in each section's menu (and the order of the groups). Saves go through `scripts/serve.py` (any browser; Chrome cannot pick a WSL folder), else a folder picked in Chrome/Edge. `tests/serve_test.py` checks what the server refuses, on a copy of the site. Text edits in `tools/pages-core.js` (`tests/pages.test.mjs`); `tests/pages_tool.py` saves into a fake folder. Spec `docs/specs/2026-10-26-page-editor.md`.
 
 ### Exhibition: `assets/boulevard/`
 - Photos from L'Boulevard's Metal Day (20.09.2025 and 19.09.2026). The hub is `index.html` (one door per room). The rooms are `Movement/`, `Band/` (titled **Connection**) and `Faces/` (Faces and Eyes). Each room is a self-contained page with its own CSS, JS and `images/`.
@@ -54,4 +54,4 @@ Never touch `Band/screenshots/`. The photo sources in `C:\Users\ghouj\SKIMART` (
 - Name every subagent or session after its task, e.g. `pf-qsm.4 Accessibility audit`.
 - Specs go in `docs/specs/YYYY-MM-DD-<topic>.md` and are written before building.
 - Order: plan → the user approves → implement → review → PR. Never merge without asking.
-- Branches: finished work is pushed to `Portoflio-Branch` (homepage and exhibition, PR #2 to `main`). `Test-Fix` (worktree `~/Projects/Portoflio-Fixes`, formerly `Portoflio-Fixes`) is only for test runs and fix passes. Feature branches (e.g. `Filter-Ability`) branch off `Portoflio-Branch`. `Portoflio-Branch` has no checkout of its own: commit through a temporary `git worktree add`. Several Claude sessions often work in this folder at once: check `git status` before committing, and don't switch branches under another session's feet.
+- Branches: this folder works on `Flow`; finished work is pushed to `Flow` and to `Portfolio` (formerly `Portoflio-Branch`, merged into `main` by PR #2), a fast-forward. `Test-Fix` (worktree `~/Projects/Portoflio-Fixes`, formerly `Portoflio-Fixes`) is only for test runs and fix passes. Feature branches (e.g. `Filter-Ability`) branch off `Portfolio`. Several Claude sessions often work in this folder at once: check `git status` before committing, and don't switch branches under another session's feet.
