@@ -87,7 +87,7 @@ with sync_playwright() as p:
     pg.click('figure[data-id=test-05]')
     ok(pg.locator('#lb.on').is_visible(), 'viewer opens')
     ok((pg.get_attribute('#lb-from', 'href') or '').endswith('#photography/boulevard/Band'), 'AC6 viewer links to its series')
-    ok('TEST SERIES' in (pg.text_content('#lb-from') or ''), 'AC6 viewer names its series')
+    ok('TEST SERIES' in (pg.text_content('#lb-t') or ''), 'AC6 viewer names its series')
     pg.keyboard.press('Escape')
 
     go(pg, A + '?genre=concert&location=american-arts-center&year=2026'); count(pg, 2, 'AC7 address restores the view')
