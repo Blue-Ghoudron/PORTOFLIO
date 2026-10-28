@@ -18,13 +18,14 @@ export const version = text => { let h = 0x811c9dc5; for (const c of text) h = M
 const list = ids => '[' + ids.map(i => JSON.stringify(i)).join(', ') + ']';
 const q = s => "'" + s.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
 
-/** One page's photos (or one category's) and its menu photo, written back into index.html. th: an id sets it, null drops it (the menu then shows the first photo). */
-export function editIndex(html, {proj, cat, imgs, th}){
+/** One page's photos (or one category's), its menu photo and its name, written back into index.html. th: an id sets it, null drops it (the menu then shows the first photo). */
+export function editIndex(html, {proj, cat, imgs, th, name}){
   const lines = html.split('\n'), at = lines.findIndex(l => l.startsWith(`    {id:'${proj}',`));
   if (at < 0) throw new Error(`no WORK line for ${proj}`);
   const target = cat ? lines.findIndex((l, i) => i > at && l.includes(`{name:${q(cat)},`)) : at;
   if (target < 0) throw new Error(`no category ${cat} in ${proj}`);
   lines[target] = lines[target].replace(/imgs:\[[^\]]*\]/, 'imgs:' + list(imgs));
+  if (name) lines[at] = lines[at].replace(/\bname:(?:'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/, `name:${q(name)}`);  // the page's, not a category's (those come later)
   if (th === null) lines[at] = lines[at].replace(/\bth:'[^']*', /, '');
   else if (th) lines[at] = /\bth:'[^']*'/.test(lines[at]) ? lines[at].replace(/\bth:'[^']*'/, `th:${q(th)}`) : lines[at].replace(', info:', `, th:${q(th)}, info:`);
   return lines.join('\n');

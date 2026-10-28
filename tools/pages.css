@@ -20,7 +20,7 @@
 /* the star: empty until the photo is in Selected work, then a filled gold one (gold #8a6400 is 4.7:1 on the page) */
 .tiles [data-a="star"]{font-size:17px;line-height:1;padding:1px 8px;color:var(--mute)}
 .tiles [data-a="star"][aria-pressed="true"]{background:none;border-color:#8a6400;color:#8a6400}
-#new{padding:5px 12px;border:1px solid var(--ink);background:none;cursor:pointer}
+#new,#rename{padding:5px 12px;border:1px solid var(--ink);background:none;cursor:pointer}
 #newdlg{border:1px solid var(--ink);background:var(--bg);color:var(--ink);padding:20px 22px;width:min(420px,92vw)}
 #newdlg::backdrop{background:#0006}
 #newdlg h2{margin:0 0 14px;font-size:14px;letter-spacing:.2em;text-transform:uppercase}
@@ -33,5 +33,5 @@
 /* page order: a group heading across the whole row */
 .tiles li.ghead{grid-column:1/-1;display:flex;gap:6px;align-items:center;padding:12px 0 4px;border:0;border-bottom:1px solid var(--line);background:none;cursor:default}
 .tiles li.ghead b{margin-right:6px;letter-spacing:.15em;text-transform:uppercase}
-#thnow{display:flex;gap:6px;align-items:center;color:var(--mute)}
+#thnow:not([hidden]){display:flex;gap:6px;align-items:center;color:var(--mute)}
 #thnow img{height:30px;border:1px solid var(--line)}

@@ -78,7 +78,7 @@ const src = id => added[id] ? added[id].url : rec(id) ? '../' + rec(id).thumb : 
 
 function draw(focus){
   const e = page(), photo = !e.p.poster && !e.selected, th = e.th || e.imgs?.[0];
-  $('.add').hidden = $('#thadd').hidden = !!(e.selected || e.order);
+  $('.add').hidden = $('#thadd').hidden = $('#rename').hidden = !!(e.selected || e.order);
   const only = e.th && !e.imgs?.includes(e.th);  // a menu photo that is not on the page
   $('#thnow').hidden = !only; if (only) $('#thnow img').src = added[e.th]?.url || `../assets/home/t/${e.th}.jpg`;
   if (e.order) {  // tiles keyed "<group>.<page>", group headings "g<group>"
@@ -144,6 +144,13 @@ $('#files').addEventListener('change', async ev => {
   ev.target.value = ''; change();
 });
 // a menu photo from a file: only its small menu copy is saved, the page, the archive and Selected work never see it
+// rename: the page's title and menu name; its address (#section/<id>) and photo files keep their id
+$('#rename').addEventListener('click', () => {
+  const k = $('#page').value, e = page(), name = prompt('Page name', e.p.name)?.trim();
+  if (!name || name === e.p.name) return;
+  e.p.name = name; options(); $('#page').value = k; change();
+});
+
 $('#thfile').addEventListener('change', async ev => {
   const e = page(), f = ev.target.files[0]; if (!f) return;
   const id = newId(e.p.id, f.name, takenIds()), small = await jpeg(await createImageBitmap(f, {imageOrientation: 'from-image'}), 192, 120);
@@ -188,7 +195,7 @@ $('#save').addEventListener('click', async () => {
       if (added[id].thumb) await write(`assets/archive/t/${id}.jpg`, added[id].thumb);
       if (added[id].label) lab[id] = added[id].label;
     }
-    for (const e of pages) html = editIndex(html, {proj: e.p.id, cat: e.cat, imgs: e.imgs, th: e.th === e.p.th ? undefined : e.th ?? null});
+    for (const e of pages) html = editIndex(html, {proj: e.p.id, cat: e.cat, imgs: e.imgs, th: e.th === e.p.th ? undefined : e.th ?? null, name: e.p.name});
     // photos taken off a page and used nowhere else lose their caption, archive record and files
     const gone = pages.flatMap(e => e.orig.filter(id => !e.imgs.includes(id))).filter(id => !html.includes(`"${id}"`) && !html.includes(`'${id}'`));
     gone.forEach(id => delete lab[id]);

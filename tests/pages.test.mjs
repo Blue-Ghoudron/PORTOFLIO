@@ -119,3 +119,10 @@ test('page order: whole pages move, groups follow their first page, other sectio
   assert.deepEqual(readWork(dout)[1].projects.find(p => p.id === 'personal').cats, readWork(html)[1].projects.find(p => p.id === 'personal').cats);
   assert.equal(orderProjects(html, 'photography', ph), html);
 });
+
+test('rename: the page line only, quotes survive, categories keep theirs', () => {
+  const w = readWork(editIndex(html, {proj: 'soualem', imgs: proj(readWork(html), 'soualem').imgs, name: "Soualem's Fields"}));
+  assert.equal(proj(w, 'soualem').name, "Soualem's Fields"); assert.equal(proj(w, 'jazz').name, proj(readWork(html), 'jazz').name);
+  const p = proj(readWork(html), 'personal'), c = readWork(editIndex(html, {proj: 'personal', cat: 'C-02', imgs: p.cats[1].imgs, name: 'Personal'}));
+  assert.equal(proj(c, 'personal').name, 'Personal'); assert.deepEqual(proj(c, 'personal').cats.map(x => x.name), p.cats.map(x => x.name));
+});
